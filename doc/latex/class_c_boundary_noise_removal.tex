@@ -1,0 +1,112 @@
+\hypertarget{class_c_boundary_noise_removal}{}\section{C\+Boundary\+Noise\+Removal Class Reference}
+\label{class_c_boundary_noise_removal}\index{C\+Boundary\+Noise\+Removal@{C\+Boundary\+Noise\+Removal}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_af789fb697fbb2919763b302dd7a1f59b}\label{class_c_boundary_noise_removal_af789fb697fbb2919763b302dd7a1f59b}} 
+\hyperlink{class_c_boundary_noise_removal_af789fb697fbb2919763b302dd7a1f59b}{C\+Boundary\+Noise\+Removal} ()
+\begin{DoxyCompactList}\small\item\em \begin{quote}
+The real depth value of the farthest pixel. 0\+: Left view. 1\+: Right view \end{quote}
+\end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a441713ad025973e9592dcd4b1825b1e3}\label{class_c_boundary_noise_removal_a441713ad025973e9592dcd4b1825b1e3}} 
+bool {\bfseries Do\+Boundary\+Noise\+Removal} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Ref\+Left, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Ref\+Right, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Depth\+Type $>$ $\ast$p\+Ref\+Depth\+Left, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Depth\+Type $>$ $\ast$p\+Ref\+Depth\+Right, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Hole\+Type $>$ $\ast$p\+Ref\+Hole\+Left, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Hole\+Type $>$ $\ast$p\+Ref\+Hole\+Right, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Syn\+Yuv\+Buffer, bool Synhtesis\+Mode)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a1c1e4f5b6dd8ada3c20dbcaea0d55be7}\label{class_c_boundary_noise_removal_a1c1e4f5b6dd8ada3c20dbcaea0d55be7}} 
+void {\bfseries x\+Init} ()
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a7a222f7088dc78c75bd89b89c5843edf}\label{class_c_boundary_noise_removal_a7a222f7088dc78c75bd89b89c5843edf}} 
+void {\bfseries Set\+Width} (int i\+Width)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_ab07290b0fb9a1e5c8514ee0abe81e666}\label{class_c_boundary_noise_removal_ab07290b0fb9a1e5c8514ee0abe81e666}} 
+void {\bfseries Set\+Height} (int i\+Hieght)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_af76af546229a18848870a63c05018b6e}\label{class_c_boundary_noise_removal_af76af546229a18848870a63c05018b6e}} 
+void {\bfseries Set\+View\+Blending} (int b\+View\+Blending)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a708dd37397392b52b9bf702318a670c0}\label{class_c_boundary_noise_removal_a708dd37397392b52b9bf702318a670c0}} 
+void {\bfseries Set\+Color\+Space} (int b\+Color\+Space)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_ad062849b69c78cad7ddcb54994a63cc3}\label{class_c_boundary_noise_removal_ad062849b69c78cad7ddcb54994a63cc3}} 
+void {\bfseries Set\+Precision} (int i\+Precision)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a3b49c34d794bbc860e08b64520468b75}\label{class_c_boundary_noise_removal_a3b49c34d794bbc860e08b64520468b75}} 
+void {\bfseries Set\+Left\+H\+\_\+\+V2R} (Cv\+Mat $\ast$s\+H\+\_\+\+V2R)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_ad7fc22b2351f439cb4d89f76ca13f92f}\label{class_c_boundary_noise_removal_ad7fc22b2351f439cb4d89f76ca13f92f}} 
+void {\bfseries Set\+Right\+H\+\_\+\+V2R} (Cv\+Mat $\ast$s\+H\+\_\+\+V2R)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_aa1f94e9c908aac080ec5a45842596470}\label{class_c_boundary_noise_removal_aa1f94e9c908aac080ec5a45842596470}} 
+void {\bfseries Set\+Focal\+Length} (double s\+Focal\+Length)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a94183ffe9e6f8dff19e6321b959e313c}\label{class_c_boundary_noise_removal_a94183ffe9e6f8dff19e6321b959e313c}} 
+void {\bfseries Set\+L\+Translation\+Left} (double $\ast$s\+L\+Translation)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_acbe52edc062dcb73319a807cf4e3bcbd}\label{class_c_boundary_noise_removal_acbe52edc062dcb73319a807cf4e3bcbd}} 
+void {\bfseries Setdu\+Principal} (double $\ast$sdu\+Principal)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a8922399a410313c3a6791c590afb3332}\label{class_c_boundary_noise_removal_a8922399a410313c3a6791c590afb3332}} 
+void {\bfseries Set\+Znear} (double $\ast$s\+Znear)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_abb48f5709da75e8d10b1accb1f43e252}\label{class_c_boundary_noise_removal_abb48f5709da75e8d10b1accb1f43e252}} 
+void {\bfseries Set\+Zfar} (double $\ast$s\+Zfar)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_aa66294ebbddc519022b3108ee9571c85}\label{class_c_boundary_noise_removal_aa66294ebbddc519022b3108ee9571c85}} 
+void {\bfseries Set\+Left\+Base\+Line\+Dist} (double s\+Dist)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a7c638bae81bc6c79a72d6728ba124d8a}\label{class_c_boundary_noise_removal_a7c638bae81bc6c79a72d6728ba124d8a}} 
+void {\bfseries Set\+Right\+Base\+Line\+Dist} (double s\+Dist)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_ab519fd708fcbd7e88f7aa27416adab01}\label{class_c_boundary_noise_removal_ab519fd708fcbd7e88f7aa27416adab01}} 
+int {\bfseries Get\+Precision} ()
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a47c4e3561d8b501a4914308900ee6cab}\label{class_c_boundary_noise_removal_a47c4e3561d8b501a4914308900ee6cab}} 
+void {\bfseries calc\+Depth\+Threshold1\+D\+Mode} (bool View\+ID)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_ace231492da43e38ee2806eddf4f1c367}\label{class_c_boundary_noise_removal_ace231492da43e38ee2806eddf4f1c367}} 
+void {\bfseries calc\+Depth\+Threshold\+General\+Mode} (Cv\+Mat $\ast$mat\+H\+\_\+\+V2R)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_ad7ecc5fae36a6a5bb878386519edee1a}\label{class_c_boundary_noise_removal_ad7ecc5fae36a6a5bb878386519edee1a}} 
+void {\bfseries copy\+Images} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Syn\+\_\+\+Curr\+View, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Depth\+Type $>$ $\ast$p\+Syn\+Depth\+\_\+\+Curr\+View, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Hole\+Type $>$ $\ast$p\+Syn\+Hole\+\_\+\+Curr\+View, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Hole\+Type $>$ $\ast$p\+Depth\+Hole\+\_\+\+Oth\+View)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_afe6b3861c20382f8ebadd61bc1069f92}\label{class_c_boundary_noise_removal_afe6b3861c20382f8ebadd61bc1069f92}} 
+void {\bfseries get\+Boundary\+Contour} (Ipl\+Image $\ast$bound, Ipl\+Image $\ast$contour)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a7d8dd1ad71c2a4424b452f370897fcfb}\label{class_c_boundary_noise_removal_a7d8dd1ad71c2a4424b452f370897fcfb}} 
+bool {\bfseries check\+Four\+Neighbours} (int i, int j, Ipl\+Image $\ast$check)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a0e755442e349f67a2357b6e9d4e0d2f9}\label{class_c_boundary_noise_removal_a0e755442e349f67a2357b6e9d4e0d2f9}} 
+void {\bfseries get\+Background\+Contour} (Ipl\+Image $\ast$Bound, Ipl\+Image $\ast$Depth, Ipl\+Image $\ast$check\+\_\+\+Depth, Ipl\+Image $\ast$Back\+Bound)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a5d1610bdadb1ea56572146f69d0589a7}\label{class_c_boundary_noise_removal_a5d1610bdadb1ea56572146f69d0589a7}} 
+void {\bfseries expanded\+Holefor\+B\+NM} (Ipl\+Image $\ast$Depth, Ipl\+Image $\ast$Hole, Ipl\+Image $\ast$Back\+Bound, Ipl\+Image $\ast$Expanded\+Hole)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a116434cda7c15247cd365f9ce7bf64aa}\label{class_c_boundary_noise_removal_a116434cda7c15247cd365f9ce7bf64aa}} 
+void {\bfseries Hole\+Filling\+With\+Expanded\+Hole} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Src, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Tar, Ipl\+Image $\ast$m\+\_\+img\+Expanded\+Hole, bool Synthesis\+Mode)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_af41f24692ceb4202eaf2d716b856aca2}\label{class_c_boundary_noise_removal_af41f24692ceb4202eaf2d716b856aca2}} 
+void {\bfseries Blending} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Left, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Right, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Syn, bool Synthesis\+Mode)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a5b8f3a3c9da4ac9df31b866519fe4b8f}\label{class_c_boundary_noise_removal_a5b8f3a3c9da4ac9df31b866519fe4b8f}} 
+void {\bfseries Color\+Filling\+Small\+Hole\+For1\+D\+Mode} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Src, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Dst)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_aa15f6efee18f6a5468690b01819b72c8}\label{class_c_boundary_noise_removal_aa15f6efee18f6a5468690b01819b72c8}} 
+void {\bfseries Depth\+Filling\+Small\+Hole\+For1\+D\+Mode} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Depth\+Type $>$ $\ast$p\+Src, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Depth\+Type $>$ $\ast$p\+Dst)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_abb5b07bb05e3a936299c258f6432cd08}\label{class_c_boundary_noise_removal_abb5b07bb05e3a936299c258f6432cd08}} 
+void {\bfseries Depth\+Matching\+With\+Color} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Depth\+Type $>$ $\ast$p\+Depth, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Color, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Hole\+Type $>$ $\ast$p\+Depth\+Mask)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a6597e1fb4af36a4ec4c4dc4143b0c28e}\label{class_c_boundary_noise_removal_a6597e1fb4af36a4ec4c4dc4143b0c28e}} 
+void {\bfseries Color\+Hole\+Cleaning} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Src)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_acf27454262219298e869d2006334d342}\label{class_c_boundary_noise_removal_acf27454262219298e869d2006334d342}} 
+void {\bfseries Remaining\+Hole\+Filling\+\_\+\+General} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Src)
+\item 
+\mbox{\Hypertarget{class_c_boundary_noise_removal_a75abc0ab8c29554727c87650f24661a1}\label{class_c_boundary_noise_removal_a75abc0ab8c29554727c87650f24661a1}} 
+void {\bfseries Remaining\+Hole\+Filling\+\_\+1\+D\+Mode} (\hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Src)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+I\+:/\+V\+S\+R\+S4/vsrs/\+View\+Syn\+Lib\+Static/include/Bounary\+Noise\+Removal.\+h\item 
+I\+:/\+V\+S\+R\+S4/vsrs/\+View\+Syn\+Lib\+Static/src/Boundary\+Noise\+Removal.\+cpp\end{DoxyCompactItemize}

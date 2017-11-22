@@ -1,0 +1,12 @@
+Solid
+cppcheck
+Singleton
+Architecture de logiciel libre (VTK image)
+
+refactor Config
+ordre des camera
+RGB - YUV
+
+aosabook.org/en/vtk.html
+
+Object-oriented programming for scientific computing 2017 heidelberg.de (oopfsc

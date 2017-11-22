@@ -1,0 +1,167 @@
+\hypertarget{class_c_view_interpolation_general}{}\section{C\+View\+Interpolation\+General Class Reference}
+\label{class_c_view_interpolation_general}\index{C\+View\+Interpolation\+General@{C\+View\+Interpolation\+General}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a272199dda7ab7bb53df136d33a26d975}\label{class_c_view_interpolation_general_a272199dda7ab7bb53df136d33a26d975}} 
+bool {\bfseries Init\+LR} (U\+Int ui\+Width, U\+Int ui\+Height, U\+Int ui\+Precision, U\+Int ui\+Depth\+Type, double d\+ZnearL, double d\+ZfarL, double d\+ZnearR, double d\+ZfarR, const char $\ast$str\+Cam\+Param\+File, const char $\ast$str\+Ref\+L\+Cam\+ID, const char $\ast$str\+Ref\+R\+Cam\+ID, const char $\ast$str\+Vir\+Cam\+ID, double Mat\+\_\+\+In\+\_\+\+Left\mbox{[}9\mbox{]}, double Mat\+\_\+\+Ex\+\_\+\+Left\mbox{[}9\mbox{]}, double Mat\+\_\+\+Trans\+\_\+\+Left\mbox{[}3\mbox{]}, double Mat\+\_\+\+In\+\_\+\+Right\mbox{[}9\mbox{]}, double Mat\+\_\+\+Ex\+\_\+\+Right\mbox{[}9\mbox{]}, double Mat\+\_\+\+Trans\+\_\+\+Right\mbox{[}3\mbox{]}, double Mat\+\_\+\+In\+\_\+\+Virtual\mbox{[}9\mbox{]}, double Mat\+\_\+\+Ex\+\_\+\+Virtual\mbox{[}9\mbox{]}, double Mat\+\_\+\+Trans\+\_\+\+Virtual\mbox{[}3\mbox{]})
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a334f4c081d89b8e73b92a8be0c51419e}\label{class_c_view_interpolation_general_a334f4c081d89b8e73b92a8be0c51419e}} 
+bool {\bfseries Init} (U\+Int ui\+Width, U\+Int ui\+Height, U\+Int ui\+Precision, U\+Int ui\+Depth\+Type, U\+Int ui\+Ivsrs\+Inpaint, double d\+Znear, double d\+Zfar, const char $\ast$str\+Cam\+Param\+File, const char $\ast$str\+Ref\+Cam\+ID, const char $\ast$str\+Vir\+Cam\+ID, double Mat\+\_\+\+In\+\_\+\+Ref\mbox{[}9\mbox{]}, double Mat\+\_\+\+Ex\+\_\+\+Ref\mbox{[}9\mbox{]}, double Mat\+\_\+\+Trans\+\_\+\+Ref\mbox{[}3\mbox{]}, double Mat\+\_\+\+In\+\_\+\+Vir\mbox{[}9\mbox{]}, double Mat\+\_\+\+Ex\+\_\+\+Vir\mbox{[}9\mbox{]}, double Mat\+\_\+\+Trans\+\_\+\+Vir\mbox{[}3\mbox{]})
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a3d606b4aab016cff1574260ac3474c68}\label{class_c_view_interpolation_general_a3d606b4aab016cff1574260ac3474c68}} 
+void {\bfseries x\+Release\+Memory} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a55f6c03b268945c749634ab02545354f}\label{class_c_view_interpolation_general_a55f6c03b268945c749634ab02545354f}} 
+bool {\bfseries x\+Synthesize\+View} (Image\+Type $\ast$$\ast$$\ast$src, Depth\+Type $\ast$$\ast$p\+Depth\+Map, int th\+\_\+same\+\_\+depth=5)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a7e84e0cf597a4d62b2f1184fdc6ffa1b}\label{class_c_view_interpolation_general_a7e84e0cf597a4d62b2f1184fdc6ffa1b}} 
+bool {\bfseries x\+Synthesize\+Depth} (Depth\+Type $\ast$$\ast$p\+Depth\+Map, Image\+Type $\ast$$\ast$$\ast$src)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a456e136da71f52a4388dfa1651f230c3}\label{class_c_view_interpolation_general_a456e136da71f52a4388dfa1651f230c3}} 
+bool {\bfseries x\+Synthesize\+View\+\_\+reverse} (Image\+Type $\ast$$\ast$$\ast$src, Depth\+Type $\ast$$\ast$p\+Depth\+Map, int th\+\_\+same\+\_\+depth=5)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a8bca6ac0df6d7a259ea30a860dec65be}\label{class_c_view_interpolation_general_a8bca6ac0df6d7a259ea30a860dec65be}} 
+double {\bfseries get\+Baseline\+Distance} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a4d2ec9e20e3ce4adb018a8bdecde3bd2}\label{class_c_view_interpolation_general_a4d2ec9e20e3ce4adb018a8bdecde3bd2}} 
+double {\bfseries get\+Left\+Baseline\+Distance} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a38acaa635137e2ca3b5f3a4d0ebc5c0e}\label{class_c_view_interpolation_general_a38acaa635137e2ca3b5f3a4d0ebc5c0e}} 
+double {\bfseries get\+Right\+Baseline\+Distance} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a41518d98029eb37e8eef8bd0172db005}\label{class_c_view_interpolation_general_a41518d98029eb37e8eef8bd0172db005}} 
+Ipl\+Image $\ast$ {\bfseries get\+Hole\+Pixels} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a2d553c8a258958a0272b35f1c73c1b70}\label{class_c_view_interpolation_general_a2d553c8a258958a0272b35f1c73c1b70}} 
+Ipl\+Image $\ast$ {\bfseries get\+Synthesized\+Pixels} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a652bbd413459273aab58eedf948289ed}\label{class_c_view_interpolation_general_a652bbd413459273aab58eedf948289ed}} 
+Ipl\+Image $\ast$ {\bfseries get\+Unstable\+Pixels} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a9852633ef8a4d65da9aa235c2dd0c6ca}\label{class_c_view_interpolation_general_a9852633ef8a4d65da9aa235c2dd0c6ca}} 
+Ipl\+Image $\ast$ {\bfseries get\+Virtual\+Image} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a828cf30a1bc574a6866edbb918137e17}\label{class_c_view_interpolation_general_a828cf30a1bc574a6866edbb918137e17}} 
+Ipl\+Image $\ast$ {\bfseries get\+Virtual\+Depth\+Map} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a9c72f5cfe9e3cb15749d7a16db8655d5}\label{class_c_view_interpolation_general_a9c72f5cfe9e3cb15749d7a16db8655d5}} 
+Image\+Type $\ast$$\ast$ {\bfseries get\+Virtual\+ImageY} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a899549659956b2b29431203798f33df9}\label{class_c_view_interpolation_general_a899549659956b2b29431203798f33df9}} 
+Image\+Type $\ast$$\ast$ {\bfseries get\+Virtual\+ImageU} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ae28327dddd44b315bf354b013dd83b87}\label{class_c_view_interpolation_general_ae28327dddd44b315bf354b013dd83b87}} 
+Image\+Type $\ast$$\ast$ {\bfseries get\+Virtual\+ImageV} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ad600db921b1ac1d2d4ef7f3be9acf98e}\label{class_c_view_interpolation_general_ad600db921b1ac1d2d4ef7f3be9acf98e}} 
+Depth\+Type $\ast$$\ast$ {\bfseries get\+Virtual\+Depth} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a24b8489fd41bd304d7da4066f16ea369}\label{class_c_view_interpolation_general_a24b8489fd41bd304d7da4066f16ea369}} 
+Hole\+Type $\ast$$\ast$ {\bfseries get\+Non\+Holes} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a5fe3b20b39d460fa0890850021832b65}\label{class_c_view_interpolation_general_a5fe3b20b39d460fa0890850021832b65}} 
+void {\bfseries Set\+Width} (int s\+Width)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a91517d8e7d39053107040b7064e58b7b}\label{class_c_view_interpolation_general_a91517d8e7d39053107040b7064e58b7b}} 
+void {\bfseries Set\+Height} (int s\+Height)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a798f10c26b9f51cc459dabf6045f86c3}\label{class_c_view_interpolation_general_a798f10c26b9f51cc459dabf6045f86c3}} 
+void {\bfseries Set\+Depth\+Type} (int s\+Depth\+Type)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a8b3585813c303a973de342e07ffadd05}\label{class_c_view_interpolation_general_a8b3585813c303a973de342e07ffadd05}} 
+void {\bfseries Set\+Color\+Space} (int s\+Color\+Space)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ad2ae87df1c62275cc3b269f5be78d1fb}\label{class_c_view_interpolation_general_ad2ae87df1c62275cc3b269f5be78d1fb}} 
+void {\bfseries Set\+Sub\+Pel\+Option} (int s\+Precision)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a7b9f60408151d3c821481fe62c012f23}\label{class_c_view_interpolation_general_a7b9f60408151d3c821481fe62c012f23}} 
+void {\bfseries Set\+Ivsrs\+Inpaint} (unsigned int ui\+Ivsrs\+Inpaint)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a140e7e2255db05f3ed99e1255377d7a9}\label{class_c_view_interpolation_general_a140e7e2255db05f3ed99e1255377d7a9}} 
+void {\bfseries Set\+View\+Blending} (int s\+View\+Blending)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_afd1e7cb52d0fb2bb1e9e4d571ee238e2}\label{class_c_view_interpolation_general_afd1e7cb52d0fb2bb1e9e4d571ee238e2}} 
+void {\bfseries Set\+Boundary\+Noise\+Removal} (int s\+Boundary\+Noise\+Removal)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a89cad48e51b806f48dcca759094966ec}\label{class_c_view_interpolation_general_a89cad48e51b806f48dcca759094966ec}} 
+void {\bfseries Set\+Depth\+Blend\+Diff} (int i\+Depth\+Blend\+Diff)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a33b7fe7a385b198efe6ba3ce3b97d731}\label{class_c_view_interpolation_general_a33b7fe7a385b198efe6ba3ce3b97d731}} 
+int {\bfseries Do\+One\+Frame\+General} (Image\+Type $\ast$$\ast$$\ast$Ref\+Left, Image\+Type $\ast$$\ast$$\ast$Ref\+Right, Depth\+Type $\ast$$\ast$Ref\+Depth\+Left, Depth\+Type $\ast$$\ast$Ref\+Depth\+Right, \hyperlink{class_c_i_yuv}{C\+I\+Yuv}$<$ Image\+Type $>$ $\ast$p\+Syn\+Yuv\+Buffer)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a540e0ca6231721e5f5aa8aa2a034b6a4}\label{class_c_view_interpolation_general_a540e0ca6231721e5f5aa8aa2a034b6a4}} 
+Ipl\+Image $\ast$ {\bfseries get\+Img\+Synthesized\+View\+Left} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_abb1e1fa00e223210a683a0a1642478cd}\label{class_c_view_interpolation_general_abb1e1fa00e223210a683a0a1642478cd}} 
+Ipl\+Image $\ast$ {\bfseries get\+Img\+Synthesized\+View\+Right} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ac682da8c5ba2b5da502f8d643dff7531}\label{class_c_view_interpolation_general_ac682da8c5ba2b5da502f8d643dff7531}} 
+Cv\+Mat $\ast$ {\bfseries Get\+Mat\+H\+\_\+\+V2R} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a2f340ff6d0b236f40727f2edb649ab34}\label{class_c_view_interpolation_general_a2f340ff6d0b236f40727f2edb649ab34}} 
+\hyperlink{class_c_view_interpolation_general}{C\+View\+Interpolation\+General} $\ast$ {\bfseries Get\+Interpolated\+Left} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_aa4f7a9be7f7d6ba5325469c8cd74d4e4}\label{class_c_view_interpolation_general_aa4f7a9be7f7d6ba5325469c8cd74d4e4}} 
+\hyperlink{class_c_view_interpolation_general}{C\+View\+Interpolation\+General} $\ast$ {\bfseries Get\+Interpolated\+Right} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a7a9d13e7f976d4904e53d13bd8d56cac}\label{class_c_view_interpolation_general_a7a9d13e7f976d4904e53d13bd8d56cac}} 
+Ipl\+Image $\ast$ {\bfseries Get\+Syn\+Left\+With\+Hole} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a5c7f03143fd2b10d0cbed8a6e8cef410}\label{class_c_view_interpolation_general_a5c7f03143fd2b10d0cbed8a6e8cef410}} 
+Ipl\+Image $\ast$ {\bfseries Get\+Syn\+Right\+With\+Hole} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_af312424177dc9faf2e95041f6b2a5ec6}\label{class_c_view_interpolation_general_af312424177dc9faf2e95041f6b2a5ec6}} 
+Ipl\+Image $\ast$ {\bfseries Get\+Syn\+Depth\+Left\+With\+Hole} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a39a3fb7a7f3b0ad17aa104709b689e6f}\label{class_c_view_interpolation_general_a39a3fb7a7f3b0ad17aa104709b689e6f}} 
+Ipl\+Image $\ast$ {\bfseries Get\+Syn\+Depth\+Right\+With\+Hole} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ac4c447a957f8b94b36df43be4216e29a}\label{class_c_view_interpolation_general_ac4c447a957f8b94b36df43be4216e29a}} 
+Ipl\+Image $\ast$ {\bfseries Get\+Syn\+Hole\+Left} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a7cfb76abed6162276f186ac1954b88f3}\label{class_c_view_interpolation_general_a7cfb76abed6162276f186ac1954b88f3}} 
+Ipl\+Image $\ast$ {\bfseries Get\+Syn\+Hole\+Right} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a2a7f127e413b4f204d2f27fbbfc9fa27}\label{class_c_view_interpolation_general_a2a7f127e413b4f204d2f27fbbfc9fa27}} 
+int {\bfseries Get\+Precision} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a98a1f644fb05edec90d2b83da708c9c7}\label{class_c_view_interpolation_general_a98a1f644fb05edec90d2b83da708c9c7}} 
+unsigned int {\bfseries Get\+Ivsrs\+Inpaint} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ac76f4c66813f3a0eed6be4da1667f33f}\label{class_c_view_interpolation_general_ac76f4c66813f3a0eed6be4da1667f33f}} 
+void {\bfseries Set\+Left\+Baseline\+Distance} (double s\+Left\+Baseline\+Distance)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ac5bd7d33424bbda3d2f67134aad81325}\label{class_c_view_interpolation_general_ac5bd7d33424bbda3d2f67134aad81325}} 
+void {\bfseries Set\+Right\+Baseline\+Distance} (double s\+Right\+Baseline\+Distance)
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_af78479a7abf4c138fcd33fc01c7adafe}\label{class_c_view_interpolation_general_af78479a7abf4c138fcd33fc01c7adafe}} 
+Image\+Type $\ast$ {\bfseries Get\+Syn\+Color\+LeftY} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_afba11ef873c298c52b944b64360b5fb9}\label{class_c_view_interpolation_general_afba11ef873c298c52b944b64360b5fb9}} 
+Image\+Type $\ast$ {\bfseries Get\+Syn\+Color\+RightY} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_aac450f8df7bb47c081d0f4bfc44be95d}\label{class_c_view_interpolation_general_aac450f8df7bb47c081d0f4bfc44be95d}} 
+Image\+Type $\ast$ {\bfseries Get\+Syn\+Color\+LeftU} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a122f2f4ce8d6544e157c313e3e3ce72c}\label{class_c_view_interpolation_general_a122f2f4ce8d6544e157c313e3e3ce72c}} 
+Image\+Type $\ast$ {\bfseries Get\+Syn\+Color\+RightU} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_ab3aa7855961c6a6f9703decd2128c2f7}\label{class_c_view_interpolation_general_ab3aa7855961c6a6f9703decd2128c2f7}} 
+Image\+Type $\ast$ {\bfseries Get\+Syn\+Color\+LeftV} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a1583036eb71012ecd8db62b757f4b334}\label{class_c_view_interpolation_general_a1583036eb71012ecd8db62b757f4b334}} 
+Image\+Type $\ast$ {\bfseries Get\+Syn\+Color\+RightV} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a9071eb7a3dc4ce1c4eaf75c7a25cd08f}\label{class_c_view_interpolation_general_a9071eb7a3dc4ce1c4eaf75c7a25cd08f}} 
+Depth\+Type $\ast$ {\bfseries Get\+Syn\+Depth\+Left} ()
+\item 
+\mbox{\Hypertarget{class_c_view_interpolation_general_a94e264bc7f9fbfa52967a3399e8ae122}\label{class_c_view_interpolation_general_a94e264bc7f9fbfa52967a3399e8ae122}} 
+Depth\+Type $\ast$ {\bfseries Get\+Syn\+Depth\+Right} ()
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+I\+:/\+V\+S\+R\+S4/vsrs/\+View\+Syn\+Lib\+Static/include/View\+Synthesis.\+h\item 
+I\+:/\+V\+S\+R\+S4/vsrs/\+View\+Syn\+Lib\+Static/src/View\+Synthesis.\+cpp\end{DoxyCompactItemize}

@@ -12,6 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 
 find_package( OpenCV REQUIRED )
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 
 if(MSVC)
@@ -31,27 +32,27 @@ include_directories(
 
 # CommonLibStatic
 file(GLOB CommonLibStaticSRC
-    ./CommonLibStatic/src/ParameterBase.cpp
-    ./CommonLibStatic/src/upsample.cpp
-    ./CommonLibStatic/src/yuv.cpp
+    ./CommonLibStatic/src/*.cpp
+    ./CommonLibStatic/include/*.h
+	./CommonLibStatic/include/*.hpp
 	)
 add_library(CommonLibStatic STATIC ${CommonLibStaticSRC})
 target_link_libraries(CommonLibStatic ${OpenCV_LIBS})
 
 # ViewSynthLibStatic
 file(GLOB ViewSynLibStaticSRC
-    ./ViewSynLibStatic/src/BoundaryNoiseRemoval.cpp
-    ./ViewSynLibStatic/src/ParameterViewInterpolation.cpp
-    ./ViewSynLibStatic/src/ViewInterpolation.cpp
-    ./ViewSynLibStatic/src/ViewSynthesis.cpp
-    ./ViewSynLibStatic/src/Visbd.cpp
+    ./ViewSynLibStatic/src/*.cpp
+    ./ViewSynLibStatic/include/*.h
+	./ViewSynLibStatic/include/*.hpp
   )
 add_library(ViewSynLibStatic STATIC ${ViewSynLibStaticSRC})
 target_link_libraries( ViewSynLibStatic ${OpenCV_LIBS} CommonLibStatic)
 
 # ViewSyn
 file(GLOB ViewSynSRC
-    ./ViewSyn/src/ViewSyn.cpp
+    ./ViewSyn/src/*.cpp
+	./ViewSyn/include/*.h
+	./ViewSyn/include/*.hpp
   )
 add_executable(ViewSyn ${ViewSynSRC})
 target_link_libraries( ViewSyn ${OpenCV_LIBS} CommonLibStatic ViewSynLibStatic)

@@ -8,6 +8,7 @@
 #include <opencv\cvaux.h>
 #endif
 
+#include "ConfigSyn.h"
 #include "yuv.h"
 
 class CParameterViewInterpolation;      // Class for view synthesis parameters
@@ -30,14 +31,14 @@ public:
 		Get the parameters needed from cParameter
 		to continue...
 	*/
-	bool    Init(CParameterViewInterpolation& cParameter);
+	bool    Init();
 	bool    SetReferenceImage(int iLeft, CIYuv<ImageType> *pcYuv);//!< Set up the reference pictures
 	bool    DoViewInterpolation(CIYuv<ImageType>* pYuvBuffer);    //!< The main interface function to be called to perform view interpolation
 
 	CIYuv<DepthType>*    getDepthBufferLeft() { return m_pcDepthMapLeft; }
 	CIYuv<DepthType>*    getDepthBufferRight() { return m_pcDepthMapRight; }
 	unsigned int  getBoundaryNoiseRemoval() { return  m_uiBoundary; }
-	Int	      getFrameNumber() { return m_iFrameNumber; }	//Zhejiang
+	int	      getFrameNumber() { return m_iFrameNumber; }	//Zhejiang
 	void      setFrameNumber(int frame_number) { m_iFrameNumber = frame_number; }
 
 private:
@@ -49,9 +50,9 @@ private:
 
 private:
 	// Default
-	Int     m_iSynthesisMode; //!< from CParameterViewInterpolation
+	int     m_iSynthesisMode; //!< from CParameterViewInterpolation
 	//? tbd
-	Int     m_iFrameNumber;		     //used in TIM, Zhejiang
+	int     m_iFrameNumber;		     //used in TIM, Zhejiang
 
 	unsigned int    m_uiColorSpace;		//!< from CParameterViewInterpolation
 	unsigned int    m_uiViewBlending;	//!< from CParameterViewInterpolation
@@ -69,8 +70,8 @@ private:
 	CViewInterpolation1D*      m_pViewSynthesis1D;      //!< The object to do 1D view synthesis
 	CBoundaryNoiseRemoval*     m_pBoundaryNoiseRemoval; //!< The object to do boundary noise removal
 
-	Int            m_iWidth;	//!< Source width
-	Int            m_iHeight;	//!< Source height
+	int            m_iWidth;	//!< Source width
+	int            m_iHeight;	//!< Source height
 
 	//? tbd - output?
 	unsigned char* m_pSynColorLeft;

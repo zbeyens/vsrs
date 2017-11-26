@@ -17,8 +17,8 @@
 typedef unsigned char uchar;
 //using namespace std;
 
-#ifndef UInt
-#define UInt    unsigned int
+#ifndef uint
+#define uint    unsigned int
 #endif
 
 class CViewInterpolationGeneral 
@@ -29,7 +29,7 @@ public:
 
   // Member function InitLR was added to class CViewInterpolationGeneral.
 
-  bool InitLR        (  UInt uiWidth, UInt uiHeight, UInt uiPrecision, UInt uiDepthType,
+  bool InitLR        (  uint uiWidth, uint uiHeight, uint uiPrecision, uint uiDepthType,
                                   double dZnearL, double dZfarL, double dZnearR, double dZfarR, 
                                   const char *strCamParamFile, const char *strRefLCamID, const char *strRefRCamID, const char *strVirCamID, 
                                   double Mat_In_Left[9], double Mat_Ex_Left[9], double Mat_Trans_Left[3], 
@@ -38,11 +38,11 @@ public:
 
   // The number of arguments of Init increased.
 
-  bool Init        (  UInt uiWidth, UInt uiHeight, UInt uiPrecision, UInt uiDepthType, 
+  bool Init        (  uint uiWidth, uint uiHeight, uint uiPrecision, uint uiDepthType, 
 
 #ifdef NICT_IVSRS
                                   // NICT start
-                                  UInt uiIvsrsInpaint,  // iVSRS inpaint flag
+                                  uint uiIvsrsInpaint,  // iVSRS inpaint flag
                                   // NICT end
 #endif
                                   double dZnear, double dZfar, const char *strCamParamFile, const char *strRefCamID, const char *strVirCamID, 

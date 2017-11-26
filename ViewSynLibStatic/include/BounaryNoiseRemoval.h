@@ -51,8 +51,8 @@
 typedef unsigned char uchar;
 //using namespace std;
 
-#ifndef UInt
-#define UInt    unsigned int
+#ifndef uint
+#define uint    unsigned int
 #endif
 
 #define max2(a,b)        (((a)-(b)>0)?(a):(b))

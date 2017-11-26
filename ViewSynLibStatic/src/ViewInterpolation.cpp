@@ -67,49 +67,53 @@ CViewInterpolation::~CViewInterpolation()
 #endif
 }
 
-bool CViewInterpolation::Init(CParameterViewInterpolation &cParameter)
+bool CViewInterpolation::Init()
 {
+	ConfigSyn& cfg = ConfigSyn::getInstance();
+
+
 	int iWidth, iHeight;
 
-	m_iSynthesisMode = cParameter.getSynthesisMode();
 
-	m_uiBoundary = cParameter.getBoundaryNoiseRemoval();
+	m_iSynthesisMode = cfg.getSynthesisMode();
 
-	m_uiColorSpace = cParameter.getColorSpace();
-	m_uiViewBlending = cParameter.getViewBlending();
+	m_uiBoundary = cfg.getBoundaryNoiseRemoval();
+
+	m_uiColorSpace = cfg.getColorSpace();
+	m_uiViewBlending = cfg.getViewBlending();
 
 	if (m_iSynthesisMode == 0)  // General mode
 	{
 		m_pViewSynthesisGeneral = new CViewInterpolationGeneral();
 
-		m_pViewSynthesisGeneral->SetWidth(cParameter.getSourceWidth());
-		m_pViewSynthesisGeneral->SetHeight(cParameter.getSourceHeight());
-		m_pViewSynthesisGeneral->SetDepthType(cParameter.getDepthType());
-		m_pViewSynthesisGeneral->SetColorSpace(cParameter.getColorSpace());
-		m_pViewSynthesisGeneral->SetSubPelOption(cParameter.getPrecision());
-		m_pViewSynthesisGeneral->SetViewBlending(cParameter.getViewBlending());
-		m_pViewSynthesisGeneral->SetBoundaryNoiseRemoval(cParameter.getBoundaryNoiseRemoval());
+		m_pViewSynthesisGeneral->SetWidth(cfg.getSourceWidth());
+		m_pViewSynthesisGeneral->SetHeight(cfg.getSourceHeight());
+		m_pViewSynthesisGeneral->SetDepthType(cfg.getDepthType());
+		m_pViewSynthesisGeneral->SetColorSpace(cfg.getColorSpace());
+		m_pViewSynthesisGeneral->SetSubPelOption(cfg.getPrecision());
+		m_pViewSynthesisGeneral->SetViewBlending(cfg.getViewBlending());
+		m_pViewSynthesisGeneral->SetBoundaryNoiseRemoval(cfg.getBoundaryNoiseRemoval());
 
 #ifdef POZNAN_DEPTH_BLEND
-		m_pViewSynthesisGeneral->SetDepthBlendDiff(cParameter.getDepthBlendDiff());
+		m_pViewSynthesisGeneral->SetDepthBlendDiff(cfg.getDepthBlendDiff());
 #endif
 
 #ifdef NICT_IVSRS
 		// NICT start  
-		m_pViewSynthesisGeneral->SetIvsrsInpaint(cParameter.getIvsrsInpaint());
+		m_pViewSynthesisGeneral->SetIvsrsInpaint(cfg.getIvsrsInpaint());
 		// NICT end
 #endif
 
-		if (!m_pViewSynthesisGeneral->InitLR(cParameter.getSourceWidth(), cParameter.getSourceHeight(),
-			cParameter.getPrecision(), cParameter.getDepthType(),
-			cParameter.getLeftNearestDepthValue(), cParameter.getLeftFarthestDepthValue(),
-			cParameter.getRightNearestDepthValue(), cParameter.getRightFarthestDepthValue(),
-			cParameter.getCameraParameterFile().c_str(),
-			cParameter.getLeftCameraName().c_str(), cParameter.getRightCameraName().c_str(),
-			cParameter.getVirtualCameraName().c_str(),
-			cParameter.getMat_In_Left(), cParameter.getMat_Ex_Left(), cParameter.getMat_Trans_Left(),
-			cParameter.getMat_In_Right(), cParameter.getMat_Ex_Right(), cParameter.getMat_Trans_Right(),
-			cParameter.getMat_In_Virtual(), cParameter.getMat_Ex_Virtual(), cParameter.getMat_Trans_Virtual()
+		if (!m_pViewSynthesisGeneral->InitLR(cfg.getSourceWidth(), cfg.getSourceHeight(),
+			cfg.getPrecision(), cfg.getDepthType(),
+			cfg.getLeftNearestDepthValue(), cfg.getLeftFarthestDepthValue(),
+			cfg.getRightNearestDepthValue(), cfg.getRightFarthestDepthValue(),
+			cfg.getCameraParameterFile().c_str(),
+			cfg.getLeftCameraName().c_str(), cfg.getRightCameraName().c_str(),
+			cfg.getVirtualCameraName().c_str(),
+			cfg.getMat_In_Left(), cfg.getMat_Ex_Left(), cfg.getMat_Trans_Left(),
+			cfg.getMat_In_Right(), cfg.getMat_Ex_Right(), cfg.getMat_Trans_Right(),
+			cfg.getMat_In_Virtual(), cfg.getMat_Ex_Virtual(), cfg.getMat_Trans_Virtual()
 		)) return false;
 
 	}
@@ -117,31 +121,31 @@ bool CViewInterpolation::Init(CParameterViewInterpolation &cParameter)
 	{
 		m_pViewSynthesis1D = new CViewInterpolation1D();
 
-		m_pViewSynthesis1D->SetFocalLength(cParameter.getFocalLength());
-		m_pViewSynthesis1D->SetLTranslationLeft(cParameter.getLTranslationLeft());
-		m_pViewSynthesis1D->SetLTranslationRight(cParameter.getLTranslationRight());
-		m_pViewSynthesis1D->SetduPrincipalLeft(cParameter.getduPrincipalLeft());
-		m_pViewSynthesis1D->SetduPrincipalRight(cParameter.getduPrincipalRight());
-		m_pViewSynthesis1D->SetZnearL(cParameter.getLeftNearestDepthValue());
-		m_pViewSynthesis1D->SetZfarL(cParameter.getLeftFarthestDepthValue());
-		m_pViewSynthesis1D->SetZnearR(cParameter.getRightNearestDepthValue());
-		m_pViewSynthesis1D->SetZfarR(cParameter.getRightFarthestDepthValue());
-		m_pViewSynthesis1D->SetWidth(cParameter.getSourceWidth());
-		m_pViewSynthesis1D->SetHeight(cParameter.getSourceHeight());
-		m_pViewSynthesis1D->SetSubPelOption(cParameter.getPrecision());  // Modify ViSBD how to set subpel
-		m_pViewSynthesis1D->SetSplattingOption(cParameter.getSplattingOption());
-		m_pViewSynthesis1D->SetBoundaryGrowth(cParameter.getBoudaryGrowth());
-		//m_pViewSynthesis1D->SetUpsampleRefs(cParameter.getUpsampleRefs()); // Remove it
-		m_pViewSynthesis1D->SetMergingOption(cParameter.getMergingOption());
-		m_pViewSynthesis1D->SetDepthThreshold(cParameter.getDepthThreshold());
-		m_pViewSynthesis1D->SetHoleCountThreshold(cParameter.getHoleCountThreshold());
-		m_pViewSynthesis1D->SetTemporalImprovementOption(cParameter.getTemporalImprovementOption());   //Zhejiang, May, 4
-		m_pViewSynthesis1D->SetWarpEnhancementOption(cParameter.getWarpEnhancementOption());
-		m_pViewSynthesis1D->SetCleanNoiseOption(cParameter.getCleanNoiseOption());
+		m_pViewSynthesis1D->SetFocalLength(cfg.getFocalLength());
+		m_pViewSynthesis1D->SetLTranslationLeft(cfg.getLTranslationLeft());
+		m_pViewSynthesis1D->SetLTranslationRight(cfg.getLTranslationRight());
+		m_pViewSynthesis1D->SetduPrincipalLeft(cfg.getduPrincipalLeft());
+		m_pViewSynthesis1D->SetduPrincipalRight(cfg.getduPrincipalRight());
+		m_pViewSynthesis1D->SetZnearL(cfg.getLeftNearestDepthValue());
+		m_pViewSynthesis1D->SetZfarL(cfg.getLeftFarthestDepthValue());
+		m_pViewSynthesis1D->SetZnearR(cfg.getRightNearestDepthValue());
+		m_pViewSynthesis1D->SetZfarR(cfg.getRightFarthestDepthValue());
+		m_pViewSynthesis1D->SetWidth(cfg.getSourceWidth());
+		m_pViewSynthesis1D->SetHeight(cfg.getSourceHeight());
+		m_pViewSynthesis1D->SetSubPelOption(cfg.getPrecision());  // Modify ViSBD how to set subpel
+		m_pViewSynthesis1D->SetSplattingOption(cfg.getSplattingOption());
+		m_pViewSynthesis1D->SetBoundaryGrowth(cfg.getBoudaryGrowth());
+		//m_pViewSynthesis1D->SetUpsampleRefs(cfg.getUpsampleRefs()); // Remove it
+		m_pViewSynthesis1D->SetMergingOption(cfg.getMergingOption());
+		m_pViewSynthesis1D->SetDepthThreshold(cfg.getDepthThreshold());
+		m_pViewSynthesis1D->SetHoleCountThreshold(cfg.getHoleCountThreshold());
+		m_pViewSynthesis1D->SetTemporalImprovementOption(cfg.getTemporalImprovementOption());   //Zhejiang, May, 4
+		m_pViewSynthesis1D->SetWarpEnhancementOption(cfg.getWarpEnhancementOption());
+		m_pViewSynthesis1D->SetCleanNoiseOption(cfg.getCleanNoiseOption());
 		m_pViewSynthesis1D->AllocMem();
 	}
 
-	if (m_uiBoundary && cParameter.getSplattingOption() != 1 && m_iSynthesisMode == 1) {
+	if (m_uiBoundary && cfg.getSplattingOption() != 1 && m_iSynthesisMode == 1) {
 		if (getBoundaryNoiseRemoval()) {
 			if (m_pViewSynthesis1D->GetSplattingOption() != 1) {
 				printf("\nWarning: When you use 1D Mode, 'Boundary Noise Removal' mode supports only \n");
@@ -155,15 +159,15 @@ bool CViewInterpolation::Init(CParameterViewInterpolation &cParameter)
 	m_pBoundaryNoiseRemoval = new CBoundaryNoiseRemoval(); // Boundary Noise Removal
 
 
-	iWidth = int(cParameter.getSourceWidth());
-	iHeight = int(cParameter.getSourceHeight());
+	iWidth = int(cfg.getSourceWidth());
+	iHeight = int(cfg.getSourceHeight());
 
 	m_pcDepthMapLeft = new CIYuv<DepthType>(iHeight, iWidth, POZNAN_DEPTHMAP_CHROMA_FORMAT);
 	m_pcDepthMapRight = new CIYuv<DepthType>(iHeight, iWidth, POZNAN_DEPTHMAP_CHROMA_FORMAT);
 	if (m_iSynthesisMode == 0) // General mode
 	{
-		m_pcImageLeft = new CIYuv<ImageType>(iHeight, iWidth*cParameter.getPrecision(), 444);
-		m_pcImageRight = new CIYuv<ImageType>(iHeight, iWidth*cParameter.getPrecision(), 444);
+		m_pcImageLeft = new CIYuv<ImageType>(iHeight, iWidth*cfg.getPrecision(), 444);
+		m_pcImageRight = new CIYuv<ImageType>(iHeight, iWidth*cfg.getPrecision(), 444);
 	}
 	else
 	{
@@ -171,7 +175,7 @@ bool CViewInterpolation::Init(CParameterViewInterpolation &cParameter)
 		m_pcImageRight = new CIYuv<ImageType>(iHeight, iWidth, 444);
 	}
 
-	if (cParameter.getPrecision() != 1)
+	if (cfg.getPrecision() != 1)
 	{
 		m_pcTempYuvLeft = new CIYuv<ImageType>(iHeight, iWidth, 444);
 		m_pcTempYuvRight = new CIYuv<ImageType>(iHeight, iWidth, 444);
@@ -188,17 +192,17 @@ bool CViewInterpolation::Init(CParameterViewInterpolation &cParameter)
 
 	if (m_iSynthesisMode == 0) // General mode
 	{
-		if (!m_pcImageLeft->setUpsampleFilter(cParameter.getFilter(), cParameter.getPrecision())) return false;
-		if (!m_pcImageRight->setUpsampleFilter(cParameter.getFilter(), cParameter.getPrecision())) return false;
+		if (!m_pcImageLeft->setUpsampleFilter(cfg.getFilter(), cfg.getPrecision())) return false;
+		if (!m_pcImageRight->setUpsampleFilter(cfg.getFilter(), cfg.getPrecision())) return false;
 	}
 	else // 1D mode: No upsampling is done before going into Visbd
 	{
-		if (!m_pcImageLeft->setUpsampleFilter(cParameter.getFilter(), 1)) return false;
-		if (!m_pcImageRight->setUpsampleFilter(cParameter.getFilter(), 1)) return false;
+		if (!m_pcImageLeft->setUpsampleFilter(cfg.getFilter(), 1)) return false;
+		if (!m_pcImageRight->setUpsampleFilter(cfg.getFilter(), 1)) return false;
 	}
 
 	// Prepare buffer for boundary noise removal:
-	m_iWidth = iWidth * cParameter.getPrecision();
+	m_iWidth = iWidth * cfg.getPrecision();
 	m_iHeight = iHeight;
 	m_pSynColorLeft = (unsigned char*)malloc(sizeof(unsigned char)*(m_iWidth*m_iHeight * 3)); // in 444
 	m_pSynColorRight = (unsigned char*)malloc(sizeof(unsigned char)*(m_iWidth*m_iHeight * 3)); // in 444

@@ -8,6 +8,7 @@
 #include "ParameterBase.h"
 #include "ParameterViewInterpolation.h"
 
+#include <iostream>
 #include <string> 
 
 #ifndef MSYS_WIN32
@@ -17,7 +18,7 @@
 #define equal(a,b)  (!stricmp((a),(b)))
 
 
-//using namespace std;
+using namespace std;
 
 /* **********
  *    Implementation of CCameraParameters
@@ -101,7 +102,7 @@ CParameterViewInterpolation::~CParameterViewInterpolation()
 }
 
 
-Int CParameterViewInterpolation::Init(Int argc, Char**  argv)
+int CParameterViewInterpolation::Init(int argc, char**  argv)
 {
 	if (argc < 2) return -1;
 
@@ -124,24 +125,16 @@ Int CParameterViewInterpolation::Init(Int argc, Char**  argv)
 	return 1;
 }
 
-Int CParameterViewInterpolation::xPrintUsage(Char **argv)
+uint CParameterViewInterpolation::setup()
 {
-	printf("\n supported options:\n\n");
-	printf(" Parameter File Name\n\n");
-	printf("\n");
-	return 1;
-}
+	uint uiParLnCount = 0;
 
-UInt CParameterViewInterpolation::setup()
-{
-	UInt uiParLnCount = 0;
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("DepthType", &m_uiDepthType, 0);
 
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("DepthType", &m_uiDepthType, 0);
-
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("SourceWidth", &m_uiSourceWidth, 1280);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("SourceHeight", &m_uiSourceHeight, 960);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("TotalNumberOfFrames", &m_uiNumberOfFrames, 300);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("StartFrame", &m_uiStartFrame, 0); // DT
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("SourceWidth", &m_uiSourceWidth, 1280);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("SourceHeight", &m_uiSourceHeight, 960);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("TotalNumberOfFrames", &m_uiNumberOfFrames, 300);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("StartFrame", &m_uiStartFrame, 0); // DT
 
 	m_pCfgLines[uiParLnCount++] = new ConfigLineDbl("LeftNearestDepthValue", &m_dLeftNearestDepthValue, 0.0);
 	m_pCfgLines[uiParLnCount++] = new ConfigLineDbl("LeftFarthestDepthValue", &m_dLeftFarthestDepthValue, 0.0);
@@ -158,18 +151,18 @@ UInt CParameterViewInterpolation::setup()
 	m_pCfgLines[uiParLnCount++] = new ConfigLineStr("RightDepthMapName", &m_cRightDepthMapName, "depth_dog041.yuv");
 	//m_pCfgLines[uiParLnCount++] = new ConfigLineStr ("ReferenceVirtualViewImageName",         & m_cVirtualViewImageName,     "dog039.yuv" );
 	m_pCfgLines[uiParLnCount++] = new ConfigLineStr("OutputVirtualViewImageName", &m_cOutputVirViewImageName, "dog_virtual039.yuv");
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("ColorSpace", &m_uiColorSpace, 0);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("Precision", &m_uiPrecision, 2);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("Filter", &m_uiFilter, 1);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("SynthesisMode", &m_uiSynthesisMode, 0);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("BoundaryNoiseRemoval", &m_uiBoundaryNoiseRemoval, 0);
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("ViewBlending", &m_uiViewBlending, 0);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("ColorSpace", &m_uiColorSpace, 0);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("Precision", &m_uiPrecision, 2);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("Filter", &m_uiFilter, 1);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("SynthesisMode", &m_uiSynthesisMode, 0);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("BoundaryNoiseRemoval", &m_uiBoundaryNoiseRemoval, 0);
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("ViewBlending", &m_uiViewBlending, 0);
 #ifdef POZNAN_DEPTH_BLEND
 	m_pCfgLines[uiParLnCount++] = new ConfigLineInt("DepthBlendDifference", &m_iDepthBlendDiff, 5);
 #endif
 #ifdef NICT_IVSRS
 	// NICT start  
-	m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("IvsrsInpaint", &m_uiIvsrsInpaint, 1);  // NICT relate iVSRS inpaint flag from cfg file to its instance
+	m_pCfgLines[uiParLnCount++] = new ConfigLineuint("IvsrsInpaint", &m_uiIvsrsInpaint, 1);  // NICT relate iVSRS inpaint flag from cfg file to its instance
   // NICT end
 #endif
 
@@ -189,7 +182,7 @@ UInt CParameterViewInterpolation::setup()
 }
 
 
-UInt CParameterViewInterpolation::xReadCameraParameters()
+uint CParameterViewInterpolation::xReadCameraParameters()
 {
 	int   i;
 	const char* cameraId[3];
@@ -234,7 +227,7 @@ UInt CParameterViewInterpolation::xReadCameraParameters()
 
 		if (found == 0)
 		{
-			printf("Camera \"%s\" is not found in the camera parameter file.\n", cameraId[i]);
+			cout << "Camera " << cameraId[i] << "is not found in the camera parameter file." << endl;
 			return 0;
 		}
 	}
@@ -243,19 +236,19 @@ UInt CParameterViewInterpolation::xReadCameraParameters()
 }
 
 
-UInt CParameterViewInterpolation::xValidation()
+uint CParameterViewInterpolation::xValidation()
 {
 	if (m_uiSynthesisMode == 1) // 1D mode
 	{
 		if (m_uiDepthType == 1)
 		{
-			printf("Warning: The depth levels must be measured against the cameras. If the world coordinate system does not\n");
-			printf("originate from the cameras, synthesis results may be incorrect.\n");
+			cout << "Warning: The depth levels must be measured against the cameras. If the world coordinate system does not" << endl;
+			cout << "originate from the cameras, synthesis results may be incorrect." << endl;
 		}
 		if (m_uiColorSpace != 0)
 		{
-			printf("Error: The input format must be in YUV 420 with 1D synthesis mode, for the time being.\n");
-			printf("       Check ColorSpace.\n");
+			cout << "Error: The input format must be in YUV 420 with 1D synthesis mode, for the time being." << endl;
+			cout << "       Check ColorSpace." << endl;
 			return 0;
 		}
 	}

@@ -1,0 +1,3 @@
+-overload when you can, specialise when you need to.
+-raii, smart pointers
+-if you know that an entity must take a certain kind of ownership of the object, always use smart pointers

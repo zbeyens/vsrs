@@ -1,1 +1,0 @@
-./bin/bin/Release/ViewSyn.exe ./configuration_files/virtual_005003750438_0600.cfg

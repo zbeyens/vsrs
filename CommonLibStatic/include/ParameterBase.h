@@ -7,12 +7,12 @@
 #include "iostream"
 #include "string"
 
-#define UInt    unsigned int
-#define Bool    bool
-#define Double  double 
-#define Int     int
-#define Char    char
-#define Void    void
+#define uint    unsigned int
+#define bool    bool
+#define double  double 
+#define int     int
+#define char    char
+#define void    void
 
 #define MAX_CONFIG_PARAMS 256
 
@@ -22,14 +22,14 @@ class ConfigLineBase
 {
 protected:
 	//! Init m_cTag, m_uiType
-	ConfigLineBase(Char* pcTag, UInt uiType) : m_cTag(pcTag), m_uiType(uiType) {}
+	ConfigLineBase(char* pcTag, uint uiType) : m_cTag(pcTag), m_uiType(uiType) {}
 	ConfigLineBase() {}
 
 public:
 	virtual ~ConfigLineBase() {}
 	std::string&  getTag() { return m_cTag; }
-	virtual Void  setVar(std::string& rcValue) = 0;
-	virtual Void  fprintVar(FILE *fp) = 0;
+	virtual void  setVar(std::string& rcValue) = 0;
+	virtual void  fprintVar(FILE *fp) = 0;
 
 protected:
 	std::string m_cTag; //!< Parameter tag
@@ -41,7 +41,7 @@ protected:
 		4: uint
 		5: char
 	*/
-	UInt m_uiType;
+	uint m_uiType;
 };
 
 //! ConfigLineStr - string
@@ -52,9 +52,9 @@ public:
 		Call ConfigLineBase
 		Set parameter to default value
 	*/
-	ConfigLineStr(Char* pcTag, std::string* pcPar, Char* pcDefault);
-	Void setVar(std::string& pvValue); //!< Set param to a new value
-	Void fprintVar(FILE *fp);
+	ConfigLineStr(char* pcTag, std::string* pcPar, char* pcDefault);
+	void setVar(std::string& pvValue); //!< Set param to a new value
+	void fprintVar(FILE *fp);
 
 protected:
 	std::string* m_pcPar;
@@ -68,12 +68,12 @@ public:
 		Call ConfigLineBase
 		Set parameter to default value
 	*/
-	ConfigLineDbl(Char* pcTag, Double* pdPar, Double pdDefault);
-	Void setVar(std::string& pvValue); //!< Set param to a new value (converted to double)
-	Void fprintVar(FILE *fp);
+	ConfigLineDbl(char* pcTag, double* pdPar, double pdDefault);
+	void setVar(std::string& pvValue); //!< Set param to a new value (converted to double)
+	void fprintVar(FILE *fp);
 
 protected:
-	Double* m_pdPar;
+	double* m_pdPar;
 };
 
 //! ConfigLineInt - int
@@ -84,45 +84,45 @@ public:
 		Call ConfigLineBase
 		Set parameter to default value
 	*/
-	ConfigLineInt(Char* pcTag, Int* piPar, Int piDefault);
-	Void setVar(std::string& pvValue); //!< Set param to a new value (converted to int)
-	Void fprintVar(FILE *fp);
+	ConfigLineInt(char* pcTag, int* piPar, int piDefault);
+	void setVar(std::string& pvValue); //!< Set param to a new value (converted to int)
+	void fprintVar(FILE *fp);
 
 protected:
-	Int* m_piPar;
+	int* m_piPar;
 };
 
-//! ConfigLineUInt - uint
-class ConfigLineUInt : public ConfigLineBase
+//! ConfigLineuint - uint
+class ConfigLineuint : public ConfigLineBase
 {
 public:
 	/*
 		Call ConfigLineBase
 		Set puiPar to puiDefault value
 	*/
-	ConfigLineUInt(Char* pcTag, UInt* puiPar, UInt puiDefault);
+	ConfigLineuint(char* pcTag, uint* puiPar, uint puiDefault);
 	
-	Void setVar(std::string& pvValue); //!< Set param to a new value (converted to uint)
-	Void fprintVar(FILE *fp);
+	void setVar(std::string& pvValue); //!< Set param to a new value (converted to uint)
+	void fprintVar(FILE *fp);
 
 protected:
-	UInt* m_puiPar;
+	uint* m_puiPar;
 };
 
-//! ConfigLineChar - char
-class ConfigLineChar : public ConfigLineBase
+//! ConfigLinechar - char
+class ConfigLinechar : public ConfigLineBase
 {
 public:
 	/*
 		Call ConfigLineBase
 		Set parameter to default value
 	*/
-	ConfigLineChar(Char* pcTag, Char* pcPar, Char pcDefault);
-	Void setVar(std::string& pvValue);	//!< Set param to a new value (converted to char)
-	Void fprintVar(FILE *fp);			//!< Print the "tag parameter : value"
+	ConfigLinechar(char* pcTag, char* pcPar, char pcDefault);
+	void setVar(std::string& pvValue);	//!< Set param to a new value (converted to char)
+	void fprintVar(FILE *fp);			//!< Print the "tag parameter : value"
 
 protected:
-	Char* m_pcPar; //!< Parameter reference from CParameterViewInterpolation
+	char* m_pcPar; //!< Parameter reference from CParameterViewInterpolation
 };
 
 //! ParameterBase
@@ -135,7 +135,7 @@ public:
 	ParameterBase();
 	virtual  ~ParameterBase() {};
 
-	virtual Int  Init(Int argc, Char** argv) = 0;
+	virtual int  Init(int argc, char** argv) = 0;
 
 	/*!
 		Read line and store tag and value
@@ -144,7 +144,7 @@ public:
 		1: Success
 		-1: Failed
 	*/
-	Int          xReadLine(FILE* hFile, std::string* pacTag);
+	int          xReadLine(FILE* hFile, std::string* pacTag);
 
 	/*!
 		Read the config file line by line
@@ -155,18 +155,18 @@ public:
 		1: Success
 		-1: Failed
 	*/
-	Int          xReadFromFile(std::string& rcFilename);
+	int          xReadFromFile(std::string& rcFilename);
 
-	Int          xReadFromCommandLine(Int argc, Char **argv);
-	Int          xReadCommandLine(char *buf, std::string* pacTag);
+	int          xReadFromCommandLine(int argc, char **argv);
+	int          xReadCommandLine(char *buf, std::string* pacTag);
 
 
-	Void         xPrintParam(); //!< Print all parameters
+	void         xPrintParam(); //!< Print all parameters
 
 protected:
-	virtual UInt setup() = 0;
+	virtual uint setup() = 0;
 
-	Void         release();	//!< Delete all objects from m_pCfgLines
+	void         release();	//!< Delete all objects from m_pCfgLines
 
 protected:
 	ConfigLineBase*  m_pCfgLines[MAX_CONFIG_PARAMS]; //!< Stores all the possible ConfigLineBase followed by NULL

@@ -13,12 +13,11 @@
 //using namespace std;
 
 
-/*
- */
+
  /*!
 	\brief
 		Store the parameters of one camera
-	
+
 	All camera parameters are estimated with calibration software, used by DERS and VSRS
 
 	For each camera section:
@@ -78,63 +77,63 @@ public:
 		-1: Fail if no arg
 		 1: Succeed
 	*/
-	Int     Init(Int argc, Char** argv);
+	int     Init(int argc, char** argv);
 
 	//! Setters never used, it is modified from setup reference 
-	Void    setDepthType(UInt ui) { m_uiDepthType = ui; }
-	Void    setSourceWidth(UInt ui) { m_uiSourceWidth = ui; }
-	Void    setSourceHeight(UInt ui) { m_uiSourceHeight = ui; }
-	Void    setNumberOfFrames(UInt ui) { m_uiNumberOfFrames = ui; }
-	Void    setStartFrame(UInt ui) { m_uiStartFrame = ui; }
+	void    setDepthType(uint ui) { m_uiDepthType = ui; }
+	void    setSourceWidth(uint ui) { m_uiSourceWidth = ui; }
+	void    setSourceHeight(uint ui) { m_uiSourceHeight = ui; }
+	void    setNumberOfFrames(uint ui) { m_uiNumberOfFrames = ui; }
+	void    setStartFrame(uint ui) { m_uiStartFrame = ui; }
 
-	Void    setLeftNearestDepthValue(Double d) { m_dLeftNearestDepthValue = d; }
-	Void    setLeftFarthestDepthValue(Double d) { m_dRightFarthestDepthValue = d; }
-	Void    setRightNearestDepthValue(Double d) { m_dLeftNearestDepthValue = d; }
-	Void    setRightFarthestDepthValue(Double d) { m_dRightFarthestDepthValue = d; }
+	void    setLeftNearestDepthValue(double d) { m_dLeftNearestDepthValue = d; }
+	void    setLeftFarthestDepthValue(double d) { m_dRightFarthestDepthValue = d; }
+	void    setRightNearestDepthValue(double d) { m_dLeftNearestDepthValue = d; }
+	void    setRightFarthestDepthValue(double d) { m_dRightFarthestDepthValue = d; }
 
-	Void    setCameraParameterFile(std::string s) { m_cCameraParameterFile = s; }
+	void    setCameraParameterFile(std::string s) { m_cCameraParameterFile = s; }
 
-	Void    setLeftCameraName(std::string s) { m_cLeftCameraName = s; }
-	Void    setVirtualCameraName(std::string s) { m_cVirtualCameraName = s; }
-	Void    setRightCameraName(std::string s) { m_cRightCameraName = s; }
+	void    setLeftCameraName(std::string s) { m_cLeftCameraName = s; }
+	void    setVirtualCameraName(std::string s) { m_cVirtualCameraName = s; }
+	void    setRightCameraName(std::string s) { m_cRightCameraName = s; }
 
-	Void    setLeftViewImageName(std::string s) { m_cLeftViewImageName = s; }
-	Void    setRightViewImageName(std::string s) { m_cRightViewImageName = s; }
-	Void    setLeftDepthMapName(std::string s) { m_cLeftDepthMapName = s; }
-	Void    setRightDepthMapName(std::string s) { m_cRightDepthMapName = s; }
-	//Void    setVirtualViewImageName    ( std::string s )      { m_cVirtualViewImageName  =  s;  }
+	void    setLeftViewImageName(std::string s) { m_cLeftViewImageName = s; }
+	void    setRightViewImageName(std::string s) { m_cRightViewImageName = s; }
+	void    setLeftDepthMapName(std::string s) { m_cLeftDepthMapName = s; }
+	void    setRightDepthMapName(std::string s) { m_cRightDepthMapName = s; }
+	//void    setVirtualViewImageName    ( std::string s )      { m_cVirtualViewImageName  =  s;  }
 
-	Void    setOutputVirViewImageName(std::string s) { m_cOutputVirViewImageName = s; }
-	Void    setColorSpace(UInt ui) { m_uiColorSpace = ui; }
-	Void    setPrecision(UInt ui) { m_uiPrecision = ui; }
-	Void    setFilter(UInt ui) { m_uiFilter = ui; }
+	void    setOutputVirViewImageName(std::string s) { m_cOutputVirViewImageName = s; }
+	void    setColorSpace(uint ui) { m_uiColorSpace = ui; }
+	void    setPrecision(uint ui) { m_uiPrecision = ui; }
+	void    setFilter(uint ui) { m_uiFilter = ui; }
 
 #ifdef NICT_IVSRS
 	// NICT start  
-	Void    setIvsrsInpaint(UInt ui) { m_uiIvsrsInpaint = ui; }
+	void    setIvsrsInpaint(uint ui) { m_uiIvsrsInpaint = ui; }
 	// NICT end
 #endif
 
-	Void    setSynthesisMode(UInt ui) { m_uiSynthesisMode = ui; }
+	void    setSynthesisMode(uint ui) { m_uiSynthesisMode = ui; }
 
-	UInt    setBoundaryNoiseRemoval(UInt ui) { m_uiBoundaryNoiseRemoval = ui; }
+	uint    setBoundaryNoiseRemoval(uint ui) { m_uiBoundaryNoiseRemoval = ui; }
 
-	Void    setViewBlending(UInt ui) { m_uiViewBlending = ui; }
+	void    setViewBlending(uint ui) { m_uiViewBlending = ui; }
 
 #ifdef POZNAN_DEPTH_BLEND
-	Void    setDepthBlendDiff(Int i) { m_iDepthBlendDiff = i; };
+	void    setDepthBlendDiff(int i) { m_iDepthBlendDiff = i; };
 #endif
 
-	UInt    getDepthType() { return m_uiDepthType; }
-	UInt    getSourceWidth() { return m_uiSourceWidth; }
-	UInt    getSourceHeight() { return m_uiSourceHeight; }
-	UInt    getNumberOfFrames() { return m_uiNumberOfFrames; }
-	UInt    getStartFrame() { return m_uiStartFrame; }
+	uint    getDepthType() { return m_uiDepthType; }
+	uint    getSourceWidth() { return m_uiSourceWidth; }
+	uint    getSourceHeight() { return m_uiSourceHeight; }
+	uint    getNumberOfFrames() { return m_uiNumberOfFrames; }
+	uint    getStartFrame() { return m_uiStartFrame; }
 
-	Double  getLeftNearestDepthValue() { return m_dLeftNearestDepthValue; }
-	Double  getLeftFarthestDepthValue() { return m_dLeftFarthestDepthValue; }
-	Double  getRightNearestDepthValue() { return m_dRightNearestDepthValue; }
-	Double  getRightFarthestDepthValue() { return m_dRightFarthestDepthValue; }
+	double  getLeftNearestDepthValue() { return m_dLeftNearestDepthValue; }
+	double  getLeftFarthestDepthValue() { return m_dLeftFarthestDepthValue; }
+	double  getRightNearestDepthValue() { return m_dRightNearestDepthValue; }
+	double  getRightFarthestDepthValue() { return m_dRightFarthestDepthValue; }
 
 	const std::string   getCameraParameterFile() { return m_cCameraParameterFile; }
 
@@ -151,54 +150,54 @@ public:
 	const std::string   getOutputVirViewImageName() { return m_cOutputVirViewImageName; }
 
 	//! For 1D mode
-	Double getFocalLength() { return m_camParam[0].m_fIntrinsicMatrix[0][0]; } //!< Get the focal length from the left camera. We assume all the three cameras share the same focal length
-	Double getLTranslationLeft() { return m_camParam[1].m_fTranslationVector[0] - m_camParam[0].m_fTranslationVector[0]; }//!< Tx(Syn) - Tx(Left)
-	Double getLTranslationRight() { return m_camParam[1].m_fTranslationVector[0] - m_camParam[2].m_fTranslationVector[0]; } //!< Tx(Syn) - Tx(Right)
-	Double getduPrincipalLeft() { return m_camParam[1].m_fIntrinsicMatrix[0][2] - m_camParam[0].m_fIntrinsicMatrix[0][2]; } //!< uxSyn - uxLeft;
-	Double getduPrincipalRight() { return m_camParam[1].m_fIntrinsicMatrix[0][2] - m_camParam[2].m_fIntrinsicMatrix[0][2]; } //!< uxSyn - uxRight;
+	double getFocalLength() { return m_camParam[0].m_fIntrinsicMatrix[0][0]; } //!< Get the focal length from the left camera. We assume all the three cameras share the same focal length
+	double getLTranslationLeft() { return m_camParam[1].m_fTranslationVector[0] - m_camParam[0].m_fTranslationVector[0]; }//!< Tx(Syn) - Tx(Left)
+	double getLTranslationRight() { return m_camParam[1].m_fTranslationVector[0] - m_camParam[2].m_fTranslationVector[0]; } //!< Tx(Syn) - Tx(Right)
+	double getduPrincipalLeft() { return m_camParam[1].m_fIntrinsicMatrix[0][2] - m_camParam[0].m_fIntrinsicMatrix[0][2]; } //!< uxSyn - uxLeft;
+	double getduPrincipalRight() { return m_camParam[1].m_fIntrinsicMatrix[0][2] - m_camParam[2].m_fIntrinsicMatrix[0][2]; } //!< uxSyn - uxRight;
 
-	Double *getMat_Ex_Left() { return &m_camParam[0].m_fExtrinsicMatrix[0][0]; }
-	Double *getMat_Ex_Virtual() { return &m_camParam[1].m_fExtrinsicMatrix[0][0]; }
-	Double *getMat_Ex_Right() { return &m_camParam[2].m_fExtrinsicMatrix[0][0]; }
-	Double *getMat_In_Left() { return &m_camParam[0].m_fIntrinsicMatrix[0][0]; }
-	Double *getMat_In_Virtual() { return &m_camParam[1].m_fIntrinsicMatrix[0][0]; }
-	Double *getMat_In_Right() { return &m_camParam[2].m_fIntrinsicMatrix[0][0]; }
-	Double *getMat_Trans_Left() { return &m_camParam[0].m_fTranslationVector[0]; }
-	Double *getMat_Trans_Virtual() { return &m_camParam[1].m_fTranslationVector[0]; }
-	Double *getMat_Trans_Right() { return &m_camParam[2].m_fTranslationVector[0]; }
+	double *getMat_Ex_Left() { return &m_camParam[0].m_fExtrinsicMatrix[0][0]; }
+	double *getMat_Ex_Virtual() { return &m_camParam[1].m_fExtrinsicMatrix[0][0]; }
+	double *getMat_Ex_Right() { return &m_camParam[2].m_fExtrinsicMatrix[0][0]; }
+	double *getMat_In_Left() { return &m_camParam[0].m_fIntrinsicMatrix[0][0]; }
+	double *getMat_In_Virtual() { return &m_camParam[1].m_fIntrinsicMatrix[0][0]; }
+	double *getMat_In_Right() { return &m_camParam[2].m_fIntrinsicMatrix[0][0]; }
+	double *getMat_Trans_Left() { return &m_camParam[0].m_fTranslationVector[0]; }
+	double *getMat_Trans_Virtual() { return &m_camParam[1].m_fTranslationVector[0]; }
+	double *getMat_Trans_Right() { return &m_camParam[2].m_fTranslationVector[0]; }
 
 	//? not used?
-	Double getLeftBaselineDistance() { return m_dLeftBaselineDistance; }
-	Double getRightBaselineDistance() { return m_dRightBaselineDistance; }
+	double getLeftBaselineDistance() { return m_dLeftBaselineDistance; }
+	double getRightBaselineDistance() { return m_dRightBaselineDistance; }
 
 	// Access algorithm parameter for 1D mode
-	Int    getSplattingOption() { return m_iSplattingOption; }
+	int    getSplattingOption() { return m_iSplattingOption; }
 	//todo typo
-	Int    getBoudaryGrowth() { return m_iBoundaryGrowth; }
-	Int    getMergingOption() { return m_iMergingOption; }
-	Int    getDepthThreshold() { return m_iDepthThreshold; }
-	Int    getHoleCountThreshold() { return m_iHoleCountThreshold; }
-	Int    getTemporalImprovementOption() { return m_iTemporalImprovementOption; } //Zhejiang, May,4
-	Int    getWarpEnhancementOption() { return m_iWarpEnhancementOption; }
-	Int    getCleanNoiseOption() { return m_iCleanNoiseOption; }
+	int    getBoudaryGrowth() { return m_iBoundaryGrowth; }
+	int    getMergingOption() { return m_iMergingOption; }
+	int    getDepthThreshold() { return m_iDepthThreshold; }
+	int    getHoleCountThreshold() { return m_iHoleCountThreshold; }
+	int    getTemporalImprovementOption() { return m_iTemporalImprovementOption; } //Zhejiang, May,4
+	int    getWarpEnhancementOption() { return m_iWarpEnhancementOption; }
+	int    getCleanNoiseOption() { return m_iCleanNoiseOption; }
 
-	UInt    getColorSpace() { return m_uiColorSpace; }
+	uint    getColorSpace() { return m_uiColorSpace; }
 
-	UInt    getPrecision() { return m_uiPrecision; }
-	UInt    getFilter() { return m_uiFilter; }
+	uint    getPrecision() { return m_uiPrecision; }
+	uint    getFilter() { return m_uiFilter; }
 
 #ifdef NICT_IVSRS
 	// NICT start  
-	UInt    getIvsrsInpaint() { return m_uiIvsrsInpaint; }
+	uint    getIvsrsInpaint() { return m_uiIvsrsInpaint; }
 	// NICT end
 #endif
 
-	UInt    getSynthesisMode() { return m_uiSynthesisMode; }
-	UInt    getBoundaryNoiseRemoval() { return m_uiBoundaryNoiseRemoval; }
-	UInt    getViewBlending() { return m_uiViewBlending; }
+	uint    getSynthesisMode() { return m_uiSynthesisMode; }
+	uint    getBoundaryNoiseRemoval() { return m_uiBoundaryNoiseRemoval; }
+	uint    getViewBlending() { return m_uiViewBlending; }
 
 #ifdef POZNAN_DEPTH_BLEND
-	Int     getDepthBlendDiff() { return m_iDepthBlendDiff; }
+	int     getDepthBlendDiff() { return m_iDepthBlendDiff; }
 #endif
 
 private:
@@ -209,7 +208,7 @@ private:
 		\return
 		# of parameter lines
 	*/
-	UInt    setup();
+	uint    setup();
 
 	/*!
 	* \brief
@@ -224,7 +223,7 @@ private:
 	*/
 	//todo divide the function
 	//todo order of camera indexes
-	UInt    xReadCameraParameters();
+	uint    xReadCameraParameters();
 
 	/*
 	* \brief
@@ -238,12 +237,9 @@ private:
 	*    0: Fail
 	*/
 	//todo no error
-	UInt    xValidation();
-	Double m_dLeftBaselineDistance;
-	Double m_dRightBaselineDistance;
-
-protected:
-	Int     xPrintUsage(Char**  argv);
+	uint    xValidation();
+	double m_dLeftBaselineDistance;
+	double m_dRightBaselineDistance;
 
 protected:
 	//? difference
@@ -253,25 +249,25 @@ protected:
 		The input value 1 means the view synthesis mode by using depth from the origin of 3D space.
 		Default: 0
 	*/
-	UInt            m_uiDepthType;
+	uint            m_uiDepthType;
 	//! Input frame width. Default: 0
-	UInt            m_uiSourceWidth;
+	uint            m_uiSourceWidth;
 	//! Input frame height. Default: 0
-	UInt            m_uiSourceHeight;
+	uint            m_uiSourceHeight;
 	//! Total number of input frame. Default: 0
-	UInt            m_uiNumberOfFrames;
+	uint            m_uiNumberOfFrames;
 	//! Starting frame #. Default: 0
-	UInt            m_uiStartFrame;
+	uint            m_uiStartFrame;
 
 	//! Nearest depth value of left image from camera or the origin of 3D space. Default: 0
 	//? why
-	Double          m_dLeftNearestDepthValue;
+	double          m_dLeftNearestDepthValue;
 	//! Farthest depth value of left image from camera or the origin of 3D space. Default: 0
-	Double          m_dLeftFarthestDepthValue;
+	double          m_dLeftFarthestDepthValue;
 	//! Nearest depth value of right image from camera or the origin of 3D space. Default: 0
-	Double          m_dRightNearestDepthValue;
+	double          m_dRightNearestDepthValue;
 	//! Farthest depth value of right image from camera or the origin of 3D space. Default: 0
-	Double          m_dRightFarthestDepthValue;
+	double          m_dRightFarthestDepthValue;
 
 
 	//! Name of text file which includes real and virtual camera parameters
@@ -298,59 +294,59 @@ protected:
 
 	//! 0...YUV, 1...RGB
 	//? difference
-	UInt      m_uiColorSpace;
+	uint      m_uiColorSpace;
 
 	//! 1...Integer-pel, 2...Half-pel, 4...Quater-pel
 	//? meaning
-	UInt      m_uiPrecision;
+	uint      m_uiPrecision;
 
 	//! 0...(Bi)-linear, 1...(Bi)-Cubic, 2...MPEG-4 AVC
 	//? meaning
 
-	UInt      m_uiFilter;
+	uint      m_uiFilter;
 
 #ifdef NICT_IVSRS
 	// NICT start  
 	//! Type of inpaing used 0...conventional 1...NICT improved one. Default: 1
 	//? not in cfg
-	UInt    m_uiIvsrsInpaint;
+	uint    m_uiIvsrsInpaint;
 	// NICT end
 #endif
 	//! 0...General, 1...1D parallel
-	UInt      m_uiSynthesisMode;
+	uint      m_uiSynthesisMode;
 	//! 0: No Boundary Noise Removal, 1 : Use Boundary Noise Removal
-	UInt      m_uiBoundaryNoiseRemoval;
+	uint      m_uiBoundaryNoiseRemoval;
 	//! 0...Blend left and right images, 1...Not Blend
-	UInt      m_uiViewBlending;
+	uint      m_uiViewBlending;
 
 #ifdef POZNAN_DEPTH_BLEND
 	//? not in cfg
-	Int       m_iDepthBlendDiff;
+	int       m_iDepthBlendDiff;
 #endif
 
 	// Algorithm parameters for 1-D view synthesis mode
 	//! 0: No upsampling for ref pictures; 1: Upsample ref pictures  >>>> Hide this parameter from config file
-	//Int  m_iUpsampleRefs;        
+	//int  m_iUpsampleRefs;        
 
 	//! 0: Disable splatting; 1: Enable splatting for all pixels; 2: Splatting only along boundaries. Default: 2
-	Int  m_iSplattingOption;
+	int  m_iSplattingOption;
 	//! Only useful for SplattingOption 2 - A parameter to enlarge the boundary area with SplattingOption = 2. Default: 40
-	Int  m_iBoundaryGrowth;
+	int  m_iBoundaryGrowth;
 	//! 0: Z_buffer, 1: camera distance weighting. 2: Z_buffer + hole counting + camera distance weighting. Default: 2
-	Int  m_iMergingOption;
+	int  m_iMergingOption;
 	//! Only useful for MergingOption 2. Range: 0 ~ 255. Default: 75
-	Int  m_iDepthThreshold;
+	int  m_iDepthThreshold;
 	//! Only useful for MergingOption 2. Range: 0 ~ 255. Default: 30
-	Int  m_iHoleCountThreshold;
+	int  m_iHoleCountThreshold;
 	//! 0: Disable; 1; Enable. Default: 1    Zhejiang,May,4
 	//? not in cfg
-	Int  m_iTemporalImprovementOption;
+	int  m_iTemporalImprovementOption;
 	//! 0: Disable; 1: Enable. Default: 0
 	//? not in cfg
-	Int  m_iWarpEnhancementOption;
+	int  m_iWarpEnhancementOption;
 	//! 0: Disable; 1; Enable. Default: 0
 	//? not in cfg
-	Int  m_iCleanNoiseOption;
+	int  m_iCleanNoiseOption;
 
 	// Camera parameters
 	//! 0: Left, 1: Center, 2: Right

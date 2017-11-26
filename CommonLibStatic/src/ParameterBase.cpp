@@ -16,84 +16,84 @@
 #define equal(a,b)  (!stricmp((a),(b)))
 
 
-//using namespace std;
+using namespace std;
 
 
-ConfigLineStr::ConfigLineStr(Char* pcTag, std::string* pcPar, Char* pcDefault) : ConfigLineBase(pcTag, 1), m_pcPar(pcPar)
+ConfigLineStr::ConfigLineStr(char* pcTag, std::string* pcPar, char* pcDefault) : ConfigLineBase(pcTag, 1), m_pcPar(pcPar)
 {
 	*m_pcPar = pcDefault;
 }
 
-Void ConfigLineStr::setVar(std::string& pvValue)
+void ConfigLineStr::setVar(std::string& pvValue)
 {
 	*m_pcPar = pvValue;
 }
 
-Void ConfigLineStr::fprintVar(FILE *fp)
+void ConfigLineStr::fprintVar(FILE *fp)
 {
 	fprintf(fp, "%s : %s\n", m_cTag.c_str(), m_pcPar->c_str());
 }
 
 
-ConfigLineDbl::ConfigLineDbl(Char* pcTag, Double* pdPar, Double pdDefault) : ConfigLineBase(pcTag, 2), m_pdPar(pdPar)
+ConfigLineDbl::ConfigLineDbl(char* pcTag, double* pdPar, double pdDefault) : ConfigLineBase(pcTag, 2), m_pdPar(pdPar)
 {
 	*m_pdPar = pdDefault;
 }
 
-Void ConfigLineDbl::setVar(std::string& pvValue)
+void ConfigLineDbl::setVar(std::string& pvValue)
 {
 	*m_pdPar = atof(pvValue.c_str());
 }
 
-Void ConfigLineDbl::fprintVar(FILE *fp)
+void ConfigLineDbl::fprintVar(FILE *fp)
 {
 	fprintf(fp, "%s : %f\n", m_cTag.c_str(), *m_pdPar);
 }
 
 
-ConfigLineInt::ConfigLineInt(Char* pcTag, Int* piPar, Int piDefault) : ConfigLineBase(pcTag, 3), m_piPar(piPar)
+ConfigLineInt::ConfigLineInt(char* pcTag, int* piPar, int piDefault) : ConfigLineBase(pcTag, 3), m_piPar(piPar)
 {
 	*m_piPar = piDefault;
 }
 
-Void ConfigLineInt::setVar(std::string& pvValue)
+void ConfigLineInt::setVar(std::string& pvValue)
 {
 	*m_piPar = atoi(pvValue.c_str());
 }
 
-Void ConfigLineInt::fprintVar(FILE *fp)
+void ConfigLineInt::fprintVar(FILE *fp)
 {
 	fprintf(fp, "%s : %d\n", m_cTag.c_str(), *m_piPar);
 }
 
 
-ConfigLineUInt::ConfigLineUInt(Char* pcTag, UInt* puiPar, UInt puiDefault) : ConfigLineBase(pcTag, 4), m_puiPar(puiPar)
+ConfigLineuint::ConfigLineuint(char* pcTag, uint* puiPar, uint puiDefault) : ConfigLineBase(pcTag, 4), m_puiPar(puiPar)
 {
 	*m_puiPar = puiDefault;
 }
 
-Void ConfigLineUInt::setVar(std::string& pvValue)
+void ConfigLineuint::setVar(std::string& pvValue)
 {
 	*m_puiPar = atoi(pvValue.c_str());
 }
 
-Void ConfigLineUInt::fprintVar(FILE *fp)
+void ConfigLineuint::fprintVar(FILE *fp)
 {
 	fprintf(fp, "%s : %d\n", m_cTag.c_str(), *m_puiPar);
 }
 
 
-ConfigLineChar::ConfigLineChar(Char* pcTag, Char* pcPar, Char pcDefault) : ConfigLineBase(pcTag, 5), m_pcPar(pcPar)
+ConfigLinechar::ConfigLinechar(char* pcTag, char* pcPar, char pcDefault) : ConfigLineBase(pcTag, 5), m_pcPar(pcPar)
 {
 	*m_pcPar = pcDefault;
 }
 
-Void ConfigLineChar::setVar(std::string& pvValue)
+void ConfigLinechar::setVar(std::string& pvValue)
 {
-	*m_pcPar = (Char)atoi(pvValue.c_str());
+	*m_pcPar = (char)atoi(pvValue.c_str());
 }
 
-Void ConfigLineChar::fprintVar(FILE *fp)
+void ConfigLinechar::fprintVar(FILE *fp)
 {
 	fprintf(fp, "%s : %c\n", m_cTag.c_str(), *m_pcPar);
 }
@@ -105,9 +105,9 @@ ParameterBase::ParameterBase()
 		m_pCfgLines[i] = NULL;
 }
 
-Void ParameterBase::release()
+void ParameterBase::release()
 {
-	UInt uiParLnCount = 0;
+	uint uiParLnCount = 0;
 	while (m_pCfgLines[uiParLnCount] != NULL)
 	{
 		delete m_pCfgLines[uiParLnCount];
@@ -116,9 +116,9 @@ Void ParameterBase::release()
 	}
 }
 
-Void ParameterBase::xPrintParam()
+void ParameterBase::xPrintParam()
 {
-	UInt uiParLnCount = 0;
+	uint uiParLnCount = 0;
 	while (m_pCfgLines[uiParLnCount] != NULL)
 	{
 		m_pCfgLines[uiParLnCount]->fprintVar(stdout);
@@ -126,16 +126,16 @@ Void ParameterBase::xPrintParam()
 	}
 }
 
-Int ParameterBase::xReadFromFile(std::string& rcFilename)
+int ParameterBase::xReadFromFile(std::string& rcFilename)
 {
 	std::string acTags[4];
-	UInt        uiParLnCount = 0;
-	UInt        uiLayerCnt = 0;
+	uint        uiParLnCount = 0;
+	uint        uiLayerCnt = 0;
 
 	FILE *f = fopen(rcFilename.c_str(), "r");
 	if (NULL == f)
 	{
-		printf("failed to open %s parameter file\n", rcFilename.c_str());
+		cout << "failed to open" << rcFilename << "parameter file" << endl;
 		return -1;
 	}
 
@@ -146,7 +146,7 @@ Int ParameterBase::xReadFromFile(std::string& rcFilename)
 		{
 			continue;
 		}
-		for (UInt ui = 0; m_pCfgLines[ui] != NULL; ui++)
+		for (uint ui = 0; m_pCfgLines[ui] != NULL; ui++)
 		{
 			//      printf("%s %s \n", acTags[0].c_str(), m_pCfgLines[ui]->getTag().c_str());
 			if (acTags[0] == m_pCfgLines[ui]->getTag())
@@ -161,47 +161,15 @@ Int ParameterBase::xReadFromFile(std::string& rcFilename)
 	return 1;
 }
 
-Int ParameterBase::xReadFromCommandLine(Int argc, Char **argv)
-{
-	std::string acTags[4];
-	Int i;
-	UInt ui;
 
-	for (i = 2; i < argc; i++)
-	{
-		if (xReadCommandLine(argv[i], acTags) != 1)
-		{
-			printf("Unknown argument [%s]\n", argv[i]);
-			continue;
-		}
-		if (acTags[0].empty())
-		{
-			continue;
-		}
-		for (ui = 0; m_pCfgLines[ui] != NULL; ui++)
-		{
-			if (acTags[0] == m_pCfgLines[ui]->getTag())
-			{
-				m_pCfgLines[ui]->setVar(acTags[1]);
-				break;
-			}
-		}
-		if (m_pCfgLines[ui] == NULL)
-		{
-			printf("Unknown parameter [%s]\n", acTags[0].c_str());
-		}
-	}
 
-	return 1;
-}
-
-Int ParameterBase::xReadLine(FILE* hFile, std::string* pacTag)
+int ParameterBase::xReadLine(FILE* hFile, std::string* pacTag)
 {
 	if (pacTag == NULL) return -1;
 
-	Int  n;
-	UInt uiTagNum = 0;
-	Bool          bComment = false;
+	int  n;
+	uint uiTagNum = 0;
+	bool          bComment = false;
 	std::string*  pcTag = &pacTag[0];
 
 	for (n = 0; n < 4; n++)
@@ -211,15 +179,15 @@ Int ParameterBase::xReadLine(FILE* hFile, std::string* pacTag)
 
 	for (n = 0; ; n++)
 	{
-		Char cChar = (Char)fgetc(hFile);
-		if (cChar == '\n' || feof(hFile)) return 1;
-		if (cChar == '#')
+		char cchar = (char)fgetc(hFile);
+		if (cchar == '\n' || feof(hFile)) return 1;
+		if (cchar == '#')
 		{
 			bComment = true;
 		}
 		if (!bComment)
 		{
-			if (cChar == '\t' || cChar == ' ') // white space
+			if (cchar == '\t' || cchar == ' ') // white space
 			{
 				if (uiTagNum == 3) return -1;
 				if (!pcTag->empty())
@@ -230,23 +198,61 @@ Int ParameterBase::xReadLine(FILE* hFile, std::string* pacTag)
 			}
 			else
 			{
-				*pcTag += cChar;
+				*pcTag += cchar;
 			}
 		}
 	}
 	return 1;
 }
 
-Int ParameterBase::xReadCommandLine(char *buf, std::string* pacTag)
+int ParameterBase::xReadFromCommandLine(int argc, char **argv)
+{
+	std::string acTags[2];
+
+	//one param per argv
+	for (int i = 2; i < argc; i++)
+	{
+		if (xReadCommandLine(argv[i], acTags) != 1)
+		{
+			cout << "Unknown argument [" << argv[i] << "]" << endl;
+			continue;
+		}
+		if (acTags[0].empty())
+		{
+			continue;
+		}
+
+		uint ui;
+		for (ui = 0; m_pCfgLines[ui] != NULL; ui++)
+		{
+			//if tag =, set value
+			if (acTags[0] == m_pCfgLines[ui]->getTag())
+			{
+				m_pCfgLines[ui]->setVar(acTags[1]);
+				break;
+			}
+		}
+		if (m_pCfgLines[ui] == NULL)
+		{
+			cout << "Unknown parameter [" << acTags[0] << "]" << endl;
+		}
+	}
+
+	return 1;
+}
+
+int ParameterBase::xReadCommandLine(char *buf, std::string* pacTag)
 {
 	if (pacTag == NULL) return -1;
 
-	Int  n;
-	UInt uiTagNum = 0;
-	Bool          bComment = false;
+	//0 = tag index, 1 = value index
+	uint uiTagNum = 0;
+	//pacTag[0] = tag, [1] = value
 	std::string*  pcTag = &pacTag[0];
 
-	for (n = 0; n < 4; n++)
+	int n;
+	//reset for the next arg
+	for (n = 0; n < 2; n++)
 	{
 		pacTag[n] = "";
 	}
@@ -255,6 +261,7 @@ Int ParameterBase::xReadCommandLine(char *buf, std::string* pacTag)
 	{
 		if (buf[n] == '=')
 		{
+			//only 1 =
 			if (uiTagNum == 1) return -1;
 			uiTagNum++;
 			pcTag = &pacTag[uiTagNum];
@@ -263,6 +270,7 @@ Int ParameterBase::xReadCommandLine(char *buf, std::string* pacTag)
 		*pcTag += buf[n];
 	}
 
+	//unknown or no =
 	if (pcTag->empty() || uiTagNum == 0) return -1;
 
 	return 1;

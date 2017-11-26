@@ -40,20 +40,28 @@
 #include "ParameterViewInterpolation.h"
 #include "ViewInterpolation.h"
 
+#include "ConfigBase.h"
+#include "Parser.h"
+
 #ifndef WIN32
 #define BYTE unsigned char
 #endif
 
 /*!
 	Init the parameters
-
 */
 int main(int argc, char *argv[])
 {
-	//todo move below
-	unsigned int n;
+	if (argc < 2) return 0;
 
-	CParameterViewInterpolation  cParameter;
+
+	Parser& parser = Parser::getInstance();
+	parser.setFileName(argv[1]);
+	parser.setCommands(argc, argv);
+	parser.parse();
+
+	ConfigSyn& cfg = ConfigSyn::getInstance();
+
 
 	CViewInterpolation cViewInterpolation;
 	CIYuv<ImageType> yuvBuffer;
@@ -66,19 +74,24 @@ int main(int argc, char *argv[])
 	printf("View Synthesis Reference Software (VSRS), Version %.1f\n", VERSION);
 	printf("     - MPEG-I Visual, April 2017\n\n");
 
-	if (cParameter.Init(argc, argv) != 1) return 0;
+	if (!cViewInterpolation.Init()) return 10;
 
-	if (!cViewInterpolation.Init(cParameter)) return 10;
 
-	if (!yuvBuffer.resize(cParameter.getSourceHeight(), cParameter.getSourceWidth(), 420)) return 2;
+	if (!yuvBuffer.resize(cfg.getSourceHeight(), cfg.getSourceWidth(), 420)) return 2;
 
 	FILE *fin_view_r, *fin_view_l, *fin_depth_r, *fin_depth_l, *fout;
 
-	if ((fin_view_l = fopen(cParameter.getLeftViewImageName().c_str(), "rb")) == NULL ||
-		(fin_view_r = fopen(cParameter.getRightViewImageName().c_str(), "rb")) == NULL ||
-		(fin_depth_l = fopen(cParameter.getLeftDepthMapName().c_str(), "rb")) == NULL ||
-		(fin_depth_r = fopen(cParameter.getRightDepthMapName().c_str(), "rb")) == NULL ||
-		(fout = fopen(cParameter.getOutputVirViewImageName().c_str(), "wb")) == NULL)
+	cout << cfg.getLeftViewImageName() << endl;
+	cout << cfg.getRightViewImageName() << endl;
+	cout << cfg.getLeftDepthMapName() << endl;
+	cout << cfg.getRightDepthMapName() << endl;
+	cout << cfg.getOutputVirViewImageName() << endl;
+
+	if ((fin_view_l = fopen(cfg.getLeftViewImageName().c_str(), "rb")) == NULL ||
+		(fin_view_r = fopen(cfg.getRightViewImageName().c_str(), "rb")) == NULL ||
+		(fin_depth_l = fopen(cfg.getLeftDepthMapName().c_str(), "rb")) == NULL ||
+		(fin_depth_r = fopen(cfg.getRightDepthMapName().c_str(), "rb")) == NULL ||
+		(fout = fopen(cfg.getOutputVirViewImageName().c_str(), "wb")) == NULL)
 	{
 		fprintf(stderr, "Can't open input file(s)\n");
 		return 3;
@@ -90,7 +103,8 @@ int main(int argc, char *argv[])
 	start = finish;
 #endif
 
-	for (n = cParameter.getStartFrame(); n < cParameter.getStartFrame() + cParameter.getNumberOfFrames(); n++)
+	uint n;
+	for (n = cfg.getStartFrame(); n < cfg.getStartFrame() + cfg.getNumberOfFrames(); n++)
 	{
 		printf("frame number = %d ", n);
 
@@ -98,7 +112,7 @@ int main(int argc, char *argv[])
 			!cViewInterpolation.getDepthBufferRight()->readOneFrame(fin_depth_r, n)) break;
 		printf(".");
 
-		cViewInterpolation.setFrameNumber(n - cParameter.getStartFrame()); // Zhejiang
+		cViewInterpolation.setFrameNumber(n - cfg.getStartFrame()); // Zhejiang
 
 		if (!yuvBuffer.readOneFrame(fin_view_l, n)) break;
 		if (!cViewInterpolation.SetReferenceImage(1, &yuvBuffer)) break;
@@ -121,7 +135,7 @@ int main(int argc, char *argv[])
 		printf("->End\n");
 #endif
 
-	} // for n
+	}
 
 	fclose(fout);
 	fclose(fin_view_l);

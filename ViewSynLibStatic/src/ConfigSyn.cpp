@@ -1,6 +1,5 @@
 #include "ConfigSyn.h"
 
-
 ConfigSyn::ConfigSyn()
 	: m_uiDepthType(0)
 	, m_uiSourceWidth(1280)
@@ -138,6 +137,12 @@ void ConfigSyn::printParams()
 
 uint ConfigSyn::validation()
 {
+	if (m_uiPrecision != 1 && m_uiPrecision != 2 && m_uiPrecision != 4)
+	{
+		fprintf(stderr, "Illegal Precision setting\n");
+		return VSRS_ERROR;
+	}
+
 	if (m_uiSynthesisMode == 1) // 1D mode
 	{
 		if (m_uiDepthType == 1)
@@ -149,7 +154,16 @@ uint ConfigSyn::validation()
 		{
 			cout << "Error: The input format must be in YUV 420 with 1D synthesis mode, for the time being." << endl;
 			cout << "       Check ColorSpace." << endl;
-			return 0;
+			return VSRS_ERROR;
+		}
+
+		if (m_uiBoundaryNoiseRemoval && m_iSplattingOption != 1) {
+			if (m_iSplattingOption != 1) {
+				cout << endl << "Warning: When you use 1D Mode, 'Boundary Noise Removal' mode supports only" << endl;
+				cout << "         only 'SplattingOption = 1'." << endl;
+				cout << "         Hence, 'SplattingOption' is changed to '1'." << endl << endl;
+				m_iSplattingOption = 1;
+			}
 		}
 	}
 
@@ -158,14 +172,12 @@ uint ConfigSyn::validation()
 	{
 	}
 
-	return 1;
+	return VSRS_OK;
 }
 
-
-
 uint ConfigSyn::getDepthType() { return m_uiDepthType; }
-uint ConfigSyn::getSourceWidth() { return m_uiSourceWidth; }
-uint ConfigSyn::getSourceHeight() { return m_uiSourceHeight; }
+int ConfigSyn::getSourceWidth() { return m_uiSourceWidth; }
+int ConfigSyn::getSourceHeight() { return m_uiSourceHeight; }
 uint ConfigSyn::getNumberOfFrames() { return m_uiNumberOfFrames; }
 uint ConfigSyn::getStartFrame() { return m_uiStartFrame; }
 
@@ -188,58 +200,56 @@ const string ConfigSyn::getRightDepthMapName() { return m_cRightDepthMapName; }
 
 const string ConfigSyn::getOutputVirViewImageName() { return m_cOutputVirViewImageName; }
 
-double ConfigSyn::getFocalLength() { 
-	return m_camParam[0].m_fIntrinsicMatrix[0][0]; 
+double ConfigSyn::getFocalLength() {
+	return m_camParam[0].mIntrinsicMatrix[0][0];
 }
-double ConfigSyn::getLTranslationLeft() { 
-	return m_camParam[1].m_fTranslationVector[0] - m_camParam[0].m_fTranslationVector[0];
+double ConfigSyn::getTranslationXLeft() {
+	return m_camParam[1].mTranslationVector[0] - m_camParam[0].mTranslationVector[0];
 }
-double ConfigSyn::getLTranslationRight() { 
-	return m_camParam[1].m_fTranslationVector[0] - m_camParam[2].m_fTranslationVector[0];
+double ConfigSyn::getTranslationXRight() {
+	return m_camParam[1].mTranslationVector[0] - m_camParam[2].mTranslationVector[0];
 }
-double ConfigSyn::getduPrincipalLeft() { 
-	return m_camParam[1].m_fIntrinsicMatrix[0][2] - m_camParam[0].m_fIntrinsicMatrix[0][2];
+double ConfigSyn::getPrincipalXLeft() {
+	return m_camParam[1].mIntrinsicMatrix[0][2] - m_camParam[0].mIntrinsicMatrix[0][2];
 }
-double ConfigSyn::getduPrincipalRight() { 
-	return m_camParam[1].m_fIntrinsicMatrix[0][2] - m_camParam[2].m_fIntrinsicMatrix[0][2];
-}
-
-double* ConfigSyn::getMat_Ex_Left() { 
-	return &m_camParam[0].m_fExtrinsicMatrix[0][0];
-}
-double* ConfigSyn::getMat_Ex_Virtual() { 
-	return &m_camParam[1].m_fExtrinsicMatrix[0][0];
-}
-double* ConfigSyn::getMat_Ex_Right() { 
-	return &m_camParam[2].m_fExtrinsicMatrix[0][0];
-}
-double* ConfigSyn::getMat_In_Left() { 
-	return &m_camParam[0].m_fIntrinsicMatrix[0][0];
-}
-double* ConfigSyn::getMat_In_Virtual() { 
-	return &m_camParam[1].m_fIntrinsicMatrix[0][0];
-}
-double* ConfigSyn::getMat_In_Right() { 
-	return &m_camParam[2].m_fIntrinsicMatrix[0][0];
-}
-double* ConfigSyn::getMat_Trans_Left() { 
-	return &m_camParam[0].m_fTranslationVector[0];
-}
-double* ConfigSyn::getMat_Trans_Virtual() { 
-	return &m_camParam[1].m_fTranslationVector[0];
-}
-double* ConfigSyn::getMat_Trans_Right() { 
-	return &m_camParam[2].m_fTranslationVector[0];
+double ConfigSyn::getPrincipalXRight() {
+	return m_camParam[1].mIntrinsicMatrix[0][2] - m_camParam[2].mIntrinsicMatrix[0][2];
 }
 
-//? not used?
+double* ConfigSyn::getMat_Rot_Left() {
+	return m_camParam[0].getRotationMatrix();
+}
+double* ConfigSyn::getMat_Rot_Virtual() {
+	return m_camParam[1].getRotationMatrix();
+}
+double* ConfigSyn::getMat_Rot_Right() {
+	return m_camParam[2].getRotationMatrix();
+}
+double* ConfigSyn::getMat_In_Left() {
+	return m_camParam[0].getIntrinsicMatrix();
+}
+double* ConfigSyn::getMat_In_Virtual() {
+	return m_camParam[1].getIntrinsicMatrix();
+}
+double* ConfigSyn::getMat_In_Right() {
+	return m_camParam[2].getIntrinsicMatrix();
+}
+double* ConfigSyn::getMat_Trans_Left() {
+	return m_camParam[0].getTranslationVector();
+}
+double* ConfigSyn::getMat_Trans_Virtual() {
+	return m_camParam[1].getTranslationVector();
+}
+double* ConfigSyn::getMat_Trans_Right() {
+	return m_camParam[2].getTranslationVector();
+}
+
 double ConfigSyn::getLeftBaselineDistance() { return m_dLeftBaselineDistance; }
 double ConfigSyn::getRightBaselineDistance() { return m_dRightBaselineDistance; }
 
 // Access algorithm parameter for 1D mode
 int ConfigSyn::getSplattingOption() { return m_iSplattingOption; }
-//todo typo
-int ConfigSyn::getBoudaryGrowth() { return m_iBoundaryGrowth; }
+int ConfigSyn::getBoundaryGrowth() { return m_iBoundaryGrowth; }
 int ConfigSyn::getMergingOption() { return m_iMergingOption; }
 int ConfigSyn::getDepthThreshold() { return m_iDepthThreshold; }
 int ConfigSyn::getHoleCountThreshold() { return m_iHoleCountThreshold; }
@@ -259,5 +269,6 @@ uint ConfigSyn::getBoundaryNoiseRemoval() { return m_uiBoundaryNoiseRemoval; }
 uint ConfigSyn::getViewBlending() { return m_uiViewBlending; }
 
 int  ConfigSyn::getDepthBlendDiff() { return m_iDepthBlendDiff; }
+
 
 ConfigCam* ConfigSyn::getConfigCams() { return m_camParam; }

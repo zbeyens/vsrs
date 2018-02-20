@@ -9,9 +9,6 @@
 #define TURN3(x,min,max) ( (x)<(min)?(-x): ((x)>(max)?(2*(max)-(x)):(x)) )
 #endif
 
-#ifndef BYTE
-#define BYTE unsigned char
-#endif
 
 template <class PixelType> 
 void HorizontalLinearFilter_1D_half(PixelType *in, PixelType *out, int width, int padding_size)

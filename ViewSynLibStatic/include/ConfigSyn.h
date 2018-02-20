@@ -1,27 +1,73 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <map>
+#include "SystemIncludes.h"
 #include "ConfigBase.h"
 #include "ConfigCam.h"
 #include "Singleton.h"
 
-using namespace std;
+#define VERSION 4.3
 
+#define OUTPUT_COMPUTATIONAL_TIME
+
+
+#define IMAGE_DEPTH				8
+
+#define IMAGE_CHANNELS			3
+#define BLENDED_DEPTH_CHANNELS	1
+#define DEPTH_CHANNELS			1
+#define MASK_CHANNELS			1
+
+/**
+	444: full resolution
+	422: full vert, 1/2 hor resolution
+	420: 1/2 vert, 1/2 hor resolution
+*/
+#define DEPTHMAP_CHROMA_FORMAT	420	//!< Depth map YUV format
+#define HOLE_CHROMA_FORMAT		420 //!< Hole YUV format
+#define HOLE1D_CHROMA_FORMAT	400 //!< Hole YUV format
+#define IMAGE_CHROMA_FORMAT		444	//!< Image YUV format
+
+#define MAX_LUMA 256
+#define MAX_HOLE 256
+#define MAX_DEPTH (256*256)
+typedef unsigned char ImageType;
+typedef unsigned char HoleType;
+typedef unsigned short DepthType;
+
+template <typename T>  __inline  int   MaxTypeValue() { return 0; };
+template <>               __inline  int   MaxTypeValue <unsigned short>() { return (256 * 256); };
+template <>               __inline  int   MaxTypeValue <unsigned char>() { return (256); };
+
+#define cvmMul( src1, src2, dst )       cvMatMulAdd( src1, src2, 0, dst )
+#define cvmCopy( src, dst )             cvCopy( src, dst, 0 )
+#define cvmInvert( src, dst )           cvInv( src, dst )
 
 class ConfigSyn : public Singleton<ConfigSyn>
 {
 	friend Singleton<ConfigSyn>;
 
 public:
+	/*
+	\brief
+	Check whether the config parameters are valid or not
+
+	For 1D mode:
+	-display Warning if the world coordinate system is used (results may be incorrect).
+	-display Error if the input format is RGB.
+
+	\return
+	1: Succeed
+	0: Fail
+	*/
+	uint validation();
+
 	void printParams(); //!< Print all parameters
-	
+
 	void setParams(map<string, string> params);
 
 	uint getDepthType();
-	uint getSourceWidth();
-	uint getSourceHeight();
+	int getSourceWidth();
+	int getSourceHeight();
 	uint getNumberOfFrames();
 	uint getStartFrame();
 
@@ -44,16 +90,17 @@ public:
 
 	const string getOutputVirViewImageName();
 
-	//! For 1D mode
+	// For 1D mode
 	double getFocalLength();		//!< Get the focal length from the left camera. We assume all the three cameras share the same focal length
-	double getLTranslationLeft();	//!< Tx(Syn) - Tx(Left)
-	double getLTranslationRight();	//!< Tx(Syn) - Tx(Right)
-	double getduPrincipalLeft();	//!< uxSyn - uxLeft;
-	double getduPrincipalRight();	//!< uxSyn - uxRight;
+	double getTranslationXLeft();	//!< Tx(Syn) - Tx(Left)
+	double getTranslationXRight();	//!< Tx(Syn) - Tx(Right)
+	double getPrincipalXLeft();		//!< uxSyn - uxLeft;
+	double getPrincipalXRight();	//!< uxSyn - uxRight;
 
-	double* getMat_Ex_Left();
-	double* getMat_Ex_Virtual();
-	double* getMat_Ex_Right();
+	//! For general mode
+	double* getMat_Rot_Left();
+	double* getMat_Rot_Virtual();
+	double* getMat_Rot_Right();
 	double* getMat_In_Left();
 	double* getMat_In_Virtual();
 	double* getMat_In_Right();
@@ -67,8 +114,7 @@ public:
 
 	// Access algorithm parameter for 1D mode
 	int getSplattingOption();
-	//todo typo
-	int getBoudaryGrowth();
+	int getBoundaryGrowth();
 	int getMergingOption();
 	int getDepthThreshold();
 	int getHoleCountThreshold();
@@ -89,26 +135,12 @@ public:
 
 	int  getDepthBlendDiff();
 
+
 	ConfigCam* getConfigCams();
 
 private:
 	ConfigSyn();
 	~ConfigSyn();
-
-	/*
-		\brief
-			Check whether the config parameters are valid or not
-
-		For 1D mode:
-		-display Warning if the world coordinate system is used (results may be incorrect).
-		-display Error if the input format is RGB.
-		
-		\return
-			1: Succeed
-			0: Fail
-	*/
-	//todo no error
-	uint validation();
 
 	//? not used?
 	double m_dLeftBaselineDistance;
@@ -123,9 +155,9 @@ private:
 	*/
 	uint m_uiDepthType;
 	//! Input frame width. Default: 0
-	uint m_uiSourceWidth;
+	int m_uiSourceWidth;
 	//! Input frame height. Default: 0
-	uint m_uiSourceHeight;
+	int m_uiSourceHeight;
 	//! Total number of input frame. Default: 0
 	uint m_uiNumberOfFrames;
 	//! Starting frame #. Default: 0
@@ -140,7 +172,6 @@ private:
 	double m_dRightNearestDepthValue;
 	//! Farthest depth value of right image from camera or the origin of 3D space. Default: 0
 	double m_dRightFarthestDepthValue;
-
 
 	//! Name of text file which includes real and virtual camera parameters
 	string m_cCameraParameterFile;
@@ -193,7 +224,7 @@ private:
 
 	// Algorithm parameters for 1-D view synthesis mode
 	//! 0: No upsampling for ref pictures; 1: Upsample ref pictures  >>>> Hide this parameter from config file
-	//int  m_iUpsampleRefs;    
+	//int  m_iUpsampleRefs;
 
 	//! 0: Disable splatting; 1: Enable splatting for all pixels; 2: Splatting only along boundaries. Default: 2
 	int m_iSplattingOption;
@@ -214,6 +245,7 @@ private:
 	//! 0: Disable; 1; Enable. Default: 0
 	//? not in cfg
 	int m_iCleanNoiseOption;
+
 
 	// Camera parameters
 	//! 0: Left, 1: Center, 2: Right

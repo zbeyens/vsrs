@@ -1,72 +1,125 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
-#include "ConfigSyn.h"
+#include "SystemIncludes.h"
 #include "Singleton.h"
-
-
-using namespace std;
-
+#include "ConfigSyn.h"
+#include "InputStream.h"
 
 class Parser : public Singleton<Parser>
 {
 	friend Singleton<Parser>;
 
 public:
-	uint parse();
+	/**	Parse config and camera files
 
-	void setFileName(string filename);
+		Parse config file and command line
+		Set ConfigSyn parameters
+		Parse camera file
+		Set ConfigCam parameters
+		\see readSynFile
+		\see readFromCommandLine
+		\see readCameraFile
+		\return
+			VSRS_OK
+			VSRS_ERROR
+	*/
+	int parse();
+
+	void setFilename(string filename);
 	void setCommands(int argc, char** argv);
 
 private:
 	Parser() {}
 	~Parser() {}
 
-	string mFilename;
-	vector<char*> mCommands;
+	string mFilename;				//!< Filename to parse
+	vector<char*> mCommands;		//!< All the command lines
 
-	map<string, string> mParams; //!< All the config lines : <tag, value>
+	map<string, string> mParams;	//!< All the parsed config lines : <tag, value>
 
+	/** Parse the config file
 
-	/*!
-		Read the config file line by line
-		If the tag equals to one of m_pCfgLines tag:
-		Set its var to the given value
-
+		Read the config file line by line with an InputStream
+		For each valid line read, stores its tag and value in params map
+		\see readLine
 		\return
-			1: Success
-			-1: Failed
+			VSRS_OK
+			VSRS_ERROR
 	*/
 	int readSynFile();
-	
-	/*!
-		Read line and store tag and value
+
+	/** Parse one line of the config file
+
+		Read chars till EOL or EOF
+		Stores tag and its value
+		Ignore comments
 
 		\return
-			1: Success
-			-1: Failed
+			VSRS_OK
+			VSRS_ERROR
 	*/
-	int readLine(FILE* hFile, string* pacTag);
+	void readLine(InputStream istream, string* tagValue);
 
-	int readFromCommandLine();
-	int readCommandLine(char *buf, string* pacTag);
+	/** Parse commands
 
-	/*!
-		\brief
-		   Read the camera parameters from file to memory
+		For each valid command, stores its tag and value in params map
+		\see readCommandLine
+	*/
+	void readFromCommandLine();
 
-		Scan the file till reaching the id of one of the 3 camera parameters (given in the config file)
-		Scan the values and store them in the 2 matrix and translation vector
-		Repeat for the 3 cameras
-		
+	/** Parse one command
+
+		Stores one command in the format "tag=value"
+		Ignore comments
+	*/
+	void readCommandLine(char *buf, string* tagValue);
+
+	/** Read the camera parameters from file to memory
+
+		Parse all camera
+		\see parseOneCamera
 		\return
-			1: Succeed
-			0: Fail
+			VSRS_OK
+			VSRS_ERROR
 	*/
-	//todo divide the function
-	//todo order of camera indexes
-	uint readCameraFile();
+	int readCameraFile();
+
+	/**	Parse one camera
+
+		\see parseCameraId
+		\see parseCameraIntrinsics
+		\see parseSeparator
+		\see parseCameraExtrinsics
+		\return
+			VSRS_OK
+			VSRS_ERROR
+	*/
+	int parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex);
+
+	/** Scan the camera id
+
+		Scan the id of one of the 3 camera parameters (given in the config file)
+		\return
+			VSRS_OK
+			VSRS_ERROR
+	*/
+	int parseCameraId(InputStream istream, char* parsedCameraId);
+
+	/** Parse the camera intrinsics
+		\return
+			number of char read
+	*/
+	int parseCameraIntrinsics(InputStream istream, int cameraIndex);
+
+	/** Parse separator int-ext
+		\return
+			number of char read
+	*/
+	int parseSeparator(InputStream istream);
+
+	/** Parse the camera extrinsics
+		\return
+			number of char read
+	*/
+	int parseCameraExtrinsics(InputStream istream, int cameraIndex);
 };

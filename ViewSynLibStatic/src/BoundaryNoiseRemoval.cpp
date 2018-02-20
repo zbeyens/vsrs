@@ -36,21 +36,10 @@
 #pragma warning(disable : 4996)
 #endif
 
-#include <stdio.h>
-#include <memory.h>
-#include <stdlib.h>
-#include <math.h>
+#include "BoundaryNoiseRemoval.h"
 
-#ifndef _OPEN_CV_HEADERS_
-#define _OPEN_CV_HEADERS_
-#include <opencv\cv.h>
-#include <opencv\highgui.h>
-#include <opencv\cvaux.h>
-#endif
 
-#include "BounaryNoiseRemoval.h"
-
-CBoundaryNoiseRemoval::CBoundaryNoiseRemoval()
+BoundaryNoiseRemoval::BoundaryNoiseRemoval()
 {
   Width = 1024;            
   Height= 768;
@@ -77,7 +66,7 @@ CBoundaryNoiseRemoval::CBoundaryNoiseRemoval()
 
 }
 
-CBoundaryNoiseRemoval::~CBoundaryNoiseRemoval()
+BoundaryNoiseRemoval::~BoundaryNoiseRemoval()
 {
 
   if (m_imgSynWithHole    != NULL)    { cvReleaseImage(&m_imgSynWithHole);   }
@@ -92,7 +81,7 @@ CBoundaryNoiseRemoval::~CBoundaryNoiseRemoval()
   if (m_imgHoleOtherView  != NULL)    { cvReleaseImage(&m_imgHoleOtherView); }
 }
 
-void CBoundaryNoiseRemoval::xInit() 
+void BoundaryNoiseRemoval::xInit() 
 {
   if (m_imgSynWithHole    == NULL)    { m_imgSynWithHole    = cvCreateImage(cvSize(Width*Precision, Height), 8, 3);}
   if (m_imgBound          == NULL)    { m_imgBound          = cvCreateImage(cvSize(Width*Precision, Height), 8, 1);}
@@ -107,7 +96,7 @@ void CBoundaryNoiseRemoval::xInit()
 
 }
 
-bool CBoundaryNoiseRemoval::DoBoundaryNoiseRemoval(CIYuv<ImageType>* pRefLeft, CIYuv<ImageType>* pRefRight, CIYuv<DepthType>* pRefDepthLeft, CIYuv<DepthType>* pRefDepthRight, 
+bool BoundaryNoiseRemoval::DoBoundaryNoiseRemoval(CIYuv<ImageType>* pRefLeft, CIYuv<ImageType>* pRefRight, CIYuv<DepthType>* pRefDepthLeft, CIYuv<DepthType>* pRefDepthRight, 
                            CIYuv<HoleType>* pRefHoleLeft, CIYuv<HoleType>* pRefHoleRight, CIYuv<ImageType>* pSynYuvBuffer, bool SynhtesisMode)
 {
 
@@ -180,7 +169,7 @@ bool CBoundaryNoiseRemoval::DoBoundaryNoiseRemoval(CIYuv<ImageType>* pRefLeft, C
 
 
 
-void CBoundaryNoiseRemoval::RemainingHoleFilling_General(CIYuv<ImageType>* pSrc)
+void BoundaryNoiseRemoval::RemainingHoleFilling_General(CIYuv<ImageType>* pSrc)
 {
   int i, j, tWidth, tHeight, CountHole;
   bool isValidLeft, isValidRight, isValid_Y, isValid_U, isValid_V, isComHole;
@@ -274,7 +263,7 @@ void CBoundaryNoiseRemoval::RemainingHoleFilling_General(CIYuv<ImageType>* pSrc)
 }
 
 
-void CBoundaryNoiseRemoval::RemainingHoleFilling_1DMode(CIYuv<ImageType>* pSrc)
+void BoundaryNoiseRemoval::RemainingHoleFilling_1DMode(CIYuv<ImageType>* pSrc)
 {
   int i, j, tWidth, tHeight, CountHole;
   bool isValidLeft, isValidRight, isValid_Y, isValid_U, isValid_V;
@@ -363,7 +352,7 @@ void CBoundaryNoiseRemoval::RemainingHoleFilling_1DMode(CIYuv<ImageType>* pSrc)
 }
 
 
-void CBoundaryNoiseRemoval::Blending(CIYuv<ImageType>* pLeft,CIYuv<ImageType>* pRight, CIYuv<ImageType>* pSyn, bool SynhtesisMode)
+void BoundaryNoiseRemoval::Blending(CIYuv<ImageType>* pLeft,CIYuv<ImageType>* pRight, CIYuv<ImageType>* pSyn, bool SynhtesisMode)
 {
   int i, j;
   double WeightForLeft, WeightForRight;
@@ -530,7 +519,7 @@ void CBoundaryNoiseRemoval::Blending(CIYuv<ImageType>* pLeft,CIYuv<ImageType>* p
 
 }
 
-void CBoundaryNoiseRemoval::calcDepthThreshold1DMode(bool ViewID)
+void BoundaryNoiseRemoval::calcDepthThreshold1DMode(bool ViewID)
 {
 
   int Low, SumOfGap, index, GapCount, Start_D, End_D, z;
@@ -563,11 +552,8 @@ void CBoundaryNoiseRemoval::calcDepthThreshold1DMode(bool ViewID)
   DEPTH_TH = (int)(SumOfGap/GapCount + 0.5);  
 }
 
-#ifdef POZNAN_GENERAL_HOMOGRAPHY
-void CBoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat* matH_V2R)
-#else
-void CBoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat** matH_V2R)
-#endif
+//#ifdef POZNAN_GENERAL_HOMOGRAPHY
+void BoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat* matH_V2R)
 {
 
   int Low, SumOfGap, index, GapCount, Start_D, End_D;
@@ -578,7 +564,7 @@ void CBoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat** matH_V2R)
   SumOfGap = 0;
   posStart = posEnd = 0.0;
   GapWidth = 0.0;
-#ifdef POZNAN_GENERAL_HOMOGRAPHY
+//#ifdef POZNAN_GENERAL_HOMOGRAPHY
   CvMat* m = cvCreateMat(4, 1, CV_64F);
   CvMat* mv = cvCreateMat(4, 1, CV_64F);
   cvmSet(mv, 0, 0, 0);
@@ -586,14 +572,7 @@ void CBoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat** matH_V2R)
   cvmSet(mv, 2, 0, 1);
   cvmSet(mv, 2, 0, 1);
   cvmMul(matH_V2R, mv, m);
-#else
-  CvMat* m = cvCreateMat(3, 1, CV_64F);
-  CvMat* mv = cvCreateMat(3, 1, CV_64F);
-  cvmSet(mv, 0, 0, 0);
-  cvmSet(mv, 1, 0, 0);
-  cvmSet(mv, 2, 0, 1);
-  cvmMul(matH_V2R[0], mv, m);
-#endif
+
   posStart = m->data.db[0] * Precision / m->data.db[2] + 0.5;
   posEnd   = m->data.db[0] * Precision / m->data.db[2] + 0.5;
   GapWidth = fabs(posEnd - posStart);
@@ -604,13 +583,11 @@ void CBoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat** matH_V2R)
       if (++index > (MAX_DEPTH-1)) {
         break;
       }
-#ifdef POZNAN_GENERAL_HOMOGRAPHY
+//#ifdef POZNAN_GENERAL_HOMOGRAPHY
       cvmSet(mv, 3, 0, 1.0/index);//TableD2Z
       cvmMul(matH_V2R, mv, m);
-#else
-      cvmMul(matH_V2R[index], mv, m);
-#endif
-      posEnd = m->data.db[0] * Precision / m->data.db[2] + 0.5;
+
+	  posEnd = m->data.db[0] * Precision / m->data.db[2] + 0.5;
       GapWidth = fabs(posEnd - posStart);
       End_D = index;         
     }
@@ -624,7 +601,7 @@ void CBoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat** matH_V2R)
 }
 
 
-void CBoundaryNoiseRemoval::HoleFillingWithExpandedHole(CIYuv<ImageType>* pSrc, CIYuv<ImageType>* pTar, IplImage* m_imgExpandedHole, bool SynthesisMode)
+void BoundaryNoiseRemoval::HoleFillingWithExpandedHole(CIYuv<ImageType>* pSrc, CIYuv<ImageType>* pTar, IplImage* m_imgExpandedHole, bool SynthesisMode)
 {
   int i, j, tWidth, tHeight;
   BYTE* Src_buffer, *Tar_buffer;
@@ -663,7 +640,7 @@ void CBoundaryNoiseRemoval::HoleFillingWithExpandedHole(CIYuv<ImageType>* pSrc, 
   }
 }
 
-void CBoundaryNoiseRemoval::copyImages(CIYuv<ImageType>* pSyn_CurrView, CIYuv<DepthType>* pSynDepth_CurrView, CIYuv<HoleType>* pSynHole_CurrView, CIYuv<HoleType>* pDepthHole_OthView)
+void BoundaryNoiseRemoval::copyImages(CIYuv<ImageType>* pSyn_CurrView, CIYuv<DepthType>* pSynDepth_CurrView, CIYuv<HoleType>* pSynHole_CurrView, CIYuv<HoleType>* pDepthHole_OthView)
 {
   int i, j, width, height;
   ImageType *org_buffer_image;
@@ -710,7 +687,7 @@ void CBoundaryNoiseRemoval::copyImages(CIYuv<ImageType>* pSyn_CurrView, CIYuv<De
 }
 
 
-void CBoundaryNoiseRemoval::getBoundaryContour(IplImage* bound, IplImage* contour) 
+void BoundaryNoiseRemoval::getBoundaryContour(IplImage* bound, IplImage* contour) 
 {
   int i, j, k, width, height, Hole_width, posLeft, posRight;
   width = bound->width;    
@@ -728,7 +705,7 @@ void CBoundaryNoiseRemoval::getBoundaryContour(IplImage* bound, IplImage* contou
   }
 }
 
-bool CBoundaryNoiseRemoval::checkFourNeighbours(int i, int j, IplImage* check) 
+bool BoundaryNoiseRemoval::checkFourNeighbours(int i, int j, IplImage* check) 
 {
   int width = check->width;
   int height= check->height;
@@ -758,7 +735,7 @@ bool CBoundaryNoiseRemoval::checkFourNeighbours(int i, int j, IplImage* check)
 }
 
 
-void CBoundaryNoiseRemoval::getBackgroundContour(IplImage* Bound, IplImage* Depth, IplImage* check_Depth, IplImage* BackBound) 
+void BoundaryNoiseRemoval::getBackgroundContour(IplImage* Bound, IplImage* Depth, IplImage* check_Depth, IplImage* BackBound) 
 {
 
   int i, j, k, width, height;
@@ -811,7 +788,7 @@ void CBoundaryNoiseRemoval::getBackgroundContour(IplImage* Bound, IplImage* Dept
 }
 
 
-void CBoundaryNoiseRemoval::expandedHoleforBNM(IplImage* Depth, IplImage* Hole, IplImage* BackBound, IplImage* ExpandedHole) 
+void BoundaryNoiseRemoval::expandedHoleforBNM(IplImage* Depth, IplImage* Hole, IplImage* BackBound, IplImage* ExpandedHole) 
 {
   int i, j, x, y, width, height, min_x, min_y, max_x, max_y, depth_back;  
 
@@ -876,7 +853,7 @@ void CBoundaryNoiseRemoval::expandedHoleforBNM(IplImage* Depth, IplImage* Hole, 
 
 }
 
-void CBoundaryNoiseRemoval::ColorFillingSmallHoleFor1DMode(CIYuv<ImageType>* pSrc, CIYuv<ImageType>* pDst) 
+void BoundaryNoiseRemoval::ColorFillingSmallHoleFor1DMode(CIYuv<ImageType>* pSrc, CIYuv<ImageType>* pDst) 
 {
   int tWidth, tHeight,i, j;
   bool isAvailableLeft, isAvailableRight, isAvailableCurrent;
@@ -920,7 +897,7 @@ void CBoundaryNoiseRemoval::ColorFillingSmallHoleFor1DMode(CIYuv<ImageType>* pSr
 
 }
 
-void CBoundaryNoiseRemoval::ColorHoleCleaning(CIYuv<ImageType>* pSrc)
+void BoundaryNoiseRemoval::ColorHoleCleaning(CIYuv<ImageType>* pSrc)
 {
   int i, j, tWidth, tHeight;
   bool isYAvailable, isUAvailable, isVAvailable;  
@@ -948,7 +925,7 @@ void CBoundaryNoiseRemoval::ColorHoleCleaning(CIYuv<ImageType>* pSrc)
 
 }
 
-void CBoundaryNoiseRemoval::DepthFillingSmallHoleFor1DMode(CIYuv<DepthType>* pSrc, CIYuv<DepthType>* pDst) 
+void BoundaryNoiseRemoval::DepthFillingSmallHoleFor1DMode(CIYuv<DepthType>* pSrc, CIYuv<DepthType>* pDst) 
 {
   int tWidth, tHeight,i, j;
   bool isAvailableLeft, isAvailableRight, isAvailableCurrent;
@@ -981,7 +958,7 @@ void CBoundaryNoiseRemoval::DepthFillingSmallHoleFor1DMode(CIYuv<DepthType>* pSr
 }
 
 
-void CBoundaryNoiseRemoval::DepthMatchingWithColor(CIYuv<DepthType>* pDepth, CIYuv<ImageType>* pColor, CIYuv<HoleType>* pDepthMask)
+void BoundaryNoiseRemoval::DepthMatchingWithColor(CIYuv<DepthType>* pDepth, CIYuv<ImageType>* pColor, CIYuv<HoleType>* pDepthMask)
 {
   int i, j, width, height;
   bool isAVailableColor, isAVailableDepth, isAVailableDepth_L, isAVailableDepth_R;

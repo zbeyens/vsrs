@@ -1,12 +1,15 @@
 #pragma once
 
-#include <iostream>
-#include <string>
+#include "SystemIncludes.h"
 #include "Singleton.h"
 
-using namespace std;
 
-#define uint    unsigned int
+#define BYTE unsigned char
+#define WORD unsigned short
+
+#define uint unsigned int
+typedef unsigned char uchar;
+
 
 
 class ConfigBase : public Singleton<ConfigBase>
@@ -15,12 +18,9 @@ class ConfigBase : public Singleton<ConfigBase>
 
 public:
 	//Parser
-	static const int tMAX_CONFIG_PARAMS = 256;
 
 
 private:
 	ConfigBase() {};
 	~ConfigBase() {};
-
-
 };

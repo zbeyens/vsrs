@@ -19,21 +19,18 @@
 
 #define POZNAN_DEPTHMAP_CHROMA_FORMAT 420
 
-#ifdef POZNAN_16BIT_DEPTH
-typedef unsigned short DepthType;
 typedef unsigned char ImageType;
 typedef unsigned char HoleType;
 #define MAX_HOLE 256
-#define MAX_DEPTH (256*256)
 #define MAX_LUMA 256
+
+#ifdef POZNAN_16BIT_DEPTH
+typedef unsigned short DepthType;
+#define MAX_DEPTH (256*256)
 
 #else
 typedef unsigned char DepthType;
-typedef unsigned char ImageType;
-typedef unsigned char HoleType;
-#define MAX_HOLE 256
 #define MAX_DEPTH 256
-#define MAX_LUMA 256
 #endif                                                
 
 template <typename type>  __inline  int   MaxTypeValue                  ()                              { return 0; };

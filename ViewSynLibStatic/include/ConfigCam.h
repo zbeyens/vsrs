@@ -1,8 +1,6 @@
+#pragma once
 
-#include <iostream>
-
-using namespace std;
-
+#include "SystemIncludes.h"
 
 /*!
 	\brief
@@ -19,19 +17,31 @@ using namespace std;
 class ConfigCam
 {
 public:
-	double m_fIntrinsicMatrix[3][3];	//!< Intrinsic parameters
-	double m_fExtrinsicMatrix[3][3];	//!< Extrinsic parameters
-	double m_fTranslationVector[3];		//!< Translation vector
-
 	/*!
-		init:
-		-3x3 intrinsic matrix
-		-1x3 translation vector
-		-3x3 extrinsic matrix
+	init:
+	-3x3 intrinsic matrix
+	-1x3 translation vector
+	-3x3 rotation matrix
 	*/
 	ConfigCam();
-	~ConfigCam() {};
+	~ConfigCam() {}
 
 	//copy
+	//ConfigCam(const ConfigCam& src) { operator=(src); }
 	ConfigCam& operator = (ConfigCam& src);
+
+	// Print all camera parameters
+	void print();
+
+	double* getIntrinsicMatrix();
+	double* getRotationMatrix();
+	double* getTranslationVector();
+
+	void setIntrinsicMatrix(double intrinsicMatrix[3][3]);
+	void setRotationMatrix(double rotationMatrix[3][3]);
+	void setTranslationVector(double translationVector[3]);
+
+	double mIntrinsicMatrix[3][3];	//!< Intrinsic parameters
+	double mRotationMatrix[3][3];	//!< Rotation matrix
+	double mTranslationVector[3];	//!< Translation vector
 };

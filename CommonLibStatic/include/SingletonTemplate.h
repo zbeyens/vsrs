@@ -1,21 +1,18 @@
 #pragma once
 
-#include <iostream>
-#include <string>
+#include "SystemIncludes.h"
 #include "Singleton.h"
 
-using namespace std;
 
-
-class Parser : public Singleton<Parser>
+class Template : public Singleton<Template>
 {
-	friend Singleton<Parser>;
+	friend Singleton<Template>;
 
 public:
 
 
 private:
-	Parser() {};
-	~Parser() {};
+	Template() {};
+	~Template() {};
 
 }

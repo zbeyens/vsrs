@@ -1,0 +1,120 @@
+ConsigSyn:
+out:
+    uint m_uiSourceWidth;
+    uint m_uiSourceHeight;
+    uint m_uiNumberOfFrames;
+    uint m_uiStartFrame;
+    double m_dLeftNearestDepthValue;
+    double m_dLeftFarthestDepthValue;
+    double m_dRightNearestDepthValue;
+    double m_dRightFarthestDepthValue;
+    string m_cLeftViewImageName;
+    string m_cLeftDepthMapName;
+    string m_cRightViewImageName;
+    string m_cRightDepthMapName;
+    string m_cOutputVirViewImageName;
+
+	uint m_uiDepthType;
+	string m_cCameraParameterFile;
+	string m_cLeftCameraName;
+	string m_cRightCameraName;
+	string m_cVirtualCameraName;
+
+    uint m_uiFilter;
+    uint m_uiSynthesisMode;
+    
+in:    
+    double m_dLeftBaselineDistance;
+    double m_dRightBaselineDistance;
+    uint m_uiColorSpace;
+    uint m_uiPrecision;
+    uint m_uiIvsrsInpaint;
+    uint m_uiBoundaryNoiseRemoval;
+    uint m_uiViewBlending;
+    int m_iDepthBlendDiff;
+
+
+	int m_iSplattingOption;
+	int m_iBoundaryGrowth;
+	int m_iMergingOption;
+	int m_iDepthThreshold;
+	int m_iHoleCountThreshold;
+	int m_iTemporalImprovementOption;
+	int m_iWarpEnhancementOption;
+	int m_iCleanNoiseOption;
+
+ViewSynthesis:
+    double        m_dWeightLeft;
+    double        m_dWeightRight;
+    double        WeightLeft;
+    double        WeightRight;
+
+    unsigned int  m_uiViewBlending; 
+    unsigned int  ViewBlending; 
+
+    #ifdef POZNAN_DEPTH_BLEND
+    int           m_iDepthBlendDiff;
+    #endif
+
+    #ifdef NICT_IVSRS
+    // NICT start  
+    unsigned int  m_uiIvsrsInpaint; // NICT iVSRS inpaint flag for set get
+    // NICT end
+    #endif
+
+    unsigned int  m_uiWidth;
+    unsigned int  m_uiHeight;
+    unsigned int  m_uiPicsize;
+    unsigned int  m_uiPrecision;
+    unsigned int  m_uiDepthType;
+    unsigned char  m_ucLeftSide;
+
+    unsigned int  m_uiColorSpace;
+    unsigned int  m_uiBoundaryNoiseRemoval;
+
+    std::string   CameraParameterFile;
+    std::string   LeftCameraName;
+    std::string   RightCameraName;
+    std::string   VirtualCameraName;
+
+    double  Mat_Ex_Left[9];
+    double  Mat_Ex_Virtual[9];
+    double  Mat_Ex_Right[9];
+    double  Mat_In_Left[9];
+    double  Mat_In_Virtual[9];
+    double  Mat_In_Right[9];
+    double  Mat_Trans_Left[3];
+    double  Mat_Trans_Virtual[3];
+    double  Mat_Trans_Right[3];
+
+    double  m_dBaselineDistance;
+    double  LeftBaselineDistance;
+    double  RightBaselineDistance;
+    
+ViewInterpolation:
+in Config:
+    int            m_iWidth;	//!< Source width
+    int            m_iHeight;	//!< Source height
+    unsigned int    m_uiColorSpace;		//!< from ConfigSyn
+    unsigned int    m_uiViewBlending;	//!< from ConfigSyn
+    unsigned int    m_uiBoundary;		//!< from ConfigSyn
+    int     m_iSynthesisMode; //!< from ConfigSyn
+    int     m_iFrameNumber;		     //used in TIM, Zhejiang
+
+
+
+    CIYuv<DepthType>*          m_pcDepthMapLeft;	//!< To store the depth map of the left reference view, from ConfigSyn
+    CIYuv<DepthType>*          m_pcDepthMapRight;	//!< To store the depth map of the right reference view, from ConfigSyn
+    CIYuv<ImageType>*          m_pcImageLeft;		//!< To store the image of the left reference view, from ConfigSyn
+    CIYuv<ImageType>*          m_pcImageRight;		//!< To store the image of the right reference view, from ConfigSyn
+    CIYuv<ImageType>*          m_pcTempYuvLeft;
+    CIYuv<ImageType>*          m_pcTempYuvRight;
+
+    ViewInterpolationGeneral* m_pViewSynthesisGeneral;	//!< The object to do 3D warping view synthesis
+    ViewSynthesis1D*      m_pViewSynthesis1D;      //!< The object to do 1D view synthesis
+    BoundaryNoiseRemoval*     m_pBoundaryNoiseRemoval; //!< The object to do boundary noise removal
+
+    unsigned char* m_pSynColorLeft;
+    unsigned char* m_pSynColorRight;
+    unsigned char* m_pSynDepthLeft;
+    unsigned char* m_pSynDepthRight;

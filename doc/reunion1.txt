@@ -1,10 +1,10 @@
 Solid
 cppcheck
-Singleton
-Architecture de logiciel libre (VTK image)
+Singleton: done
+Architecture de logiciel libre (VTK image): done
 
-refactor Config
-ordre des camera
+refactor Config: done
+ordre des camera: pas d'ordre (comparaison sur Tx pour savoir si left ou right)
 RGB - YUV
 
 aosabook.org/en/vtk.html

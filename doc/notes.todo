@@ -1,0 +1,95 @@
+Project Management Tools:
+  ☐ draw.io for UML diagrams
+  ☐ Dropbox Paper for meeting notes
+  ☐ Meistertask for agile project management
+
+Coding Tools:
+  ☐ Visual Studio 2017
+  ☐ cppcheck
+  ☐ Doxygen for documenting
+  ☐ CMake
+
+
+Design Patterns:
+  ☐ Singleton http://robdodson.me/javascript-design-patterns-singleton/
+
+
+Reading:
+  ☐ RGB vs YUB: http://www.sensoray.com/support/appnotes/frame_grabber_capture_modes.htm
+  ☐ https://fr.scribd.com/document/57357351/Why-YUV-is-Preferred-Over-RGB
+  ☐ yuv to rgb https://image.slidesharecdn.com/random-140820230623-phpapp02/95/-19-638.jpg?cb=1408576038
+
+
+Project Guidelines:
+  ☐ Testing different params (screenshots) on 4.2 to validate 4.3
+  ☐ UML diagrams of the problem and the solution
+  ☐ Agile project management
+
+
+Coding Guidelines:
+  ☐ unit testing (with "catch")
+  ☐ raii, smart pointers
+  ☐ SOLID https://github.com/ryanmcdermott/clean-code-javascript#solid
+  ☐ overload when you can, specialise when you need to.
+  ☐ if you know that an entity must take a certain kind of ownership of the object, always use smart pointers
+  ☐ ifstream more modular than fopen https://stackoverflow.com/questions/6399822/reading-a-text-file-fopen-vs-ifstream
+  ☐ class vs namespace. namespace: to group functions, better than static class. Also to avoid duplicate class names. class: A class is a group of variables and procedures that are related to each other
+  ☐ can not pass 2d array in parameter    https://stackoverflow.com/questions/27892464/c-return-value-type-does-not-match-the-function-type
+  ☐ template vs inheritance: https://stackoverflow.com/questions/7264402/when-to-use-template-vs-inheritance
+  ☐ template class error (unresolved external symbol): Templates must be defined in header files https://stackoverflow.com/questions/5776862/template-class-unresolved-external-symbols
+
+
+Comments:
+  ☐ Visual Studio 2017 IntelliSense is slow.
+
+
+	
+Draft of the architecture:
+-Common
+	-Core
+		-Type
+		-Version
+		-SystemIncludes
+	-Pattern
+		-Singleton
+	-Config
+		-ConfigSyn
+		-ConfigCam
+	-DataModel
+		-yuv
+	-ExecutionModel
+		-ViewInterpolation
+		-Visbd
+		-ViewSynthesis
+		-upsampling
+	-Math
+		-Matrix3x3
+	-System
+		-TimerLog
+	-(Transform)
+		-(WarpTransform)
+-Imaging
+	-Core
+		-(ImageBlend)
+		-(ImageClip)
+-Filters
+	-BoundaryNoiseRemoval
+-IO
+	-ParserConfig
+	-ParserCam
+	-InputStream
+	-OutputStream
+	
+-bin
+-Utilities
+	-CMake
+	-Doxygen
+-(Parallel)
+-(ThirdParty)
+	
+Type			https://github.com/Kitware/VTK/blob/98f05443c29173cd42375edd63a1c1a48f75133e/Common/Core/vtkType.h
+Version			https://github.com/Kitware/VTK/blob/98f05443c29173cd42375edd63a1c1a48f75133e/Common/Core/vtkVersion.h
+SystemIncludes	https://github.com/Kitware/VTK/blob/98f05443c29173cd42375edd63a1c1a48f75133e/Common/Core/vtkSystemIncludes.h
+TimerLog		https://github.com/Kitware/VTK/blob/98f05443c29173cd42375edd63a1c1a48f75133e/Common/System/vtkTimerLog.h
+https://github.com/Kitware/VTK/blob/98f05443c29173cd42375edd63a1c1a48f75133e/IO/Core/vtkInputStream.h
+https://github.com/Kitware/VTK/blob/98f05443c29173cd42375edd63a1c1a48f75133e/IO/Core/vtkOutputStream.h

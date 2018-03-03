@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FFD3A3CD-0227-349A-BFEF-2F61577F3A3B}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ViewSynLib</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ViewSynLib.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ViewSynLib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ViewSynLib.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ViewSynLib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ViewSynLib.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ViewSynLib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ViewSynLib.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ViewSynLib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /EHsc"%3B"-std=c++11</AdditionalOptions>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /EHsc"%3B"-std=c++11</AdditionalOptions>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /EHsc"%3B"-std=c++11</AdditionalOptions>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /EHsc"%3B"-std=c++11</AdditionalOptions>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\ViewSynLib\Homography.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\Warp.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\WarpDepth.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\WarpIpelDepth.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\WarpIpelViewReverse.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\WarpViewReverse.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\BoundaryNoiseRemoval.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Camera.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigCam.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Filter.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesisGeneral.cpp" />
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\upsample.cpp" />
+    <ClInclude Include="..\src\ViewSynLib\Homography.h" />
+    <ClInclude Include="..\src\ViewSynLib\Warp.h" />
+    <ClInclude Include="..\src\ViewSynLib\WarpDepth.h" />
+    <ClInclude Include="..\src\ViewSynLib\WarpIpelDepth.h" />
+    <ClInclude Include="..\src\ViewSynLib\WarpIpelViewReverse.h" />
+    <ClInclude Include="..\src\ViewSynLib\WarpViewReverse.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\BoundaryNoiseRemoval.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Camera.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigCam.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Filter.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesisGeneral.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\upsample.h" />
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\build\CommonLib.vcxproj">
+      <Project>{D5C286F3-B26F-3FDD-85EA-B8A6DEBA4C30}</Project>
+      <Name>CommonLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

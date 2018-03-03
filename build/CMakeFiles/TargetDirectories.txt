@@ -1,0 +1,4 @@
+C:/Users/miyuk/Documents/Visual Studio 2017/Projects/VSRS4/vsrs/build/CMakeFiles/CommonLib.dir
+C:/Users/miyuk/Documents/Visual Studio 2017/Projects/VSRS4/vsrs/build/CMakeFiles/ViewSynLib.dir
+C:/Users/miyuk/Documents/Visual Studio 2017/Projects/VSRS4/vsrs/build/CMakeFiles/ViewSyn.dir
+C:/Users/miyuk/Documents/Visual Studio 2017/Projects/VSRS4/vsrs/build/CMakeFiles/ALL_BUILD.dir

@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0BA5D994-FB0F-306A-BB15-1E053A11AD46}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Program Files\OpenCV\build;C:\Program Files\OpenCV\opencv\include;C:\Program Files\OpenCV\opencv\include\opencv;C:\Program Files\OpenCV\opencv\modules\core\include;C:\Program Files\OpenCV\opencv\modules\flann\include;C:\Program Files\OpenCV\opencv\modules\imgproc\include;C:\Program Files\OpenCV\opencv\modules\ml\include;C:\Program Files\OpenCV\opencv\modules\objdetect\include;C:\Program Files\OpenCV\opencv\modules\photo\include;C:\Program Files\OpenCV\opencv\modules\video\include;C:\Program Files\OpenCV\opencv\modules\dnn\include;C:\Program Files\OpenCV\opencv\modules\imgcodecs\include;C:\Program Files\OpenCV\opencv\modules\shape\include;C:\Program Files\OpenCV\opencv\modules\videoio\include;C:\Program Files\OpenCV\opencv\modules\highgui\include;C:\Program Files\OpenCV\opencv\modules\superres\include;C:\Program Files\OpenCV\opencv\modules\ts\include;C:\Program Files\OpenCV\opencv\modules\features2d\include;C:\Program Files\OpenCV\opencv\modules\calib3d\include;C:\Program Files\OpenCV\opencv\modules\stitching\include;C:\Program Files\OpenCV\opencv\modules\videostab\include;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib;C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSyn;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\build\CommonLib.vcxproj">
+      <Project>{D5C286F3-B26F-3FDD-85EA-B8A6DEBA4C30}</Project>
+      <Name>CommonLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\build\ViewSyn.vcxproj">
+      <Project>{1488E770-A4A3-32A0-AA67-5F85711EB52F}</Project>
+      <Name>ViewSyn</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\build\ViewSynLib.vcxproj">
+      <Project>{FFD3A3CD-0227-349A-BFEF-2F61577F3A3B}</Project>
+      <Name>ViewSynLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

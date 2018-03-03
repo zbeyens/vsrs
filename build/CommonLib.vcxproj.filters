@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\later\InputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\yuv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Singleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SingletonTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SystemIncludes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\catch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\later\InputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\yuv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{211B6202-A20D-3316-A80B-2B32DE71F5DA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5CF7B6EF-8984-3301-A0B1-049CD6CE69CB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

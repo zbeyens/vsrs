@@ -3,11 +3,34 @@ m_dTableD2Z
 pDepthMap
 m_matH_R2V
 
+#modified:
+Precision = 1 gives: 
+OpenCV Error: Unsupported format or combination of formats (Bilateral filtering is only implemented for 8u and 
+32f images) in cv::bilateralFilter, file C:\Program Files\OpenCV\opencv\modules\imgproc\src\smooth.cpp, line 3914
+Caused by 16 bits? But using 8 bits gives an infinite loop
+
+ConfigSyn: BitDepth: 8 or 16
+
 
 #not used - removed:
 image2world_with_z
 median_filter_depth
 median_filter_depth_wCheck
+	
 
 yuv.h:
 getData_inBGR
+
+upsample.h:
+HorizontalLinearFilter_1D_qpel
+HorizontalLinearFilter_1D_half
+HorizontalAVCFilter_1D_half
+HorizontalAVCFilter_1D_qpel
+Horizontal6tapFilter_1D_half
+HorizontalCubicFilter_1D_half
+HorizontalCubicFilter_1D_qpel
+DummyFilter_1D
+//PixelClip
+PictureResample420to444
+RepeatPixel420to444
+PixelClip

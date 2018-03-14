@@ -1,30 +1,15 @@
 #include "InputStream.h"
 
-InputStream::InputStream(const char * filename)
+void InputStream::openR()
 {
-	mFilename = filename;
+	f = fopen(m_filename.c_str(), "r");
+	checkFileOpenError();
 }
 
-void InputStream::startReading()
+void InputStream::openRB()
 {
-	f = fopen(mFilename, "r");
-	if (f == NULL)
-	{
-		error = true;
-		cout << "Failed to open " << mFilename << " file" << endl;
-	}
-}
-void InputStream::endReading()
-{
-	if (error) return;
-
-	fclose(f);
-}
-
-void InputStream::seek(int offset)
-{
-	int err = fseek(f, offset, SEEK_SET);
-	if (err) error = true;
+	f = fopen(m_filename.c_str(), "rb");
+	checkFileOpenError();
 }
 
 char InputStream::readChar()
@@ -35,17 +20,3 @@ char InputStream::readChar()
 	}
 }
 
-int InputStream::isEndOfFile()
-{
-	return feof(f);
-}
-
-FILE * InputStream::getFile()
-{
-	return f;
-}
-
-bool InputStream::hasError()
-{
-	return error;
-}

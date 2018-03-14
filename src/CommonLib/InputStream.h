@@ -1,33 +1,40 @@
 #pragma once
 
 #include "SystemIncludes.h"
+#include "ConfigSyn.h"
+#include "FileStream.h"
 
-class InputStream
+class InputStream : public FileStream
 {
 public:
-	InputStream(const char* filename);
+	InputStream(string filename) : FileStream(filename) {}
 	~InputStream() {}
 
 	//! Read the file (read-only)
-	void startReading();
-
-	//! Close the file
-	void endReading();
-
-	//! Seek to the given offset in the file
-	void seek(int offset);
+	void openR();
+	void openRB();
 
 	//! Return a read char of the file
 	char readChar();
 
-	//! Return whether the file is EOF
-	int isEndOfFile();
-
-	FILE* getFile();
-	bool hasError();
-
-private:
-	FILE* f;				//!< File object
-	const char* mFilename;	//!< Filename
-	bool error = false;		//!< Error if open failed
+	template <class PixelType>
+	void readOneFrame(PixelType* buffer, int size, int frameno);
 };
+
+template <class PixelType>
+void InputStream::readOneFrame(PixelType* buffer, int size, int frameno)
+{
+	if (f == NULL) error = true;
+
+	if (frameno != -1)
+	{
+		long offs = long(size)*long(frameno);
+		fseek(f, offs, SEEK_SET);
+	}
+
+	if (fread(buffer, size, 1, f) != 1)
+	{
+		fprintf(stderr, "EOF\n");
+		error = true;
+	}
+}

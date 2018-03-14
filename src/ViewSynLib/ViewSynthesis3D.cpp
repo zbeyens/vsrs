@@ -1,7 +1,6 @@
-#include "ViewSynthesis.h"
+#include "ViewSynthesis3D.h"
 
-
-ViewSynthesisGeneral::ViewSynthesisGeneral()
+ViewSynthesis3D::ViewSynthesis3D()
 	: cfg(ConfigSyn::getInstance())
 {
 	m_imgSynLeftforBNR = NULL;
@@ -12,15 +11,15 @@ ViewSynthesisGeneral::ViewSynthesisGeneral()
 	m_imgHoleRightforBNR = NULL;
 }
 
-ViewSynthesisGeneral::~ViewSynthesisGeneral()
+ViewSynthesis3D::~ViewSynthesis3D()
 {
 	xReleaseMemory();
 }
 
-void ViewSynthesisGeneral::xReleaseMemory()
+void ViewSynthesis3D::xReleaseMemory()
 {
-	Tools::safeDelete(m_pcViewSynthesisLeft);
-	Tools::safeDelete(m_pcViewSynthesisRight);
+	Tools::safeDelete(m_viewLeft);
+	Tools::safeDelete(m_viewRight);
 
 	Tools::safeReleaseImage(m_imgSynLeftforBNR);
 	Tools::safeReleaseImage(m_imgSynRightforBNR);
@@ -30,13 +29,13 @@ void ViewSynthesisGeneral::xReleaseMemory()
 	Tools::safeReleaseImage(m_imgHoleRightforBNR);
 }
 
-bool ViewSynthesisGeneral::InitLR()
+bool ViewSynthesis3D::Init()
 {
-	m_pcViewSynthesisLeft = new View();
-	m_pcViewSynthesisRight = new View();
+	m_viewLeft = new View();
+	m_viewRight = new View();
 
-	if (!m_pcViewSynthesisLeft->Init(0))  return false;
-	if (!m_pcViewSynthesisRight->Init(1))  return false;
+	if (!m_viewLeft->Init(0))  return false;
+	if (!m_viewRight->Init(1))  return false;
 
 	computeWeightLR();
 
@@ -45,16 +44,16 @@ bool ViewSynthesisGeneral::InitLR()
 	return true;
 }
 
-void ViewSynthesisGeneral::computeWeightLR()
+void ViewSynthesis3D::computeWeightLR()
 {
-	m_dWeightLeft = m_pcViewSynthesisRight->getCam().getBaselineDistance();
-	m_dWeightRight = m_pcViewSynthesisLeft->getCam().getBaselineDistance();
-	double dTotalBaseline = m_dWeightLeft + m_dWeightRight;
-	m_dWeightLeft /= dTotalBaseline;
-	m_dWeightRight /= dTotalBaseline;
+	m_weightLeft = m_viewRight->getCam().getBaselineDistance();
+	m_weightRight = m_viewLeft->getCam().getBaselineDistance();
+	double totalBaseline = m_weightLeft + m_weightRight;
+	m_weightLeft /= totalBaseline;
+	m_weightRight /= totalBaseline;
 }
 
-void ViewSynthesisGeneral::initResultImages()
+void ViewSynthesis3D::initResultImages()
 {
 	int sw = cfg.getSourceWidth();
 	int sh = cfg.getSourceHeight();
@@ -67,15 +66,40 @@ void ViewSynthesisGeneral::initResultImages()
 	m_imgMask[2].create(sw, sh, MASK_CHANNELS);
 }
 
-int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** RefRight, DepthType** RefDepthLeft, DepthType** RefDepthRight, ImageYuv<ImageType> *pSynYuvBuffer)
+void ViewSynthesis3D::Blending()
+{
+	cvCopy(m_viewRight->getVirtualImageIpl(), m_viewLeft->getVirtualImageIpl(), m_imgMask[1].getImageIpl()); // Right VirtualImage * hole fillabl by Right -> Left VirtualImage // Left hole is filled by Right
+	cvCopy(m_viewLeft->getVirtualImageIpl(), m_viewRight->getVirtualImageIpl(), m_imgMask[2].getImageIpl()); // Left VirtualImage * hole fillable by Left ->Right VirtualImage
+	if (cfg.getIvsrsInpaint() == 1)
+	{
+		cvCopy(m_viewRight->getVirtualDepthMapIpl(), m_viewLeft->getVirtualDepthMapIpl(), m_imgMask[1].getImageIpl()); // Right VirtualDepth * hole fillabl by Right -> Left VirtualDepth //NICT
+		cvCopy(m_viewLeft->getVirtualDepthMapIpl(), m_viewRight->getVirtualDepthMapIpl(), m_imgMask[2].getImageIpl()); // Left VirtualDedpth * hole fillable by Left ->Right VirtualDepth // NICT
+	}
+}
+
+void ViewSynthesis3D::NoBlending()
+{
+	if (m_weightLeft >= m_weightRight)  // if closer to Left
+	{
+		cvCopy(m_viewRight->getVirtualImageIpl(), m_viewLeft->getVirtualImageIpl(), m_imgMask[1].getImageIpl());  // Right * Mask[3] -> Left // dilated hole may left
+		cvCopy(m_viewLeft->getVirtualImageIpl(), m_viewRight->getVirtualImageIpl(), m_viewLeft->getSynthesizedImageIpl()); // Left VirtualImage * success -> Right VirtualImage
+	}
+	else                               // if closer to Right
+	{
+		cvCopy(m_viewRight->getVirtualImageIpl(), m_viewLeft->getVirtualImageIpl(), m_viewRight->getSynthesizedImageIpl()); // Right VirtualImage * success -> Left VirtualImage
+		cvCopy(m_viewLeft->getVirtualImageIpl(), m_viewRight->getVirtualImageIpl(), m_imgMask[2].getImageIpl()); // Left VirtualImage * Mask[4] -> Right VirtualImage
+	}
+}
+
+bool ViewSynthesis3D::apply(ImageType*** RefLeft, ImageType*** RefRight, DepthType** RefDepthLeft, DepthType** RefDepthRight, ImageData<ImageType>& pSynYuvBuffer)
 {
 	ImageType*** pRefLeft = RefLeft;
 	ImageType*** pRefRight = RefRight;
 	DepthType** pRefDepthLeft = RefDepthLeft;
 	DepthType** pRefDepthRight = RefDepthRight;
 
-	if (!m_pcViewSynthesisLeft->xSynthesizeView(pRefLeft, pRefDepthLeft))  return false;
-	if (!m_pcViewSynthesisRight->xSynthesizeView(pRefRight, pRefDepthRight)) return false;
+	if (!m_viewLeft->xSynthesizeView(pRefLeft, pRefDepthLeft))  return false;
+	if (!m_viewRight->xSynthesizeView(pRefRight, pRefDepthRight)) return false;
 
 	// GIST added
 	if (m_imgSynLeftforBNR == NULL) { m_imgSynLeftforBNR = cvCreateImage(cvSize(cfg.getSourceWidth(), cfg.getSourceHeight()), sizeof(ImageType) * 8, 3); }
@@ -84,82 +108,51 @@ int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** R
 	if (m_imgDepthRightforBNR == NULL) { m_imgDepthRightforBNR = cvCreateImage(cvSize(cfg.getSourceWidth(), cfg.getSourceHeight()), sizeof(DepthType) * 8, 1); }
 	if (m_imgHoleLeftforBNR == NULL) { m_imgHoleLeftforBNR = cvCreateImage(cvSize(cfg.getSourceWidth(), cfg.getSourceHeight()), sizeof(HoleType) * 8, 1); }
 	if (m_imgHoleRightforBNR == NULL) { m_imgHoleRightforBNR = cvCreateImage(cvSize(cfg.getSourceWidth(), cfg.getSourceHeight()), sizeof(HoleType) * 8, 1); }
-	cvCopy(m_pcViewSynthesisLeft->getVirtualImage(), m_imgSynLeftforBNR);
-	cvCopy(m_pcViewSynthesisRight->getVirtualImage(), m_imgSynRightforBNR);
-	cvCopy(m_pcViewSynthesisLeft->getVirtualDepthMap(), m_imgDepthLeftforBNR);
-	cvCopy(m_pcViewSynthesisRight->getVirtualDepthMap(), m_imgDepthRightforBNR);
-	cvCopy(m_pcViewSynthesisLeft->getHolePixels(), m_imgHoleLeftforBNR);
-	cvCopy(m_pcViewSynthesisRight->getHolePixels(), m_imgHoleRightforBNR);
+	cvCopy(m_viewLeft->getVirtualImageIpl(), m_imgSynLeftforBNR);
+	cvCopy(m_viewRight->getVirtualImageIpl(), m_imgSynRightforBNR);
+	cvCopy(m_viewLeft->getVirtualDepthMapIpl(), m_imgDepthLeftforBNR);
+	cvCopy(m_viewRight->getVirtualDepthMapIpl(), m_imgDepthRightforBNR);
+	cvCopy(m_viewLeft->getHolePixelsIpl(), m_imgHoleLeftforBNR);
+	cvCopy(m_viewRight->getHolePixelsIpl(), m_imgHoleRightforBNR);
 	// GIST end
 
 	// pixels which will be replaced by pixels synthesized from right view
 	if (cfg.getIvsrsInpaint() == 1)
 	{
-		cvAnd(m_pcViewSynthesisLeft->getHolePixels(), m_pcViewSynthesisRight->getSynthesizedPixels(), m_imgMask[1].getImageIpl()); // NICT use same hole mask
+		cvAnd(m_viewLeft->getHolePixelsIpl(), m_viewRight->getSynthesizedImageIpl(), m_imgMask[1].getImageIpl()); // NICT use same hole mask
 	}
 	else
 	{
-		cvAnd(m_pcViewSynthesisLeft->getUnstablePixels(), m_pcViewSynthesisRight->getSynthesizedPixels(), m_imgMask[1].getImageIpl()); // Left dilated Mask[0] * Right Success -> Left Mask[3] // dilated hole fillable by Right
+		cvAnd(m_viewLeft->getUnstablePixelsIpl(), m_viewRight->getSynthesizedImageIpl(), m_imgMask[1].getImageIpl()); // Left dilated Mask[0] * Right Success -> Left Mask[3] // dilated hole fillable by Right
 	}
 
 	if (cfg.getViewBlending() == 1)
 	{
-		if (m_dWeightLeft >= m_dWeightRight)  // if closer to Left
-		{
-			cvCopy(m_pcViewSynthesisRight->getVirtualImage(), m_pcViewSynthesisLeft->getVirtualImage(), m_imgMask[1].getImageIpl());  // Right * Mask[3] -> Left // dilated hole may left
-		}
-		else                               // if closer to Right
-		{
-			cvCopy(m_pcViewSynthesisRight->getVirtualImage(), m_pcViewSynthesisLeft->getVirtualImage(), m_pcViewSynthesisRight->getSynthesizedPixels()); // Right VirtualImage * success -> Left VirtualImage
-		}
+		NoBlending();
 	}
 	else {
-		cvCopy(m_pcViewSynthesisRight->getVirtualImage(), m_pcViewSynthesisLeft->getVirtualImage(), m_imgMask[1].getImageIpl()); // Right VirtualImage * hole fillabl by Right -> Left VirtualImage // Left hole is filled by Right
-		if (cfg.getIvsrsInpaint() == 1)
-		{
-			cvCopy(m_pcViewSynthesisRight->getVirtualDepthMap(), m_pcViewSynthesisLeft->getVirtualDepthMap(), m_imgMask[1].getImageIpl()); // Right VirtualDepth * hole fillabl by Right -> Left VirtualDepth //NICT
-		}
+		Blending();
 	}
 
 	// pixels which will be replaced by pixels synthesized from left view
 	if (cfg.getIvsrsInpaint() == 1)
 	{
-		cvAnd(m_pcViewSynthesisRight->getHolePixels(), m_pcViewSynthesisLeft->getSynthesizedPixels(), m_imgMask[2].getImageIpl()); // NICT use same hole mask
+		cvAnd(m_viewRight->getHolePixelsIpl(), m_viewLeft->getSynthesizedImageIpl(), m_imgMask[2].getImageIpl()); // NICT use same hole mask
 	}
 	else
 	{
-		cvAnd(m_pcViewSynthesisRight->getUnstablePixels(), m_pcViewSynthesisLeft->getSynthesizedPixels(), m_imgMask[2].getImageIpl()); // Right dilated Mask[0] * Left Success -> Mask[4] // dilated hole fillable by Left
-	}
-
-	if (cfg.getViewBlending() == 1)
-	{
-		if (m_dWeightLeft <= m_dWeightRight) // if closer to Right
-		{
-			cvCopy(m_pcViewSynthesisLeft->getVirtualImage(), m_pcViewSynthesisRight->getVirtualImage(), m_imgMask[2].getImageIpl()); // Left VirtualImage * Mask[4] -> Right VirtualImage
-		}
-		else                              // if close to Left
-		{
-			cvCopy(m_pcViewSynthesisLeft->getVirtualImage(), m_pcViewSynthesisRight->getVirtualImage(), m_pcViewSynthesisLeft->getSynthesizedPixels()); // Left VirtualImage * success -> Right VirtualImage
-		}
-	}
-	else {
-		cvCopy(m_pcViewSynthesisLeft->getVirtualImage(), m_pcViewSynthesisRight->getVirtualImage(), m_imgMask[2].getImageIpl()); // Left VirtualImage * hole fillable by Left ->Right VirtualImage
-		if (cfg.getIvsrsInpaint() == 1)
-		{
-			cvCopy(m_pcViewSynthesisLeft->getVirtualDepthMap(), m_pcViewSynthesisRight->getVirtualDepthMap(), m_imgMask[2].getImageIpl()); // Left VirtualDedpth * hole fillable by Left ->Right VirtualDepth // NICT
-		}
+		cvAnd(m_viewRight->getUnstablePixelsIpl(), m_viewLeft->getSynthesizedImageIpl(), m_imgMask[2].getImageIpl()); // Right dilated Mask[0] * Left Success -> Mask[4] // dilated hole fillable by Left
 	}
 
 	// pixels which couldn't be synthesized from both left and right -> inpainting
-	cvAnd(m_pcViewSynthesisLeft->getHolePixels(), m_pcViewSynthesisRight->getHolePixels(), m_imgMask[0].getImageIpl()); // Left Hole * Right Hole -> Mask[2] // common hole,
+	cvAnd(m_viewLeft->getHolePixelsIpl(), m_viewRight->getHolePixelsIpl(), m_imgMask[0].getImageIpl()); // Left Hole * Right Hole -> Mask[2] // common hole,
 
-#define GETUCHAR(x,ptr) (((unsigned char*)x)[ptr])
-	IplImage *DepthLeft = m_pcViewSynthesisLeft->getVirtualDepthMap();
-	IplImage *DepthRight = m_pcViewSynthesisRight->getVirtualDepthMap();
-	IplImage *ImageLeft = m_pcViewSynthesisLeft->getVirtualImage();
-	IplImage *ImageRight = m_pcViewSynthesisRight->getVirtualImage();
-	IplImage *SynthesizedLeft = m_pcViewSynthesisLeft->getHolePixels();
-	IplImage *SynthesizedRight = m_pcViewSynthesisRight->getHolePixels();
+	IplImage *DepthLeft = m_viewLeft->getVirtualDepthMapIpl();
+	IplImage *DepthRight = m_viewRight->getVirtualDepthMapIpl();
+	IplImage *ImageLeft = m_viewLeft->getVirtualImageIpl();
+	IplImage *ImageRight = m_viewRight->getVirtualImageIpl();
+	IplImage *SynthesizedLeft = m_viewLeft->getHolePixelsIpl();
+	IplImage *SynthesizedRight = m_viewRight->getHolePixelsIpl();
 	for (int h = 0; h < cfg.getSourceHeight(); h++)
 	{
 		for (int w = 0; w < cfg.getSourceWidth(); w++)
@@ -172,13 +165,13 @@ int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** R
 
 			if ((abs(((DepthType*)DepthLeft->imageData[ptv]) - ((DepthType*)DepthRight->imageData[ptv])) < cfg.getDepthBlendDiff())) // left and right are close to each other (NICT)
 			{
-				((ImageType*)m_imgBlended.getImageIpl()->imageData)[ptv * 3 + 0] = CLIP3((((ImageType*)ImageLeft->imageData)[ptv * 3 + 0] * m_dWeightLeft + ((ImageType*)ImageRight->imageData)[ptv * 3 + 0] * m_dWeightRight) / (m_dWeightLeft + m_dWeightRight), 0, MAX_LUMA - 1);
-				((ImageType*)m_imgBlended.getImageIpl()->imageData)[ptv * 3 + 1] = CLIP3((((ImageType*)ImageLeft->imageData)[ptv * 3 + 1] * m_dWeightLeft + ((ImageType*)ImageRight->imageData)[ptv * 3 + 1] * m_dWeightRight) / (m_dWeightLeft + m_dWeightRight), 0, MAX_LUMA - 1);
-				((ImageType*)m_imgBlended.getImageIpl()->imageData)[ptv * 3 + 2] = CLIP3((((ImageType*)ImageLeft->imageData)[ptv * 3 + 2] * m_dWeightLeft + ((ImageType*)ImageRight->imageData)[ptv * 3 + 2] * m_dWeightRight) / (m_dWeightLeft + m_dWeightRight), 0, MAX_LUMA - 1);
+				((ImageType*)m_imgBlended.getImageIpl()->imageData)[ptv * 3 + 0] = ImageTools::CLIP3((((ImageType*)ImageLeft->imageData)[ptv * 3 + 0] * m_weightLeft + ((ImageType*)ImageRight->imageData)[ptv * 3 + 0] * m_weightRight) / (m_weightLeft + m_weightRight), 0, MAX_LUMA - 1);
+				((ImageType*)m_imgBlended.getImageIpl()->imageData)[ptv * 3 + 1] = ImageTools::CLIP3((((ImageType*)ImageLeft->imageData)[ptv * 3 + 1] * m_weightLeft + ((ImageType*)ImageRight->imageData)[ptv * 3 + 1] * m_weightRight) / (m_weightLeft + m_weightRight), 0, MAX_LUMA - 1);
+				((ImageType*)m_imgBlended.getImageIpl()->imageData)[ptv * 3 + 2] = ImageTools::CLIP3((((ImageType*)ImageLeft->imageData)[ptv * 3 + 2] * m_weightLeft + ((ImageType*)ImageRight->imageData)[ptv * 3 + 2] * m_weightRight) / (m_weightLeft + m_weightRight), 0, MAX_LUMA - 1);
 
 				if (cfg.getIvsrsInpaint() == 1)
 				{
-					((DepthType*)m_imgBlendedDepth.getImageIpl()->imageData)[ptv] = CLIP3((((DepthType*)DepthLeft->imageData)[ptv] * m_dWeightLeft + ((DepthType*)DepthRight->imageData)[ptv] * m_dWeightRight) / (m_dWeightLeft + m_dWeightRight), 0, MAX_DEPTH - 1);
+					((DepthType*)m_imgBlendedDepth.getImageIpl()->imageData)[ptv] = ImageTools::CLIP3((((DepthType*)DepthLeft->imageData)[ptv] * m_weightLeft + ((DepthType*)DepthRight->imageData)[ptv] * m_weightRight) / (m_weightLeft + m_weightRight), 0, MAX_DEPTH - 1);
 				}
 			}
 			else if ((((DepthType*)DepthLeft->imageData[ptv]) > ((DepthType*)DepthRight->imageData[ptv]))) //Fix to compare z // left is nearer (NICT)
@@ -205,10 +198,6 @@ int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** R
 			}
 		}
 	}
-
-	//#else
-	//cvAddWeighted(m_pcViewSynthesisLeft->getVirtualImage(), m_dWeightLeft, m_pcViewSynthesisRight->getVirtualImage(), m_dWeightRight, 0, m_imgBlended.getImageIpl()); // Left VImage * LWeight + Rigt VImage * RWeight -> Blended
-	//#endif
 
 	if (cfg.getIvsrsInpaint() == 1)
 	{
@@ -519,7 +508,7 @@ int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** R
 		{
 			holeflag = false;
 			filterflag = false;
-			hptv = h *  cfg.getSourceWidth();
+			hptv = h * cfg.getSourceWidth();
 
 			for (int w = 2; w < cfg.getSourceWidth() - 1; w++)
 			{
@@ -576,7 +565,7 @@ int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** R
 			filterflag = false;
 			for (int h = 2; h < cfg.getSourceHeight() - 1; h++)
 			{
-				ptv = w + h *  cfg.getSourceWidth();
+				ptv = w + h * cfg.getSourceWidth();
 				if (holeflag == false && m_imgMask[0].getImageIpl()->imageData[ptv] != 0) // filled hole edge
 				{
 					holeflag = true;
@@ -617,21 +606,18 @@ int ViewSynthesisGeneral::DoOneFrameGeneral(ImageType*** RefLeft, ImageType*** R
 				}
 			}
 		}
-		// NICT start
 	}  // IvsrsInpaint = true
 	else
 	{
-		//cvSaveImage("Mask2.bmp",m_imgMask[0].getImageIpl());
 		cvSet(m_imgBlended.getImageIpl(), CV_RGB(0, 128, 128), m_imgMask[0].getImageIpl());
 		cvInpaint(m_imgBlended.getImageIpl(), m_imgMask[0].getImageIpl(), m_imgInterpolatedView.getImageIpl(), 5, CV_INPAINT_NS);
-		//inpaint(m_imgBlended.getImageIpl(), m_imgMask[0], m_imgInterpolatedView.getImageIpl(), 5, INPAINT_NS);
 	}
 
 	if (cfg.getColorSpace()) {
-		pSynYuvBuffer->setDataFromImgBGR(m_imgInterpolatedView.getImageIpl());
+		pSynYuvBuffer.setDataFromImgIplBGR(m_imgInterpolatedView.getImageIpl());
 	}
 	else
-		pSynYuvBuffer->setDataFromImgYUV(m_imgInterpolatedView.getImageIpl());
+		pSynYuvBuffer.setDataFromImgIplYUV(m_imgInterpolatedView.getImageIpl());
 
-	return 0;
+	return true;
 }

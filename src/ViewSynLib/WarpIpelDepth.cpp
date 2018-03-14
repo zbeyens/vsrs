@@ -1,12 +1,11 @@
 #include "WarpIpelDepth.h"
 
-bool WarpIpelDepth::apply(ImageType *** src, DepthType ** pDepthMap, int th_same_depth)
+bool WarpIpelDepth::apply(DepthType ** pDepthMap)
 {
 	int h, w, u, v;
 	int sigma_d = 20;
 	int sigma_c = 50;
 
-	//#ifdef POZNAN_GENERAL_HOMOGRAPHY
 	CvMat* m = cvCreateMat(4, 1, CV_64F);
 	CvMat* mv = cvCreateMat(4, 1, CV_64F);
 
@@ -17,11 +16,10 @@ bool WarpIpelDepth::apply(ImageType *** src, DepthType ** pDepthMap, int th_same
 	{
 		for (w = 0; w < cfg.getSourceWidth(); w++)
 		{
-			//#ifdef POZNAN_GENERAL_HOMOGRAPHY
 			cvmSet(m, 0, 0, w);
 			cvmSet(m, 1, 0, h);
 			cvmSet(m, 2, 0, 1.0);
-			cvmSet(m, 3, 0, 1.0 / mView->m_dTableD2Z[pDepthMap[h][w]]);
+			cvmSet(m, 3, 0, 1.0 / mView->m_tableD2Z[pDepthMap[h][w]]);
 			cvmMul(mView->m_matH_R2V, m, mv);
 
 			u = mv->data.db[0] / mv->data.db[2] + 0.5;

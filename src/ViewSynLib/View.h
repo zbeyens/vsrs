@@ -27,33 +27,33 @@ public:
 	*/
 	bool Init(uint indexCam);
 
-	bool    xSynthesizeView(ImageType ***src, DepthType **pDepthMap, int th_same_depth = 5);
+	bool    xSynthesizeView(ImageType ***src, DepthType **pDepthMap);
 
-	IplImage*  getHolePixels() { return m_imgHoles.getImageIpl(); }
-	IplImage*  getSynthesizedPixels() { return m_imgSuccessSynthesis.getImageIpl(); }
-	IplImage*  getVirtualImage() { return m_imgVirtualImage.getImageIpl(); }
-	IplImage*  getVirtualDepthMap() { return m_imgVirtualDepth.getImageIpl(); }
-	IplImage*  getUnstablePixels() { return m_imgMask[0].getImageIpl(); }
+	IplImage*  getHolePixelsIpl() { return m_imgHoles.getImageIpl(); }
+	IplImage*  getSynthesizedImageIpl() { return m_imgSuccessSynthesis.getImageIpl(); }
+	IplImage*  getVirtualImageIpl() { return m_imgVirtualImage.getImageIpl(); }
+	IplImage*  getVirtualDepthMapIpl() { return m_imgVirtualDepth.getImageIpl(); }
+	IplImage*  getUnstablePixelsIpl() { return m_imgMask[0].getImageIpl(); }
 	//Nagoya start
 	ImageType**    getVirtualImageY() { return m_imgVirtualImage.getImageY(); }
 	ImageType**    getVirtualImageU() { return m_imgVirtualImage.getImageU(); }
 	ImageType**    getVirtualImageV() { return m_imgVirtualImage.getImageV(); }
 	//Nagoya end
-	DepthType**    getVirtualDepth() { return m_imgVirtualDepth.getImageY(); }
+	DepthType**    getVirtualDepthY() { return m_imgVirtualDepth.getImageY(); }
 
-	Image<DepthType> getImgVirtualDepth() { return m_imgVirtualDepth; }
-	Image<ImageType> getImgVirtualImage() { return m_imgVirtualImage; }
-	Image<HoleType> getImgSuccessSynthesis() { return m_imgSuccessSynthesis; }
-	Image<HoleType> getImgHoles() { return m_imgHoles; }
-	double* getTableD2Z() { return m_dTableD2Z; }
+	Image<DepthType> getVirtualDepth() { return m_imgVirtualDepth; }
+	Image<ImageType> getVirtualImage() { return m_imgVirtualImage; }
+	Image<HoleType> getSynthesizedImage() { return m_imgSuccessSynthesis; }
+	Image<HoleType> getHolePixels() { return m_imgHoles; }
+	double* getTableD2Z() { return m_tableD2Z; }
 	CvMat* getMatH_R2V() { return m_matH_R2V; }
-	CvMat* GetMatH_V2R() { return m_matH_V2R; }
+	CvMat* getMatH_V2R() { return m_matH_V2R; }
 	Camera getCam() { return cam; }
 
 	//public to private:
 
-	double m_dInvZNearMinusInvZFar;	//!< POZNAN_DEPTH_PROJECT2COMMON
-	double m_dInvZfar;				//!< POZNAN_DEPTH_PROJECT2COMMON
+	double m_invZNearMinusInvZFar;	//!< POZNAN_DEPTH_PROJECT2COMMON
+	double m_invZfar;				//!< POZNAN_DEPTH_PROJECT2COMMON
 	Image<HoleType> m_imgMask[2];	//!< for warping
 
 	Image<HoleType> m_imgBound;	//!< for viewReverse warping
@@ -68,18 +68,20 @@ public:
 	CvMat*  m_matH_R2V;	//!< for depth warping
 	CvMat*  m_matH_V2R;	//!< for viewReverse warping
 
-	double m_dTableD2Z[MAX_DEPTH]; //!< for warping
+	double m_tableD2Z[MAX_DEPTH]; //!< for warping
+
 
 private:
 	bool initIntermImages();
 	bool init_3Dwarp();
 
-	void computeDepthFromCam();
-	void computeDepthFromSpace();
+	bool computeDepth();
+	void computeDepthFromCam(int i, double distance);
+	void computeDepthFromSpace(int i, double distance);
 
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 
-	uint mIndexSyn; //!< Index of the ViewSynthesis. 0 = left, 1 = right
+	uint m_indexSyn; //!< Index of the ViewSynthesis. 0 = left, 1 = right
 
 	Homography m_homography;
 

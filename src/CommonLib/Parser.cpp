@@ -24,7 +24,7 @@ int Parser::readSynFile()
 	//tag - value - empty
 
 	InputStream istream(mFilename.c_str());
-	istream.startReading();
+	istream.openR();
 
 	if (istream.hasError()) return VSRS_ERROR;
 
@@ -38,7 +38,7 @@ int Parser::readSynFile()
 		mParams[tagValue[0]] = tagValue[1];
 	}
 
-	istream.endReading();
+	istream.close();
 	return VSRS_OK;
 }
 
@@ -112,8 +112,8 @@ int Parser::readCameraFile()
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 	string cameraParameterFile = cfg.getCameraParameterFile();
 
-	InputStream istream(cameraParameterFile.c_str());
-	istream.startReading();
+	InputStream istream(cameraParameterFile);
+	istream.openR();
 
 	if (istream.hasError()) return VSRS_ERROR;
 

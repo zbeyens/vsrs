@@ -16,7 +16,8 @@ public:
 
 	virtual bool init();
 
-	virtual bool apply(ImageType ***src, DepthType **pDepthMap, int th_same_depth = 5) = 0;
+	virtual bool apply(ImageType ***src) { return true; }
+	virtual bool apply(DepthType **pDepthMap) { return true; }
 
 protected:
 	void erodebound(IplImage* bound, int flag);

@@ -13,22 +13,10 @@
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Filter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesisGeneral.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\upsample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ViewSynLib\Warp.cpp" />
@@ -37,6 +25,14 @@
     <ClCompile Include="..\src\ViewSynLib\WarpDepth.cpp" />
     <ClCompile Include="..\src\ViewSynLib\WarpIpelDepth.cpp" />
     <ClCompile Include="..\src\ViewSynLib\Homography.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ViewSynLib\ViewSynthesis3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ViewSynLib\ConvertImage1D.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\ConvertImage3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\BoundaryNoiseRemoval.h">
@@ -57,19 +53,7 @@
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesisGeneral.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\upsample.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ViewSynLib\Warp.h" />
@@ -78,6 +62,26 @@
     <ClInclude Include="..\src\ViewSynLib\WarpViewReverse.h" />
     <ClInclude Include="..\src\ViewSynLib\WarpDepth.h" />
     <ClInclude Include="..\src\ViewSynLib\Homography.h" />
+    <ClInclude Include="..\src\ViewSynLib\ImageResample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalAVCQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalCubicHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalLinearHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalLinearQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterDummy2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalCubicQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalAVCHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\ImageTools.h" />
+    <ClInclude Include="..\src\ViewSynLib\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ViewSynLib\ViewSynthesis3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ViewSynLib\ConvertImage.h" />
+    <ClInclude Include="..\src\ViewSynLib\ConvertImage1D.h" />
+    <ClInclude Include="..\src\ViewSynLib\ConvertImage3D.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

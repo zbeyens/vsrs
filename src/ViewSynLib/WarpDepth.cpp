@@ -13,7 +13,7 @@ bool WarpDepth::init()
 	return true;
 }
 
-bool WarpDepth::apply(ImageType ***src, DepthType **pDepthMap, int th_same_depth)
+bool WarpDepth::apply(DepthType **pDepthMap)
 {
 	int h, w, u, v;
 	int window_size = 3;
@@ -28,11 +28,10 @@ bool WarpDepth::apply(ImageType ***src, DepthType **pDepthMap, int th_same_depth
 	{
 		for (w = 0; w < cfg.getSourceWidth(); w++)
 		{
-			//#ifdef POZNAN_GENERAL_HOMOGRAPHY
 			cvmSet(m, 0, 0, w);
 			cvmSet(m, 1, 0, h);
 			cvmSet(m, 2, 0, 1.0);
-			cvmSet(m, 3, 0, 1.0 / mView->m_dTableD2Z[pDepthMap[h][w]]);
+			cvmSet(m, 3, 0, 1.0 / mView->m_tableD2Z[pDepthMap[h][w]]);
 			cvmMul(mView->m_matH_R2V, m, mv);
 
 			u = mv->data.db[0] / mv->data.db[2] + 0.5;
@@ -40,9 +39,8 @@ bool WarpDepth::apply(ImageType ***src, DepthType **pDepthMap, int th_same_depth
 
 			int iDepth = pDepthMap[h][w];
 
-			//#ifdef POZNAN_DEPTH_PROJECT2COMMON
 			double dInvZ = mv->data.db[3] / mv->data.db[2];
-			iDepth = (dInvZ - mView->m_dInvZfar)*(MAX_DEPTH - 1) / mView->m_dInvZNearMinusInvZFar + 0.5;
+			iDepth = (dInvZ - mView->m_invZfar)*(MAX_DEPTH - 1) / mView->m_invZNearMinusInvZFar + 0.5;
 
 			if (u >= 0 && u < cfg.getSourceWidth() && v >= 0 && v < cfg.getSourceHeight() && mView->m_imgVirtualDepth.getImageY()[v][u] <= iDepth)
 			{

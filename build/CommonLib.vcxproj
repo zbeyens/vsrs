@@ -213,13 +213,15 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\CommonLib\FileStream.cpp" />
+    <ClCompile Include="..\src\CommonLib\InputStream.cpp" />
+    <ClCompile Include="..\src\CommonLib\OutputStream.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Image.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Parser.cpp" />
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Tools.cpp" />
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\later\InputStream.cpp">
-      <ObjectFileName>$(IntDir)/src/CommonLib/later/InputStream.cpp.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\yuv.cpp" />
+    <ClInclude Include="..\src\CommonLib\Clock.h" />
+    <ClInclude Include="..\src\CommonLib\FileStream.h" />
+    <ClInclude Include="..\src\CommonLib\InputStream.h" />
+    <ClInclude Include="..\src\CommonLib\OutputStream.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Image.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Parser.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Singleton.h" />
@@ -227,8 +229,7 @@
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SystemIncludes.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Tools.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\catch.hpp" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\later\InputStream.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\yuv.h" />
+    <ClInclude Include="..\src\CommonLib\ImageData.h" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

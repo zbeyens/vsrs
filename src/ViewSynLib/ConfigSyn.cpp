@@ -36,6 +36,7 @@ ConfigSyn::ConfigSyn()
 	, m_iTemporalImprovementOption(1)
 	, m_iWarpEnhancementOption(1)
 	, m_iCleanNoiseOption(1)
+	//, m_bitDepth(16)
 {
 }
 
@@ -90,6 +91,8 @@ void ConfigSyn::setParams(map<string, string> params)
 		else if (tag == "TemporalImprovementOption") m_iTemporalImprovementOption = atoi(value.c_str());
 		else if (tag == "WarpEnhancementOption") m_iWarpEnhancementOption = atoi(value.c_str());
 		else if (tag == "CleanNoiseOption") m_iCleanNoiseOption = atoi(value.c_str());
+		
+		//else if (tag == "BitDepth") m_bitDepth = atoi(value.c_str());
 	}
 }
 
@@ -133,6 +136,8 @@ void ConfigSyn::printParams()
 	cout << "TemporalImprovementOption : " << m_iTemporalImprovementOption << endl;
 	cout << "WarpEnhancementOption : " << m_iWarpEnhancementOption << endl;
 	cout << "CleanNoiseOption : " << m_iCleanNoiseOption << endl;
+	
+	//cout << "BitDepth : " << m_bitDepth << endl;
 }
 
 uint ConfigSyn::validation()

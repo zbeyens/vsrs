@@ -25,7 +25,7 @@ bool WarpViewReverse::init()
 	return true;
 }
 
-bool WarpViewReverse::apply(ImageType *** src, DepthType ** pDepthMap, int th_same_depth)
+bool WarpViewReverse::apply(ImageType *** src)
 {
 	int ptv, u, v;
 	int h, w;
@@ -48,12 +48,11 @@ bool WarpViewReverse::apply(ImageType *** src, DepthType ** pDepthMap, int th_sa
 			cvmSet(mv, 0, 0, w);
 			cvmSet(mv, 1, 0, h);
 			cvmSet(mv, 2, 0, 1.0);
-			cvmSet(mv, 3, 0, 1.0 / mView->m_dTableD2Z[mView->m_imgVirtualDepth.getImageY()[h][w]]);
+			cvmSet(mv, 3, 0, 1.0 / mView->m_tableD2Z[mView->m_imgVirtualDepth.getImageY()[h][w]]);
 			cvmMul(mView->m_matH_V2R, mv, m);
 
 			u = m->data.db[0] * cfg.getPrecision() / m->data.db[2] + 0.5;
 			v = m->data.db[1] / m->data.db[2] + 0.5;
-			//      if(u>=0 && u<maxWidth && v>=0 && v<height && byte_abs[pDepthMap[v][u/cfg.getPrecision()]-mView->m_imgVirtualDepth.getImageY()[h][w]]<th_same_depth)
 			if (u >= 0 && u < maxWidth && v >= 0 && v < cfg.getSourceHeight())
 			{
 				mView->m_imgVirtualImage.getImageIpl()->imageData[ptv * 3] = src[0][v][u];

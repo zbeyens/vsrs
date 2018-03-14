@@ -213,6 +213,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\ViewSynLib\ConvertImage1D.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\ConvertImage3D.cpp" />
     <ClCompile Include="..\src\ViewSynLib\Homography.cpp" />
     <ClCompile Include="..\src\ViewSynLib\Warp.cpp" />
     <ClCompile Include="..\src\ViewSynLib\WarpDepth.cpp" />
@@ -223,13 +225,22 @@
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Camera.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigCam.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.cpp" />
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Filter.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.cpp" />
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\Application.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.cpp" />
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesisGeneral.cpp" />
-    <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\upsample.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\ViewSynthesis3D.cpp" />
+    <ClInclude Include="..\src\ViewSynLib\ConvertImage.h" />
+    <ClInclude Include="..\src\ViewSynLib\ConvertImage1D.h" />
+    <ClInclude Include="..\src\ViewSynLib\ConvertImage3D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterDummy2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalAVCHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalAVCQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalCubicHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalCubicQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalLinearHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalLinearQuarter2D.h" />
     <ClInclude Include="..\src\ViewSynLib\Homography.h" />
+    <ClInclude Include="..\src\ViewSynLib\ImageTools.h" />
     <ClInclude Include="..\src\ViewSynLib\Warp.h" />
     <ClInclude Include="..\src\ViewSynLib\WarpDepth.h" />
     <ClInclude Include="..\src\ViewSynLib\WarpIpelDepth.h" />
@@ -241,11 +252,10 @@
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Filter.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis.h" />
+    <ClInclude Include="..\src\ViewSynLib\Application.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesisGeneral.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\upsample.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\version.h" />
+    <ClInclude Include="..\src\ViewSynLib\ViewSynthesis3D.h" />
+    <ClInclude Include="..\src\ViewSynLib\ImageResample.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\build\CommonLib.vcxproj">

@@ -14,6 +14,6 @@ public:
 	{
 	}
 
-	bool apply(ImageType ***src, DepthType **pDepthMap, int th_same_depth = 5);
+	bool apply(ImageType ***src);
 
 };

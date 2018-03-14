@@ -9,10 +9,10 @@ public:
 	template<typename T>
 	static void safeFree(T p)
 	{
-		if ((p) != NULL)
+		if (p != NULL)
 		{
 			free(p);
-			(p) = NULL;
+			p = NULL;
 		}
 	}
 	
@@ -20,9 +20,21 @@ public:
 	template<typename T>
 	static void safeDelete(T p)
 	{
-		if ((p) != NULL)
+		if (p != NULL)
 		{
 			delete p;
+			p = NULL;
+		}
+	}
+
+	//! Delete T if not null
+	template<typename T>
+	static void safeDeleteP(T p)
+	{
+		if (p != NULL)
+		{
+			delete[] p;
+			p = NULL;
 		}
 	}
 
@@ -45,4 +57,8 @@ public:
 			(mat) = NULL;
 		}
 	}
+
+	
+	
+	
 };

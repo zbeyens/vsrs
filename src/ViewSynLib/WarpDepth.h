@@ -16,7 +16,7 @@ public:
 	
 	bool init();
 
-	bool apply(ImageType ***src, DepthType **pDepthMap, int th_same_depth = 5);
+	bool apply(DepthType **pDepthMap);
 
 private:
 	Image<ImageType> m_imgTemp[2];

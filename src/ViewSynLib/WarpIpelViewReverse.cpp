@@ -1,6 +1,6 @@
 #include "WarpIpelViewReverse.h"
 
-bool WarpIpelViewReverse::apply(ImageType *** src, DepthType ** pDepthMap, int th_same_depth)
+bool WarpIpelViewReverse::apply(ImageType *** src)
 {
 	int ptv, u, v;
 	int h, w;
@@ -19,7 +19,7 @@ bool WarpIpelViewReverse::apply(ImageType *** src, DepthType ** pDepthMap, int t
 			cvmSet(mv, 0, 0, w);
 			cvmSet(mv, 1, 0, h);
 			cvmSet(mv, 2, 0, 1.0);
-			cvmSet(mv, 2, 0, 1.0 / mView->m_dTableD2Z[mView->m_imgVirtualDepth.getImageY()[h][w]]);
+			cvmSet(mv, 2, 0, 1.0 / mView->m_tableD2Z[mView->m_imgVirtualDepth.getImageY()[h][w]]);
 			cvmMul(mView->m_matH_V2R, mv, m);
 
 			u = m->data.db[0] / m->data.db[2] + 0.5;

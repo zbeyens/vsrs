@@ -2,23 +2,17 @@
 
 #include "SystemIncludes.h"
 
-class InputStream
+class FileStream
 {
 public:
-	InputStream(const char* filename);
-	~InputStream() {}
-
-	//! Read the file (read-only)
-	void startReading();
+	FileStream(string filename);
+	~FileStream() {}
 
 	//! Close the file
-	void endReading();
+	void close();
 
 	//! Seek to the given offset in the file
 	void seek(int offset);
-
-	//! Return a read char of the file
-	char readChar();
 
 	//! Return whether the file is EOF
 	int isEndOfFile();
@@ -26,8 +20,10 @@ public:
 	FILE* getFile();
 	bool hasError();
 
-private:
+protected:
+	void checkFileOpenError();
+
 	FILE* f;				//!< File object
-	const char* mFilename;	//!< Filename
+	string m_filename;	//!< Filename
 	bool error = false;		//!< Error if open failed
 };

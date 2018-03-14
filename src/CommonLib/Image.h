@@ -4,6 +4,9 @@
 #include "ConfigSyn.h"
 #include "Tools.h"
 
+/**
+	Image class containing an IplImage and YUV components
+*/
 template <typename PixelType>
 class Image
 {

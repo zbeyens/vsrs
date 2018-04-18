@@ -2,9 +2,6 @@
 
 #include "ConfigSyn.h"
 
-
-
-
 template <class PixelType>
 class Filter
 {
@@ -17,6 +14,5 @@ public:
 	{
 	}
 
-	virtual void apply(PixelType **in, PixelType **out, int width, int height, int padding_size) = 0;
-
+	virtual void apply(PixelType **in, PixelType **out, int width, int height, int padding_size) {}
 };

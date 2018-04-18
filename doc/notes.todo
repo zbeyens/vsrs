@@ -37,14 +37,16 @@ Coding Guidelines:
   ☐ can not pass 2d array in parameter    https://stackoverflow.com/questions/27892464/c-return-value-type-does-not-match-the-function-type
   ☐ template vs inheritance: https://stackoverflow.com/questions/7264402/when-to-use-template-vs-inheritance
   ☐ template class error (unresolved external symbol): Templates must be defined in header files https://stackoverflow.com/questions/5776862/template-class-unresolved-external-symbols
-  ☐ avoid allocating on the heap if possible. use Foo foo = Foo() instead of new Foo(). Reasons: RAII, it's faster on the stack, no memory management. https://stackoverflow.com/questions/6500313/why-should-c-programmers-minimize-use-of-new
+  ☐ avoid allocating on the heap if possible. use Foo foo = Foo() instead of new Foo(). Reasons: RAII, it's faster on the stack, no memory management. https://stackoverflow.com/questions/6500313/why-should-c-programmers-minimize-use-of-new    https://stackoverflow.com/questions/7973138/how-do-i-choose-heap-allocation-vs-stack-allocation-in-c    https://stackoverflow.com/questions/11477523/when-and-why-to-declare-member-variables-on-the-heap-c
   ☐ init vs constructor https://softwareengineering.stackexchange.com/questions/175594/c-constructor-or-initialize-method-to-startup
   ☐ in C++, never use malloc, use new. https://stackoverflow.com/questions/184537/in-what-cases-do-i-use-malloc-vs-new
+  ☐ Mat vs IplImage https://stackoverflow.com/questions/3232022/opencv-iplimage-versus-mat-which-to-use
+  ☐ Builder vs Factory https://stackoverflow.com/questions/757743/what-is-the-difference-between-builder-design-pattern-and-factory-design-pattern
+  ☐ public const vs getter https://stackoverflow.com/a/4984708/6689201 use public members for "immutable data classes", use getters for "behaviour classes" and "mutable data classes": https://stackoverflow.com/a/32625408/6689201
+  ☐ Can't open file name: put the name of the file
 
 
 Comments:
-  ☐ Visual Studio 2017 IntelliSense is slow.
-
 
 	
 Draft of the architecture:

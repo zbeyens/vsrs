@@ -19,7 +19,7 @@ public:
 	bool apply(DepthType **pDepthMap);
 
 private:
-	Image<ImageType> m_imgTemp[2];
+	Image<ImageType> m_imgTemp[2]; //express holes after smoothing
 	Image<DepthType> m_imgDepthTemp[2];
 
 };

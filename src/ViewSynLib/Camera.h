@@ -9,6 +9,9 @@ public:
 	Camera();
 	~Camera() {};
 
+	/**
+		Get camera values from the config and init
+	*/
 	void init(uint indexCam);
 
 	double getZnear();
@@ -25,7 +28,7 @@ public:
 	CvMat* getMatProjVir();
 
 	bool isLeftSide();
-	double getBaselineDistance();
+	double getBaseline();
 
 private:
 	/**
@@ -33,21 +36,21 @@ private:
 	*/
 	bool    init_camera_param();
 
-	//! Create all matrices
-	void createMats();
+	
+	void createMats();	//!> Create all matrices
 
 	/**
 		Compute whether the camera is on the left of the virtual camera (from x-axis).
 		All cameras must be placed on the x-axis and their direction be the z-axis (either positive or negative)
 		Need to be modify (currently only the special case is supported)
 	*/
-	void computeSide();
+	void calcSide();
 	
 	/**
 		Compute baseline distance.
 		It is the eucl dist between Ref and Vir (using translation column)
 	*/
-	void computeBaselineDistance();
+	void calcBaselineDistance();
 
 	/**
 		Copy src->dest 3x3 matrices
@@ -59,18 +62,18 @@ private:
 
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 
-	double Z_near;
-	double Z_far;
-	double* mArrayInRef;
-	double* mArrayRotRef;
-	double* mArrayTransRef;
+	double m_zNear;
+	double m_zFar;
+	double* m_arrayInRef;
+	double* m_arrayRotRef;
+	double* m_arrayTransRef;
 
-	CvMat* mMatIn[2];		//!< Intrinsic parameter of [ref, vir] camera 3x3 matrix
-	CvMat* mMatEx[2];		//!< Extrinsic parameter of [ref, vir] camera 3x4 matrix
-	CvMat* mMatProj[2];		//!< Projection
+	CvMat* m_matIn[2];		//!> Intrinsic parameter of [ref, vir] camera 3x3 matrix
+	CvMat* m_matEx[2];		//!> Extrinsic parameter of [ref, vir] camera 3x4 matrix
+	CvMat* m_matProj[2];	//!> Projection
 
-	bool  mLeftSide;
+	bool  m_leftSide;		//!> if the camera is on the left of the virtual camera
 
-	double mBaselineDistance;
+	double m_baseline;		//!> baseline distance of the camera
 
 };

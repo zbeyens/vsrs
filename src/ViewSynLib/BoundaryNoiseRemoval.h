@@ -38,7 +38,7 @@
 #pragma warning(disable:4819)
 
 #include "SystemIncludes.h"
-#include "ImageData.h"
+#include "Image.h"
 #include "ImageResample.h"
 #include "ConfigSyn.h"
 
@@ -46,19 +46,37 @@
 #define min2(a,b)        (((a)-(b)>0)?(b):(a))
 #define guard(value, min, max)   ( max2((min), min2((max), (value)) ) )
 #define BOUNDARY_WINDOW_SIZE 7
-#define LEFTVIEW  0
-#define RGHTVIEW  1
 
 class BoundaryNoiseRemoval
 {
-private:
+protected:
+	
+	virtual void calcWeight() = 0;	// Calculating Weighting Factors
+	virtual void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& pSyn, bool SynthesisMode) = 0;
+	virtual void RemainingHoleFilling(Image<ImageType>* pSrc) = 0;
+	virtual void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole, bool SynthesisMode) = 0;
+
+	void calcDepthThreshold1DMode(bool ViewID);
+	void calcDepthThresholdGeneralMode(CvMat* matH_V2R); //!> compute the depthThreshold that is the mean of gap width
+
+	void copyImages(Image<ImageType>* pSyn_CurrView, Image<DepthType>* pSynDepth_CurrView, Image<HoleType>* pSynHole_CurrView, Image<HoleType>* pDepthHole_OthView);
+	void getBoundaryContour(IplImage* bound, IplImage* contour);
+	bool checkFourNeighbours(int i, int j, IplImage* check);
+	void getBackgroundContour(IplImage* Bound, IplImage* Depth, IplImage* check_Depth, IplImage* BackBound);
+	void expandedHoleforBNM(IplImage* Depth, IplImage* Hole, IplImage* BackBound, IplImage* ExpandedHole);
+	void DepthMatchingWithColor(Image<DepthType>* pDepth, Image<ImageType>* pColor, Image<HoleType>* pDepthMask);
+
 	ConfigSyn & cfg;
 
 	int m_width;
 	int m_height;
 	int m_precision;	//!> 1 if general mode, cfg.precision if 1D mode
 
-	int DEPTH_TH;
+	double m_weightLeft;
+	double m_weightRight;
+
+
+	int m_depthThreshold;
 	IplImage* m_imgSynWithHole;
 	IplImage* m_imgBound;
 	IplImage* m_imgBackBound;
@@ -73,8 +91,8 @@ private:
 	CvMat* matLeftH_V2R;  // for General Mode
 	CvMat* matRightH_V2R;  // for General Mode
 
-	double  LeftBaseLineDistance;
-	double  RightBaseLineDistance;
+	double  m_LeftBaseLineDistance;
+	double  m_RightBaseLineDistance;
 
 	double *LTranslation;	//!> The camera distance from the left (0) and right (1) camera
 	double *duPrincipal;	//!> The diff in principal point offset from left (0) and right (1) camera
@@ -85,7 +103,7 @@ public:
 	BoundaryNoiseRemoval();
 	~BoundaryNoiseRemoval();
 
-	bool    DoBoundaryNoiseRemoval(ImageData<ImageType> pRefLeft, ImageData<ImageType> pRefRight, ImageData<DepthType> pRefDepthLeft, ImageData<DepthType> pRefDepthRight, ImageData<HoleType> pRefHoleLeft, ImageData<HoleType> pRefHoleRight, ImageData<ImageType> pSynYuvBuffer, bool SynthesisMode);
+	bool    apply(Image<ImageType>* pRefLeft, Image<ImageType>* pRefRight, Image<DepthType>* pRefDepthLeft, Image<DepthType>* pRefDepthRight, Image<HoleType>* pRefHoleLeft, Image<HoleType>* pRefHoleRight, unique_ptr<Image<ImageType>>& pSynYuvBuffer, bool SynthesisMode);
 	void    xInit();
 
 	void SetLeftH_V2R(CvMat *sH_V2R) { matLeftH_V2R = sH_V2R; }
@@ -96,25 +114,8 @@ public:
 	void SetZnear(double *sZnear) { Znear = sZnear; }
 	void SetZfar(double *sZfar) { Zfar = sZfar; }
 
-	void SetLeftBaseLineDist(double sDist) { LeftBaseLineDistance = sDist; }
-	void SetRightBaseLineDist(double sDist) { RightBaseLineDistance = sDist; }
-
-	void calcDepthThreshold1DMode(bool ViewID);
-	void calcDepthThresholdGeneralMode(CvMat* matH_V2R);
-
-	void copyImages(ImageData<ImageType> pSyn_CurrView, ImageData<DepthType> pSynDepth_CurrView, ImageData<HoleType> pSynHole_CurrView, ImageData<HoleType> pDepthHole_OthView);
-	void getBoundaryContour(IplImage* bound, IplImage* contour);
-	bool checkFourNeighbours(int i, int j, IplImage* check);
-	void getBackgroundContour(IplImage* Bound, IplImage* Depth, IplImage* check_Depth, IplImage* BackBound);
-	void expandedHoleforBNM(IplImage* Depth, IplImage* Hole, IplImage* BackBound, IplImage* ExpandedHole);
-	void HoleFillingWithExpandedHole(ImageData<ImageType> pSrc, ImageData<ImageType> pTar, IplImage* m_imgExpandedHole, bool SynthesisMode);
-	void Blending(ImageData<ImageType> pLeft, ImageData<ImageType> pRight, ImageData<ImageType> pSyn, bool SynthesisMode);
-	void ColorFillingSmallHoleFor1DMode(ImageData<ImageType> pSrc, ImageData<ImageType> pDst);
-	void DepthFillingSmallHoleFor1DMode(ImageData<DepthType> pSrc, ImageData<DepthType> pDst);
-	void DepthMatchingWithColor(ImageData<DepthType> pDepth, ImageData<ImageType> pColor, ImageData<HoleType> pDepthMask);
-	void ColorHoleCleaning(ImageData<ImageType> pSrc);
-	void RemainingHoleFilling_General(ImageData<ImageType> pSrc);
-	void RemainingHoleFilling_1DMode(ImageData<ImageType> pSrc);
+	void SetLeftBaseLineDist(double sDist) { m_LeftBaseLineDistance = sDist; }
+	void SetRightBaseLineDist(double sDist) { m_RightBaseLineDistance = sDist; }
 };
 
 #endif

@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
+//#include <utility>  //declarations of unique_ptr
 
 //Standard C headers(for example, cstdint, dirent.h, etc.)
 #include <stdio.h>
@@ -39,3 +41,4 @@
 
 
 using namespace std;
+using namespace cv;

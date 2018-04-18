@@ -8,6 +8,23 @@
 View::View()
 {
 	m_matH_R2V = m_matH_V2R = NULL;
+
+	m_imageNotUpsampled = new Image<ImageType>();
+	m_image = new Image<ImageType>();
+	m_depth = new Image<DepthType>();
+
+	int width = cfg.getSourceWidth();
+	int height = cfg.getSourceHeight();
+
+	m_synImageWithHole = new Image<ImageType>(height, width, IMAGE_CHROMA_FORMAT);
+	m_synDepthWithHole = new Image<DepthType>(height, width, DEPTHMAP_CHROMA_FORMAT);
+	m_synHoles = new Image<HoleType>(height, width, HOLE_CHROMA_FORMAT);
+	m_synImageWithHole->initMat(width, height, 3);
+	m_synDepthWithHole->initMat(width, height, 1);
+	m_synHoles->initMat(width, height, 1);
+
+	m_fillableHoles = new Image<HoleType>();
+	m_fillableHoles->initMat(width, height, MASK_CHANNELS);
 }
 
 View::~View()
@@ -24,9 +41,9 @@ void View::xReleaseMemory()
 	Tools::safeReleaseMat(m_matH_V2R);
 }
 
-bool View::Init(uint indexSyn)
+bool View::init(uint indexSyn)
 {
-	m_indexSyn = indexSyn;
+	m_indexView = indexSyn;
 
 	xReleaseMemory();
 
@@ -43,24 +60,27 @@ bool View::initIntermImages()
 	int sh = cfg.getSourceHeight();
 
 	//create images
-	m_imgVirtualImage.create(sw, sh, IMAGE_CHANNELS);
-	m_imgVirtualDepth.create(sw, sh, DEPTH_CHANNELS);
-	m_imgSuccessSynthesis.create(sw, sh, 1);
-	m_imgHoles.create(sw, sh, 1);
-	m_imgBound.create(sw, sh, 1);
-	m_imgMask[0].create(sw, sh, MASK_CHANNELS);
-	m_imgMask[1].create(sw, sh, MASK_CHANNELS);
+	m_synImage = new Image<ImageType>();
+	m_synDepth = new Image<DepthType>();
+	m_synFills = new Image<ImageType>();
+	m_synImage->initMat(sw, sh, IMAGE_CHANNELS);
+	m_synDepth->initMat(sw, sh, DEPTH_CHANNELS);
+	m_synFills->initMat(sw, sh, 1);
+	//m_synHoles->initMat(sw, sh, 1);
+	m_imgBound.initMat(sw, sh, 1);
+	m_imgMask[0].initMat(sw, sh, MASK_CHANNELS);
+	m_imgMask[1].initMat(sw, sh, MASK_CHANNELS);
 
-	if (!m_imgVirtualImage.initYUV(m_imgSuccessSynthesis.getImageIpl()->widthStep)) return false;
-	if (!m_imgVirtualDepth.initY()) return false;
-	if (!m_imgSuccessSynthesis.initY()) return false;
+	if (!m_synImage->initYUVFromMat(m_synFills->getMat()->widthStep)) return false;
+	if (!m_synDepth->initYFromMat()) return false;
+	if (!m_synFills->initYFromMat()) return false;
 
 	return true;
 }
 
 bool View::init_3Dwarp()
 {
-	cam.init(m_indexSyn);
+	cam.init(m_indexView);
 
 	m_invZNearMinusInvZFar = 1.0 / cam.getZnear() - 1.0 / cam.getZfar();
 	m_invZfar = 1.0 / cam.getZfar();
@@ -92,17 +112,13 @@ bool View::computeDepth()
 	for (int i = 0; i < MAX_DEPTH; i++)
 	{
 		double distance = 1.0 / (double(i)*m_invZNearMinusInvZFar / (MAX_DEPTH - 1.0) + m_invZfar);
-		switch (cfg.getDepthType())
-		{
-		case 0:
+
+		if (cfg.getDepthType() == cfg.DEPTH_FROM_CAMERA)
 			computeDepthFromCam(i, distance);
-			break;
-		case 1:
+		else if (cfg.getDepthType() == cfg.DEPTH_FROM_ORIGIN)
 			computeDepthFromSpace(i, distance);
-			break;
-		default:
+		else
 			return false;
-		}
 	}
 }
 
@@ -116,12 +132,18 @@ void View::computeDepthFromSpace(int i, double distance)
 	m_tableD2Z[i] = distance;
 }
 
-bool View::xSynthesizeView(ImageType ***src, DepthType **pDepthMap)
+bool View::synthesizeView()
 {
-	if (m_depthSynthesis->apply(pDepthMap))
-	{
-		return m_viewSynthesisReverse->apply(src);
-	}
+	ImageType*** pImage = m_image->getData();
+	DepthType** pDepthMap = m_depth->Y;
 
-	return false;
+	m_depthSynthesis->apply(pDepthMap);
+	m_viewSynthesisReverse->apply(pImage);
+
+	// copy warping results for BNR
+	m_synImageWithHole->convertMatToBuffer1D(m_synImage, 3);
+	m_synDepthWithHole->convertMatToBuffer1D(m_synDepth, 1);
+	m_synHoles->convertMatToBuffer1D(m_synHoles, 1);
+
+	return true;
 }

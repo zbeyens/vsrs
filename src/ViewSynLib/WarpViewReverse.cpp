@@ -35,52 +35,52 @@ bool WarpViewReverse::apply(ImageType *** src)
 	CvMat* m = cvCreateMat(4, 1, CV_64F);
 	CvMat* mv = cvCreateMat(4, 1, CV_64F);
 
-	mView->m_imgVirtualImage.setZero();
+	m_view->getSynImage()->clearMat();
 
 	for (h = 0; h < cfg.getSourceHeight(); h++)
 	{
 		for (w = 0; w < cfg.getSourceWidth(); w++)
 		{
-			if (mView->m_imgSuccessSynthesis.getImageY()[h][w] == 0) continue;
+			if (m_view->getSynFills()->getImageY()[h][w] == 0) continue;
 
 			ptv = w + h * cfg.getSourceWidth();
 			//#ifdef POZNAN_GENERAL_HOMOGRAPHY
 			cvmSet(mv, 0, 0, w);
 			cvmSet(mv, 1, 0, h);
 			cvmSet(mv, 2, 0, 1.0);
-			cvmSet(mv, 3, 0, 1.0 / mView->m_tableD2Z[mView->m_imgVirtualDepth.getImageY()[h][w]]);
-			cvmMul(mView->m_matH_V2R, mv, m);
+			cvmSet(mv, 3, 0, 1.0 / m_view->m_tableD2Z[m_view->getSynDepth()->getImageY()[h][w]]);
+			cvmMul(m_view->m_matH_V2R, mv, m);
 
 			u = m->data.db[0] * cfg.getPrecision() / m->data.db[2] + 0.5;
 			v = m->data.db[1] / m->data.db[2] + 0.5;
 			if (u >= 0 && u < maxWidth && v >= 0 && v < cfg.getSourceHeight())
 			{
-				mView->m_imgVirtualImage.getImageIpl()->imageData[ptv * 3] = src[0][v][u];
-				mView->m_imgVirtualImage.getImageIpl()->imageData[ptv * 3 + 1] = src[1][v][u];
-				mView->m_imgVirtualImage.getImageIpl()->imageData[ptv * 3 + 2] = src[2][v][u];
+				m_view->getSynImage()->getMat()->imageData[ptv * 3] = src[0][v][u];
+				m_view->getSynImage()->getMat()->imageData[ptv * 3 + 1] = src[1][v][u];
+				m_view->getSynImage()->getMat()->imageData[ptv * 3 + 2] = src[2][v][u];
 			}
 			else
 			{
-				mView->m_imgSuccessSynthesis.getImageY()[h][w] = 0;
+				m_view->getSynFills()->getImageY()[h][w] = 0;
 			}
 		}
 	}
 	cvReleaseMat(&m);
 	cvReleaseMat(&mv);
 
-	cvNot(mView->m_imgSuccessSynthesis.getImageIpl(), mView->m_imgHoles.getImageIpl()); // pixels which couldn't be synthesized
+	cvNot(m_view->getSynFills()->getMat(), m_view->getSynHoles()->getMat()); // pixels which couldn't be synthesized
 
 	if (cfg.getIvsrsInpaint() == 1)
 	{
-		cvDilate(mView->m_imgHoles.getImageIpl(), mView->m_imgHoles.getImageIpl()); // simple dilate with 3x3 mask
-		cvNot(mView->m_imgHoles.getImageIpl(), mView->m_imgSuccessSynthesis.getImageIpl());
+		cvDilate(m_view->getSynHoles()->getMat(), m_view->getSynHoles()->getMat()); // simple dilate with 3x3 mask
+		cvNot(m_view->getSynHoles()->getMat(), m_view->getSynFills()->getMat());
 	}
 	else
 	{
-		cvCopy(mView->m_imgHoles.getImageIpl(), mView->m_imgBound.getImageIpl());
-		erodebound(mView->m_imgBound.getImageIpl(), mView->cam.isLeftSide());              // background-side boundary of holes
-		cvDilate(mView->m_imgBound.getImageIpl(), mView->m_imgBound.getImageIpl(), m_convKernel, 1);  // dilate by using circle-shape kernel
-		cvOr(mView->m_imgHoles.getImageIpl(), mView->m_imgBound.getImageIpl(), mView->m_imgMask[0].getImageIpl());    // pixels which want to be modified by other synthesized images
+		cvCopy(m_view->getSynHoles()->getMat(), m_view->m_imgBound.getMat());
+		erodebound(m_view->m_imgBound.getMat(), m_view->getCam().isLeftSide());              // background-side boundary of holes
+		cvDilate(m_view->m_imgBound.getMat(), m_view->m_imgBound.getMat(), m_convKernel, 1);  // dilate by using circle-shape kernel
+		cvOr(m_view->getSynHoles()->getMat(), m_view->m_imgBound.getMat(), m_view->m_imgMask[0].getMat());    // pixels which want to be modified by other synthesized images
 	}
 
 	return true;

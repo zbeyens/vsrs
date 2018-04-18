@@ -50,9 +50,8 @@
 #include "ViewSynthesis1D.h"
 
 ViewSynthesis1D::ViewSynthesis1D()
-	: cfg(ConfigSyn::getInstance())
 {
-	ConfigSyn& cfg = ConfigSyn::getInstance();
+	m_imagesWidth = m_width;
 
 	int i;
 
@@ -102,15 +101,30 @@ ViewSynthesis1D::ViewSynthesis1D()
 	SetZfarL(cfg.getLeftFarthestDepthValue());
 	SetZnearR(cfg.getRightNearestDepthValue());
 	SetZfarR(cfg.getRightFarthestDepthValue());
-	SetPrecision(cfg.getPrecision());  
+	SetPrecision(cfg.getPrecision());
 
 	m_width = cfg.getSourceWidth();
 	m_height = cfg.getSourceHeight();
+
+	m_imgLeftWithHole = new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT);
+	m_imgRightWithHole = new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT);
+	m_depthLeftWithHole = new Image<DepthType>(m_height, m_width2, DEPTHMAP_CHROMA_FORMAT);
+	m_depthRightWithHole = new Image<DepthType>(m_height, m_width2, DEPTHMAP_CHROMA_FORMAT);
+	m_holeLeft = new Image<HoleType>(m_height, m_width2, HOLE_CHROMA_FORMAT);
+	m_holeRight = new Image<HoleType>(m_height, m_width2, HOLE_CHROMA_FORMAT);
+
 	AllocMem();
 }
 
 ViewSynthesis1D::~ViewSynthesis1D()
 {
+	Tools::safeDelete(m_imgLeftWithHole);
+	Tools::safeDelete(m_imgRightWithHole);
+	Tools::safeDelete(m_depthLeftWithHole);
+	Tools::safeDelete(m_depthRightWithHole);
+	Tools::safeDelete(m_holeLeft);
+	Tools::safeDelete(m_holeRight);
+
 	int i;
 	for (i = 0; i < 2; i++)
 	{
@@ -181,10 +195,10 @@ int  ViewSynthesis1D::AllocMem()
 	int i;
 	size_t sz;
 
-	m_width2 = m_width*m_upsampleRefs;
+	m_width2 = m_width * m_upsampleRefs;
 
 	//BoundaryMask[*] is now the size of Width2*Height (previously, Width*Height)
-	sz = m_width2*m_height;
+	sz = m_width2 * m_height;
 	// When SplattingOption==2 or cfg.getCleanNoiseOption()==1
 	if (cfg.getSplattingOption() == 2 || cfg.getCleanNoiseOption() == 1)
 	{
@@ -196,7 +210,7 @@ int  ViewSynthesis1D::AllocMem()
 			}
 	}
 
-	sz = m_width2*m_height*m_subPelOption;
+	sz = m_width2 * m_height*m_subPelOption;
 
 	for (i = 0; i < 3; i++)
 	{
@@ -275,7 +289,7 @@ int  ViewSynthesis1D::AllocMem()
 	}
 
 	// Scaled down version
-	sz = m_width2*m_height;
+	sz = m_width2 * m_height;
 	if (SynY[FINLVIEW] == NULL)
 	{
 		SynY[FINLVIEW] = (unsigned char*)malloc(sz * sizeof(unsigned char));
@@ -387,13 +401,13 @@ void ViewSynthesis1D::PixelMapping(int x, int y, unsigned char d, float z, unsig
 #if !VSRS3_ORIGINAL
 	int   left_pixel, right_pixel, left2_pixel, right2_pixel;
 #endif
-	int   line_size = m_width2*m_subPelOption;
+	int   line_size = m_width2 * m_subPelOption;
 	int   enable_warp_flag = 2;
 	int   depth_diff_th = 10;
 	int   average_depth = 0;
 
 	// ind = (x,y) is the pixel position in ref view
-	ind = x + y*m_width2;
+	ind = x + y * m_width2;
 
 	// Do splatting?
 	if (cfg.getSplattingOption() == 0)
@@ -425,7 +439,7 @@ void ViewSynthesis1D::PixelMapping(int x, int y, unsigned char d, float z, unsig
 	if (x2 < line_size && x2 >= 0 &&
 		y2 < m_height              && y2 >= 0) // (x2,y2) must fall within the picture
 	{
-		ind2 = x2 + y2*line_size;
+		ind2 = x2 + y2 * line_size;
 		nearToCamera = false;
 		if (Mask[ViewId][ind2] == NOTHOLEPIXEL)
 		{
@@ -462,10 +476,10 @@ void ViewSynthesis1D::PixelMapping(int x, int y, unsigned char d, float z, unsig
 		if (Mask[ViewId][ind2] == HOLEPIXEL)// (x2,y2) is not filled with any value yet, should notice it is not a background pixel
 		{
 			//constrain
-			left_pixel = CLIP(x2 - 1, 0, line_size - 1) + y2*line_size;
-			left2_pixel = CLIP(x2 - 2, 0, line_size - 1) + y2*line_size;
-			right_pixel = CLIP(x2 + 1, 0, line_size - 1) + y2*line_size;
-			right2_pixel = CLIP(x2 + 2, 0, line_size - 1) + y2*line_size;
+			left_pixel = CLIP(x2 - 1, 0, line_size - 1) + y2 * line_size;
+			left2_pixel = CLIP(x2 - 2, 0, line_size - 1) + y2 * line_size;
+			right_pixel = CLIP(x2 + 1, 0, line_size - 1) + y2 * line_size;
+			right2_pixel = CLIP(x2 + 2, 0, line_size - 1) + y2 * line_size;
 
 			//filter wrong background pixels caused by per-pixel processing
 			//do not warp the pixel, because it is a suspicious pixel in the gap of foreground object
@@ -653,7 +667,7 @@ void ViewSynthesis1D::ForwardWarpSingleView(int ViewId)
 			for (x = 0; x < m_width2; x++)
 			{
 				// ind = (x,y) is the pixel position in ref view
-				ind = x + y*m_width2;
+				ind = x + y * m_width2;
 				// Calc real depth z from depth image
 				depthLevel = RefDepth[ViewId][ind];
 				z = 1.0 / ((depthLevel / (MaxTypeValue<DepthType>() - 1.0)) * (1 / Znear[ViewId] - 1 / Zfar[ViewId]) + (1 / Zfar[ViewId]));
@@ -675,7 +689,7 @@ void ViewSynthesis1D::ForwardWarpSingleView(int ViewId)
 			for (x = m_width2 - 1; x >= 0; x--)
 			{
 				// ind = (x,y) is the pixel position in ref view
-				ind = x + y*m_width2;
+				ind = x + y * m_width2;
 				// Calc real depth z from depth image
 				depthLevel = RefDepth[ViewId][ind];
 				z = 1.0 / ((depthLevel / (MaxTypeValue<DepthType>() - 1.0)) * (1 / Znear[ViewId] - 1 / Zfar[ViewId]) + (1 / Zfar[ViewId]));
@@ -809,7 +823,7 @@ void ViewSynthesis1D::ForwardWarp() // unsigned char* RefLeft, unsigned char* Re
 int ViewSynthesis1D::CountHolePixels(unsigned char* MaskMap, int x, int y, int width)
 {
 	int blksizey = 3;
-	int blksizex = blksizey*m_subPelOption*m_upsampleRefs;
+	int blksizex = blksizey * m_subPelOption*m_upsampleRefs;
 	int startx, endx;
 	int starty, endy;
 	int i, j;
@@ -828,7 +842,7 @@ int ViewSynthesis1D::CountHolePixels(unsigned char* MaskMap, int x, int y, int w
 
 	for (j = starty; j < endy; j++)
 	{
-		ind = j*width + startx;
+		ind = j * width + startx;
 		for (i = startx; i < endx; i++)
 		{
 			counter += MaskMap[ind];
@@ -884,7 +898,7 @@ void ViewSynthesis1D::Merge()
 #endif
 	int HoleCountLeft, HoleCountRight;
 	bool isLeftNearToCamera = true;  // just to avoid compile warning
-	int WidthSyn = m_width2*m_subPelOption;
+	int WidthSyn = m_width2 * m_subPelOption;
 
 	ind = 0;
 	for (y = 0; y < m_height; y++)
@@ -942,13 +956,13 @@ void ViewSynthesis1D::Merge()
 				}
 				else if (cfg.getMergingOption() == 1)
 				{// Camera distance as weighting factor
-					Y = WeightLeft*(double)SynY[LEFTVIEW][ind] + WeightRight*(double)SynY[RGHTVIEW][ind];
-					U = WeightLeft*(double)SynU[LEFTVIEW][ind] + WeightRight*(double)SynU[RGHTVIEW][ind];
-					V = WeightLeft*(double)SynV[LEFTVIEW][ind] + WeightRight*(double)SynV[RGHTVIEW][ind];
+					Y = WeightLeft * (double)SynY[LEFTVIEW][ind] + WeightRight * (double)SynY[RGHTVIEW][ind];
+					U = WeightLeft * (double)SynU[LEFTVIEW][ind] + WeightRight * (double)SynU[RGHTVIEW][ind];
+					V = WeightLeft * (double)SynV[LEFTVIEW][ind] + WeightRight * (double)SynV[RGHTVIEW][ind];
 #if USE_ZMAP
-					Z = WeightLeft*(double)Zmap[LEFTVIEW][ind] + WeightRight*(double)Zmap[RGHTVIEW][ind];
+					Z = WeightLeft * (double)Zmap[LEFTVIEW][ind] + WeightRight * (double)Zmap[RGHTVIEW][ind];
 #endif
-					D = WeightLeft*(double)Dmap[LEFTVIEW][ind] + WeightRight*(double)Dmap[RGHTVIEW][ind];
+					D = WeightLeft * (double)Dmap[LEFTVIEW][ind] + WeightRight * (double)Dmap[RGHTVIEW][ind];
 					SynY[MERGVIEW][ind] = (unsigned char)Y;
 					SynU[MERGVIEW][ind] = (unsigned char)U;
 					SynV[MERGVIEW][ind] = (unsigned char)V;
@@ -1004,13 +1018,13 @@ void ViewSynthesis1D::Merge()
 						// Otherwise, do average
 						else //camera distance weighting
 						{
-							Y = WeightLeft*(double)SynY[LEFTVIEW][ind] + WeightRight*(double)SynY[RGHTVIEW][ind];
-							U = WeightLeft*(double)SynU[LEFTVIEW][ind] + WeightRight*(double)SynU[RGHTVIEW][ind];
-							V = WeightLeft*(double)SynV[LEFTVIEW][ind] + WeightRight*(double)SynV[RGHTVIEW][ind];
+							Y = WeightLeft * (double)SynY[LEFTVIEW][ind] + WeightRight * (double)SynY[RGHTVIEW][ind];
+							U = WeightLeft * (double)SynU[LEFTVIEW][ind] + WeightRight * (double)SynU[RGHTVIEW][ind];
+							V = WeightLeft * (double)SynV[LEFTVIEW][ind] + WeightRight * (double)SynV[RGHTVIEW][ind];
 #if USE_ZMAP
-							Z = WeightLeft*(double)Zmap[LEFTVIEW][ind] + WeightRight*(double)Zmap[RGHTVIEW][ind];
+							Z = WeightLeft * (double)Zmap[LEFTVIEW][ind] + WeightRight * (double)Zmap[RGHTVIEW][ind];
 #endif
-							D = WeightLeft*(double)Dmap[LEFTVIEW][ind] + WeightRight*(double)Dmap[RGHTVIEW][ind];
+							D = WeightLeft * (double)Dmap[LEFTVIEW][ind] + WeightRight * (double)Dmap[RGHTVIEW][ind];
 							SynY[MERGVIEW][ind] = (unsigned char)Y;
 							SynU[MERGVIEW][ind] = (unsigned char)U;
 							SynV[MERGVIEW][ind] = (unsigned char)V;
@@ -1231,9 +1245,9 @@ int ViewSynthesis1D::IsBackgroundOnRight(int xleft, int xright, int y, int blksi
 		for (i = startx; i <= endx; i++)
 		{
 #if USE_ZMAP
-			dleft += (double)Zmap[MERGVIEW][i + j*m_width2*m_subPelOption];
+			dleft += (double)Zmap[MERGVIEW][i + j * m_width2*m_subPelOption];
 #else
-			dleft += (double)Dmap[MERGVIEW][i + j*Width2*SubPelOption];
+			dleft += (double)Dmap[MERGVIEW][i + j * Width2*SubPelOption];
 #endif
 			dn++;
 		}
@@ -1246,8 +1260,8 @@ int ViewSynthesis1D::IsBackgroundOnRight(int xleft, int xright, int y, int blksi
 	endx = xright + blksize - 1;
 	endy = y + blksizeyPlus;
 
-	if (endx >= m_width2*m_subPelOption)
-		endx = m_width2*m_subPelOption - 1;
+	if (endx >= m_width2 * m_subPelOption)
+		endx = m_width2 * m_subPelOption - 1;
 	if (starty < 0)
 		starty = 0;
 	if (endy >= m_height)
@@ -1259,9 +1273,9 @@ int ViewSynthesis1D::IsBackgroundOnRight(int xleft, int xright, int y, int blksi
 		for (i = startx; i <= endx; i++)
 		{
 #if USE_ZMAP
-			dright += (double)Zmap[MERGVIEW][i + j*m_width2*m_subPelOption];
+			dright += (double)Zmap[MERGVIEW][i + j * m_width2*m_subPelOption];
 #else
-			dright += (double)Dmap[MERGVIEW][i + j*Width2*SubPelOption];
+			dright += (double)Dmap[MERGVIEW][i + j * Width2*SubPelOption];
 #endif
 			dn++;
 		}
@@ -1396,13 +1410,6 @@ void ViewSynthesis1D::FillHoles(unsigned char* Yo, unsigned char* Yi)
  */
 void ViewSynthesis1D::ScaleDownSyn(ImageType* Yo, ImageType* Yi)
 {
-#if 0
-	// Using AVC downsampling filter
-	int i, j;
-	int k, x, idx;
-	long int s, t;
-#endif
-
 	if (m_subPelOption == 1)
 	{
 		memcpy(Yo, Yi, m_width2*m_height);
@@ -1416,30 +1423,6 @@ void ViewSynthesis1D::ScaleDownSyn(ImageType* Yo, ImageType* Yi)
 	{
 		ImageResample<ImageType> resample;
 		resample.DownsampleView(Yo, Yi, m_width2*m_subPelOption, m_height, 4);
-#if 0
-		// Using AVC downsampling filter
-		int WidthMinus1 = Width2*SubPelOption - 1;
-		unsigned char *in, *out;
-		int pel[7];
-
-		for (j = 0; j < Height; j++)
-		{
-			out = &Yo[j*Width2*SubPelOption / 4];
-			in = &Yi[j*Width2*SubPelOption];
-			for (i = 0; i < Width2*SubPelOption; i += 4)
-			{
-				pel[0] = CLIP(i - 3, 0, WidthMinus1);
-				pel[1] = CLIP(i - 2, 0, WidthMinus1);
-				pel[2] = CLIP(i - 1, 0, WidthMinus1);
-				pel[3] = CLIP(i, 0, WidthMinus1);
-				pel[4] = CLIP(i + 1, 0, WidthMinus1);
-				pel[5] = CLIP(i + 2, 0, WidthMinus1);
-				pel[6] = CLIP(i + 3, 0, WidthMinus1);
-
-				out[(i >> 2)] = CLIP((16 * in[pel[3]] + 9 * (in[pel[2]] + in[pel[4]]) - (in[pel[0]] + in[pel[6]])) >> 5, 0, MaxTypeValue<ImageType>() - 1);
-			}
-		}
-#endif
 	}
 	else
 		printf("Error: The scale factor is not supported: %d\n", m_subPelOption);
@@ -1478,7 +1461,7 @@ void ViewSynthesis1D::DetectBoundary(HoleType* edge, DepthType* depth, int width
 
 	for (i = 0; i < height; i++)
 	{
-		k = i*width;
+		k = i * width;
 		*(edge + k) = NONE; //0th of each row
 		for (j = 1; j < width; j++) //x-(x-1)
 		{
@@ -1549,7 +1532,7 @@ void ViewSynthesis1D::DetectBoundary(HoleType* edge, DepthType* depth, int width
 	//debug
 	int count1 = 0;
 	int count2 = 0;
-	int sz = width*height;
+	int sz = width * height;
 	ind = 0;
 	for (i = 0; i < sz; i++)
 	{
@@ -1624,7 +1607,7 @@ int  ViewSynthesis1D::GetSynMask(unsigned char* SynMask)
 					//}
 					//SynMask[x+y*Width] = flag;
 
-					SynMask[x + y*m_width] = Mask[MERGVIEW][x*m_subPelOption*m_upsampleRefs + y*m_width*m_subPelOption*m_upsampleRefs];
+					SynMask[x + y * m_width] = Mask[MERGVIEW][x*m_subPelOption*m_upsampleRefs + y * m_width*m_subPelOption*m_upsampleRefs];
 				}
 		}
 	}
@@ -1660,7 +1643,7 @@ int  ViewSynthesis1D::GetSynDepth(unsigned char* SynDepth)
 				for (x = 0; x < m_width; x++)
 				{
 					// In case of subpel precision, the following code simply pick up the integer pixels.
-					SynDepth[x + y*m_width] = Dmap[MERGVIEW][x*m_subPelOption*m_upsampleRefs + y*m_width*m_subPelOption*m_upsampleRefs];
+					SynDepth[x + y * m_width] = Dmap[MERGVIEW][x*m_subPelOption*m_upsampleRefs + y * m_width*m_subPelOption*m_upsampleRefs];
 				}
 		}
 	}
@@ -1694,8 +1677,19 @@ int  ViewSynthesis1D::GetSynDepth(unsigned char* SynDepth)
  *    true: success
  *    false: fail
  */
-bool ViewSynthesis1D::apply(ImageType* RefLeft, ImageType* RefRight, DepthType* RefDepthLeft, DepthType* RefDepthRight, ImageType* Syn)
+bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& imgSyn)
 {
+	upsample();
+
+	SetFrameNumber(getFrameNumber()); //Zhejiang
+
+	ImageType* RefLeft = m_views[0]->getImage()->getBuffer1D();
+	ImageType* RefRight = m_views[1]->getImage()->getBuffer1D();
+	DepthType* RefDepthLeft = m_views[0]->getDepth()->getBuffer1D();
+	DepthType* RefDepthRight = m_views[1]->getDepth()->getBuffer1D();
+
+	ImageType* Syn = imgSyn->getBuffer1D();
+
 	ImageType* pRefLeft;
 	ImageType* pRefRight;
 	DepthType* pRefDepthLeft;
@@ -1703,37 +1697,7 @@ bool ViewSynthesis1D::apply(ImageType* RefLeft, ImageType* RefRight, DepthType* 
 	ImageResample<ImageType> Resampling;
 	ImageResample<DepthType> ResamplingDepth;
 
-	m_width2 = m_width*m_upsampleRefs;
-
-#if 0
-	{
-		static int flag = 0;
-		FILE *fp;
-		if (flag == 0)
-			fp = fopen("ref_left_1024x768_16p.yuv", "wb");
-		else
-			fp = fopen("ref_left_1024x768_16p.yuv", "ab");
-		if (fp)
-		{
-			fwrite(&RefLeft[0], 1, Width*Height, fp);
-			fwrite(&RefLeft[Width*Height], 1, Width*Height, fp);
-			fwrite(&RefLeft[Width*Height * 2], 1, Width*Height, fp);
-			fclose(fp);
-		}
-		if (flag == 0)
-			fp = fopen("ref_rght_1024x768_16p.yuv", "wb");
-		else
-			fp = fopen("ref_rght_1024x768_16p.yuv", "ab");
-		if (fp)
-		{
-			fwrite(&RefRight[0], 1, Width*Height, fp);
-			fwrite(&RefRight[Width*Height], 1, Width*Height, fp);
-			fwrite(&RefRight[Width*Height * 2], 1, Width*Height, fp);
-			fclose(fp);
-		}
-		flag++;
-	}
-#endif
+	m_width2 = m_width * m_upsampleRefs;
 
 	//Zhejiang, Temporal Improvement Option
 	if (cfg.getTemporalImprovementOption() == 1)
@@ -1765,38 +1729,9 @@ bool ViewSynthesis1D::apply(ImageType* RefLeft, ImageType* RefRight, DepthType* 
 		ResamplingDepth.UpsampleView(pRefDepthRight, RefDepthRight, m_width, m_height, m_upsampleRefs);
 	}
 
-
 	// Warp the ref pictures
 	ForwardWarp(); // pRefLeft, pRefRight, pRefDepthLeft, pRefDepthRight
-#if 0
-	{
-		static int flag = 0;
-		FILE *fp;
-		if (flag == 0)
-			fp = fopen("syn_left_4096x768_16p.yuv", "wb");
-		else
-			fp = fopen("syn_left_4096x768_16p.yuv", "ab");
-		if (fp)
-		{
-			fwrite(SynY[LEFTVIEW], 1, Width2*Height*SubPelOption, fp);
-			fwrite(SynU[LEFTVIEW], 1, Width2*Height*SubPelOption, fp);
-			fwrite(SynV[LEFTVIEW], 1, Width2*Height*SubPelOption, fp);
-			fclose(fp);
-		}
-		if (flag == 0)
-			fp = fopen("syn_rght_4096x768_16p.yuv", "wb");
-		else
-			fp = fopen("syn_rght_4096x768_16p.yuv", "ab");
-		if (fp)
-		{
-			fwrite(SynY[RGHTVIEW], 1, Width2*Height*SubPelOption, fp);
-			fwrite(SynU[RGHTVIEW], 1, Width2*Height*SubPelOption, fp);
-			fwrite(SynV[RGHTVIEW], 1, Width2*Height*SubPelOption, fp);
-			fclose(fp);
-		}
-		flag++;
-	}
-#endif
+
 	// Merge the two synthesized view into one
 	Merge();
 
@@ -1814,79 +1749,48 @@ bool ViewSynthesis1D::apply(ImageType* RefLeft, ImageType* RefRight, DepthType* 
 
 		if (m_upsampleRefs != 1)
 		{
-#if 0
-			{
-				static int flag = 0;
-				FILE *fp;
-				if (flag == 0)
-					fp = fopen("syn_4096x768_16p.yuv", "wb");
-				else
-					fp = fopen("syn_4096x768_16p.yuv", "ab");
-				if (fp)
-				{
-					fwrite(SynY[FINLVIEW], 1, 4096 * 768, fp);
-					fwrite(SynU[FINLVIEW], 1, 4096 * 768, fp);
-					fwrite(SynV[FINLVIEW], 1, 4096 * 768, fp);
-					fclose(fp);
-				}
-				flag++;
-			}
-#endif
-
 			Resampling.DownsampleView(SynY[FINLVIEW], SynY[FINLVIEW], m_width2, m_height, m_upsampleRefs);
 			Resampling.DownsampleView(SynU[FINLVIEW], SynU[FINLVIEW], m_width2, m_height, m_upsampleRefs);
 			Resampling.DownsampleView(SynV[FINLVIEW], SynV[FINLVIEW], m_width2, m_height, m_upsampleRefs);
 		}
-#if 0
-		{
-			static int flag = 0;
-			FILE *fp;
-			char filen[256];
-			char tmp = 128;
-			int i;
-			sprintf(filen, "syn_org_resolution_%dx%d_16p.yuv", Width, Height);
-			if (flag == 0)
-				fp = fopen(filen, "wb");
-			else
-				fp = fopen(filen, "ab");
-			if (fp)
-			{
-				fwrite(SynY[FINLVIEW], 1, Width*Height, fp);
-				for (i = 0; i < Width*Height / 2; i++)
-					fwrite(&tmp, 1, 1, fp);
-				fclose(fp);
-			}
-			flag++;
-		}
-#endif
 
 		// Y
 		memcpy(Syn, SynY[FINLVIEW], m_width*m_height);
 		// Downsample the UV
 		Resampling.PictureResample444to420(&Syn[m_width*m_height], SynU[FINLVIEW], m_width / 2, m_height / 2);
 		Resampling.PictureResample444to420(&Syn[m_width*m_height * 5 / 4], SynV[FINLVIEW], m_width / 2, m_height / 2);
-#if 0
-		{
-			static int flag = 0;
-			FILE *fp;
-			char filen[256];
-			char tmp = 128;
-			int i;
-			sprintf(filen, "syn_org_resolution_%dx%d_16p.yuv", Width, Height);
-			if (flag == 0)
-				fp = fopen(filen, "wb");
-			else
-				fp = fopen(filen, "ab");
-			if (fp)
-			{
-				fwrite(SynY[FINLVIEW], 1, Width*Height, fp);
-				for (i = 0; i < Width*Height / 2; i++)
-					fwrite(&tmp, 1, 1, fp);
-				fclose(fp);
-			}
-			flag++;
-		}
-#endif
+	}
+
+	// fill the Image buffer 1D for BNR
+	ImageType* tar_L, *tar_R;
+
+	// Left Synthesized Image
+	tar_L = m_imgLeftWithHole->getBuffer1D();
+	memcpy(&tar_L[m_height*m_width * 0], GetSynColorLeftY(), m_height*m_width);
+	memcpy(&tar_L[m_height*m_width * 1], GetSynColorLeftU(), m_height*m_width);
+	memcpy(&tar_L[m_height*m_width * 2], GetSynColorLeftV(), m_height*m_width);
+
+	// Right Synthesized Image
+	tar_R = m_imgRightWithHole->getBuffer1D();
+	memcpy(&tar_R[m_height*m_width * 0], GetSynColorRightY(), m_height*m_width);
+	memcpy(&tar_R[m_height*m_width * 1], GetSynColorRightU(), m_height*m_width);
+	memcpy(&tar_R[m_height*m_width * 2], GetSynColorRightV(), m_height*m_width);
+
+	// Left Synthesized Depth Image
+	memcpy(m_depthLeftWithHole->getBuffer1D(), GetSynDepthLeft(), m_height*m_width);
+
+	// Right Synthesized Depth Image
+	memcpy(m_depthRightWithHole->getBuffer1D(), GetSynDepthRight(), m_height*m_width);
+
+	if (cfg.getBoundaryNoiseRemoval() == cfg.BNR_ENABLED) {
+		BoundaryNoiseRemoval* boundaryNoiseRemoval = new BoundaryNoiseRemoval1D();
+		boundaryNoiseRemoval->SetduPrincipal(GetduPrincipal());
+		boundaryNoiseRemoval->SetLTranslationLeft(GetLTranslation());
+		boundaryNoiseRemoval->SetZfar(GetZfar());
+		boundaryNoiseRemoval->SetZnear(GetZnear());
+
+		if (!boundaryNoiseRemoval->apply(GetSynLeftWithHole(), GetSynRightWithHole(), GetSynDepthLeftWithHole(), GetSynDepthRightWithHole(), GetSynHoleLeft(), GetSynHoleRight(), imgSyn, true/*1D Mode*/))
+			return false;
 	}
 
 	return true;
@@ -1960,7 +1864,7 @@ void ViewSynthesis1D::TemporalImprovementMethod(ImageType *ImageCur, ImageType *
 				for (int j = 0; j < 4; j++)
 					for (int i = 0; i < 4; i++)
 					{
-						diff = (ImageCur[ind + j*Width + i] - ImageLast[ind + j*Width + i]);
+						diff = (ImageCur[ind + j * Width + i] - ImageLast[ind + j * Width + i]);
 						s += abs(diff);	 //SAD
 					}
 				if (s < SAD_TH) flag[x] = 0;
@@ -1988,7 +1892,7 @@ void ViewSynthesis1D::TemporalImprovementMethod(ImageType *ImageCur, ImageType *
 				if (t == 0)// if not moving
 					for (int j = 0; j < 4; j++)
 						for (int i = 0; i < 4; i++)
-							DepthCur[ind + j*Width + i] = (unsigned char)(DepthLast[ind + j*Width + i] * weight + DepthCur[ind + j*Width + i] * (1 - weight));
+							DepthCur[ind + j * Width + i] = (unsigned char)(DepthLast[ind + j * Width + i] * weight + DepthCur[ind + j * Width + i] * (1 - weight));
 				//else, do nothing
 			}
 		}

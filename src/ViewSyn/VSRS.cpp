@@ -36,11 +36,12 @@
 #include "Clock.h"
 #include "ConfigSyn.h"
 #include "Parser.h"
-#include "ImageData.h"
-#include "Application.h"
 #include "InputStream.h"
 #include "OutputStream.h"
-#include "VSRS.h"
+#include "AlgoFactory.h"
+#include "ViewSynthesis3D.h"
+#include "ViewSynthesis1D.h"
+#include "TestRegression.h"
 
 int main(int argc, char *argv[])
 {
@@ -55,28 +56,38 @@ int main(int argc, char *argv[])
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 
 	// Init synthesis
-	Application app;
-	ImageData<ImageType> imageBuffer(cfg.getSourceHeight(), cfg.getSourceWidth(), BUFFER_CHROMA_FORMAT); // store images to upsample one by one
+	ViewSynthesis* viewSynthesis;
+	if (cfg.getSynthesisMode() == cfg.MODE_3D)
+		viewSynthesis = new ViewSynthesis3D();
+	else if (cfg.getSynthesisMode() == cfg.MODE_1D)
+		viewSynthesis = new ViewSynthesis1D();
+
+	unique_ptr<Image<ImageType>> imageBuffer(new Image<ImageType>(cfg.getSourceHeight(), cfg.getSourceWidth(), BUFFER_CHROMA_FORMAT)); // store images to upsample one by one
 
 	Clock clock;
 
 	cout << "View Synthesis Reference Software (VSRS), Version " << VERSION << endl;
 	cout << "     - MPEG-I Visual, April 2017" << endl << endl;
 
-	if (!app.init()) return 10;
+	if (!viewSynthesis->init()) return 0;
 
 	// Open input and output files
-	InputStream inViewLeft(cfg.getLeftViewImageName()),
-		inViewRight(cfg.getRightViewImageName()),
-		inDepthLeft(cfg.getLeftDepthMapName()),
-		inDepthRight(cfg.getRightDepthMapName());
+	vector<InputStream> inImages = {
+		InputStream(cfg.getLeftViewImageName()),
+		InputStream(cfg.getRightViewImageName())
+	};
+	vector<InputStream> inDepths = {
+		InputStream(cfg.getLeftDepthMapName()),
+		InputStream(cfg.getRightDepthMapName())
+	};
 
 	OutputStream outSynthesizedImage(cfg.getOutputVirViewImageName());
 
-	inViewLeft.openRB();
-	inViewRight.openRB();
-	inDepthLeft.openRB();
-	inDepthRight.openRB();
+	for (size_t i = 0; i < cfg.getNView(); i++)
+	{
+		inImages[i].openRB();
+		inDepths[i].openRB();
+	}
 	outSynthesizedImage.openWB();
 
 	clock.init();
@@ -85,35 +96,37 @@ int main(int argc, char *argv[])
 	for (n = cfg.getStartFrame(); n < cfg.getStartFrame() + cfg.getNumberOfFrames(); n++)
 	{
 		cout << "frame number = " << n;
+		viewSynthesis->setFrameNumber(n - cfg.getStartFrame());
 
-		inDepthLeft.readOneFrame(app.getDepthMapLeft().getFrame(), app.getDepthMapLeft().getSize(), n);
-		inDepthRight.readOneFrame(app.getDepthMapRight().getFrame(), app.getDepthMapRight().getSize(), n);
+		for (size_t i = 0; i < cfg.getNView(); i++)
+		{
+			inDepths[i].readOneFrame(viewSynthesis->getView(i)->getDepth()->getFrame(), viewSynthesis->getView(i)->getDepth()->getSize(), n);
+			inImages[i].readOneFrame(imageBuffer->getFrame(), imageBuffer->getSize(), n);
+			viewSynthesis->setImage(i, imageBuffer);
+
+			cout << ".";
+		}
+
+		if (!viewSynthesis->apply(imageBuffer)) break;
 		cout << ".";
 
-		app.setFrameNumber(n - cfg.getStartFrame());
-
-		inViewLeft.readOneFrame(imageBuffer.getFrame(), imageBuffer.getSize(), n);
-		if (!app.upsampleImage(1, &imageBuffer)) break;
-		cout << ".";
-
-		inViewRight.readOneFrame(imageBuffer.getFrame(), imageBuffer.getSize(), n);
-		if (!app.upsampleImage(0, &imageBuffer)) break;
-		cout << ".";
-
-		if (!app.DoViewInterpolation(imageBuffer)) break;
-		cout << ".";
-
-		outSynthesizedImage.writeOneFrame(imageBuffer.getFrame(), imageBuffer.getSize());
+		outSynthesizedImage.writeOneFrame(imageBuffer->getFrame(), imageBuffer->getSize());
 
 		clock.getEndTime();
+
+		if (cfg.getTesting())
+		{
+			TestRegression testRegression;
+			testRegression.apply(imageBuffer, n);
+		}
 	}
 
-	cout << "end" << endl;
+	for (size_t i = 0; i < cfg.getNView(); i++)
+	{
+		inImages[i].close();
+		inDepths[i].close();
+	}
 	outSynthesizedImage.close();
-	inViewLeft.close();
-	inViewRight.close();
-	inDepthLeft.close();
-	inDepthRight.close();
 
 	clock.getTotalTime();
 

@@ -41,12 +41,9 @@ BoundaryNoiseRemoval::BoundaryNoiseRemoval()
 {
 	m_width = cfg.getSourceWidth();
 	m_height = cfg.getSourceHeight();
-	DEPTH_TH = 5;
+	m_depthThreshold = 5;
 
-	if (cfg.getSynthesisMode() == 0)
-		m_precision = 1;
-	else
-		m_precision = cfg.getPrecision();
+	m_weightLeft = m_weightRight = 0.0;
 
 	LTranslation = NULL;
 	duPrincipal = NULL;
@@ -93,57 +90,59 @@ void BoundaryNoiseRemoval::xInit()
 	if (m_imgHoleOtherView == NULL) { m_imgHoleOtherView = cvCreateImage(cvSize(m_width*m_precision, m_height), 8, 1); }
 }
 
-bool BoundaryNoiseRemoval::DoBoundaryNoiseRemoval(ImageData<ImageType> pRefLeft, ImageData<ImageType> pRefRight, ImageData<DepthType> pRefDepthLeft, ImageData<DepthType> pRefDepthRight,
-	ImageData<HoleType> pRefHoleLeft, ImageData<HoleType> pRefHoleRight, ImageData<ImageType> pSynYuvBuffer, bool SynthesisMode)
+bool BoundaryNoiseRemoval::apply(Image<ImageType>* pRefLeft, Image<ImageType>* pRefRight, Image<DepthType>* pRefDepthLeft, Image<DepthType>* pRefDepthRight,
+	Image<HoleType>* pRefHoleLeft, Image<HoleType>* pRefHoleRight, unique_ptr<Image<ImageType>>& pSynYuvBuffer, bool SynthesisMode)
 {
 	int i;
 	HoleType *LeftHole, *RightHole;
 
 	xInit();
-	LeftHole = pRefHoleLeft.getBuffer1D();
-	RightHole = pRefHoleRight.getBuffer1D();
+	LeftHole = pRefHoleLeft->getBuffer1D();
+	RightHole = pRefHoleRight->getBuffer1D();
 	cvZero(m_imgCommonHole);
 
-	for (i = 0; i < pRefHoleLeft.getWidth() * pRefHoleLeft.getHeight(); i++) {
+	for (i = 0; i < pRefHoleLeft->getWidth() * pRefHoleLeft->getHeight(); i++) {
 		if (LeftHole[i] == (MaxTypeValue<HoleType>() - 1) && RightHole[i] == (MaxTypeValue<HoleType>() - 1)) {
 			m_imgCommonHole->imageData[i] = (MaxTypeValue<HoleType>() - 1);
 		}
 	}
 
-	// Left
-	if (SynthesisMode) {
-		calcDepthThreshold1DMode(LEFTVIEW);  // 1D Mode
-		copyImages(pRefLeft, pRefDepthLeft, pRefHoleLeft, pRefHoleRight);
-		getBoundaryContour(m_imgHoles, m_imgBound);
-		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
-		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
-		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
-		HoleFillingWithExpandedHole(pRefRight, pRefLeft, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling_1DMode(pRefLeft);
-	}
-	else {
-		calcDepthThresholdGeneralMode(matLeftH_V2R);  // General Mode
-		copyImages(pRefLeft, pRefDepthLeft, pRefHoleLeft, pRefHoleRight);
-		getBoundaryContour(m_imgHoles, m_imgBound);
-		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
-		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
-		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
-		HoleFillingWithExpandedHole(pRefRight, pRefLeft, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling_General(pRefLeft);
-	}
+	calcWeight();
 
-	// Right
-	if (SynthesisMode) {
-		calcDepthThreshold1DMode(RGHTVIEW);  // 1D Mode
+
+	// Left
+	if (SynthesisMode == cfg.MODE_1D) {
+		DepthMatchingWithColor(pRefDepthLeft, pRefLeft, pRefHoleLeft);
+
+		calcDepthThreshold1DMode(0);  // 1D Mode
+		copyImages(pRefLeft, pRefDepthLeft, pRefHoleLeft, pRefHoleRight);
+		getBoundaryContour(m_imgHoles, m_imgBound);
+		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
+		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
+		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
+		HoleFillingWithExpandedHole(pRefRight, pRefLeft, m_imgExpandedHole, SynthesisMode);
+		RemainingHoleFilling(pRefLeft);
+
+		DepthMatchingWithColor(pRefDepthRight, pRefRight, pRefHoleRight);
+		calcDepthThreshold1DMode(1);  // 1D Mode
 		copyImages(pRefRight, pRefDepthRight, pRefHoleRight, pRefHoleLeft);
 		getBoundaryContour(m_imgHoles, m_imgBound);
 		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
 		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
 		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
 		HoleFillingWithExpandedHole(pRefLeft, pRefRight, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling_1DMode(pRefRight);
+		RemainingHoleFilling(pRefRight);
 	}
 	else {
+		calcDepthThresholdGeneralMode(matLeftH_V2R);  // General Mode
+		copyImages(pRefLeft, pRefDepthLeft, pRefHoleLeft, pRefHoleRight);
+		getBoundaryContour(m_imgHoles, m_imgBound);
+		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
+		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
+		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
+		HoleFillingWithExpandedHole(pRefRight, pRefLeft, m_imgExpandedHole, SynthesisMode);
+		RemainingHoleFilling(pRefLeft);
+
 		calcDepthThresholdGeneralMode(matLeftH_V2R);  // General Mode
 		copyImages(pRefRight, pRefDepthRight, pRefHoleRight, pRefHoleLeft);
 		getBoundaryContour(m_imgHoles, m_imgBound);
@@ -151,294 +150,12 @@ bool BoundaryNoiseRemoval::DoBoundaryNoiseRemoval(ImageData<ImageType> pRefLeft,
 		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
 		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
 		HoleFillingWithExpandedHole(pRefLeft, pRefRight, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling_General(pRefRight);
+		RemainingHoleFilling(pRefRight);
 	}
 
 	Blending(pRefLeft, pRefRight, pSynYuvBuffer, SynthesisMode);
 
 	return true;
-}
-
-void BoundaryNoiseRemoval::RemainingHoleFilling_General(ImageData<ImageType> pSrc)
-{
-	int i, j, tWidth, tHeight, CountHole;
-	bool isValidLeft, isValidRight, isValid_Y, isValid_U, isValid_V, isComHole;
-	ImageType* buffer;
-	tWidth = pSrc.getWidth();
-	tHeight = pSrc.getHeight();
-	buffer = pSrc.getBuffer1D();
-
-	for (j = 0; j < tHeight; j++) {
-		for (i = 0; i < tWidth; i++) {
-			buffer[j*tWidth * 3 + i * 3 + 0] ? isValid_Y = true : isValid_Y = false;
-			buffer[j*tWidth * 3 + i * 3 + 1] ? isValid_U = true : isValid_U = false;
-			buffer[j*tWidth * 3 + i * 3 + 2] ? isValid_V = true : isValid_V = false;
-			m_imgCommonHole->imageData[j*tWidth + i] ? isComHole = true : isComHole = false;
-			if (!isValid_Y || !isValid_U || !isValid_V || isComHole) {
-				buffer[j*tWidth * 3 + i * 3 + 0] = 0;
-				buffer[j*tWidth * 3 + i * 3 + 1] = 0;
-				buffer[j*tWidth * 3 + i * 3 + 2] = 0;
-			}
-		}
-	}
-
-	CountHole = 0;
-	for (j = 0; j < tHeight; j++) {
-		for (i = 0; i < tWidth; i++) {
-			if (buffer[j*tWidth * 3 + i * 3] == 0) {
-				CountHole++;
-			}
-		}
-	}
-
-	// may have a huge loop here if too much holes.
-	while (CountHole) {
-		for (j = 0; j < tHeight; j++) {
-			for (i = 0; i < tWidth; i++) {
-				if (i == 0 && buffer[j*tWidth * 3 + i * 3 + 0] == 0) {
-					isValidLeft = false;
-					buffer[j*tWidth * 3 + (i + 1) * 3 + 0] && buffer[j*tWidth * 3 + (i + 1) * 3 + 1] && buffer[j*tWidth * 3 + (i + 1) * 3 + 2] ? isValidRight = true : isValidRight = false;
-
-					if (!isValidLeft && isValidRight) {
-						buffer[j*tWidth * 3 + i * 3 + 0] = buffer[j*tWidth * 3 + (i + 1) * 3 + 0];
-						buffer[j*tWidth * 3 + i * 3 + 1] = buffer[j*tWidth * 3 + (i + 1) * 3 + 1];
-						buffer[j*tWidth * 3 + i * 3 + 2] = buffer[j*tWidth * 3 + (i + 1) * 3 + 2];
-						CountHole--;
-					}
-				}
-				else if (i == tWidth - 1 && buffer[j*tWidth * 3 + i * 3 + 0] == 0) {
-					buffer[j*tWidth * 3 + (i - 1) * 3 + 0] && buffer[j*tWidth * 3 + (i - 1) * 3 + 1] && buffer[j*tWidth * 3 + (i - 1) * 3 + 2] ? isValidLeft = true : isValidLeft = false;
-					isValidRight = false;
-
-					if (isValidLeft && !isValidRight) {
-						buffer[j*tWidth * 3 + i * 3 + 0] = buffer[j*tWidth * 3 + (i - 1) * 3 + 0];
-						buffer[j*tWidth * 3 + i * 3 + 1] = buffer[j*tWidth * 3 + (i - 1) * 3 + 1];
-						buffer[j*tWidth * 3 + i * 3 + 2] = buffer[j*tWidth * 3 + (i - 1) * 3 + 2];
-						CountHole--;
-					}
-				}
-				else if (buffer[j*tWidth * 3 + i * 3 + 0] == 0) {
-					buffer[j*tWidth * 3 + (i - 1) * 3 + 0] ? isValidLeft = true : isValidLeft = false;
-					buffer[j*tWidth * 3 + (i + 1) * 3 + 0] ? isValidRight = true : isValidRight = false;
-					if (isValidLeft && isValidRight) {
-						buffer[j*tWidth * 3 + i * 3 + 0] = guard((buffer[j*tWidth * 3 + (i - 1) * 3 + 0] + buffer[j*tWidth * 3 + (i + 1) * 3 + 0]) / 2 + 0.5, 0, MaxTypeValue<ImageType>() - 1);
-						buffer[j*tWidth * 3 + i * 3 + 1] = guard((buffer[j*tWidth * 3 + (i - 1) * 3 + 1] + buffer[j*tWidth * 3 + (i + 1) * 3 + 1]) / 2 + 0.5, 0, MaxTypeValue<ImageType>() - 1);
-						buffer[j*tWidth * 3 + i * 3 + 2] = guard((buffer[j*tWidth * 3 + (i - 1) * 3 + 2] + buffer[j*tWidth * 3 + (i + 1) * 3 + 2]) / 2 + 0.5, 0, MaxTypeValue<ImageType>() - 1);
-						CountHole--;
-					}
-					else if (isValidLeft && !isValidRight) {
-						buffer[j*tWidth * 3 + i * 3 + 0] = buffer[j*tWidth * 3 + (i - 1) * 3 + 0];
-						buffer[j*tWidth * 3 + i * 3 + 1] = buffer[j*tWidth * 3 + (i - 1) * 3 + 1];
-						buffer[j*tWidth * 3 + i * 3 + 2] = buffer[j*tWidth * 3 + (i - 1) * 3 + 2];
-						CountHole--;
-					}
-					else if (!isValidLeft && isValidRight) {
-						buffer[j*tWidth * 3 + i * 3 + 0] = buffer[j*tWidth * 3 + (i + 1) * 3 + 0];
-						buffer[j*tWidth * 3 + i * 3 + 1] = buffer[j*tWidth * 3 + (i + 1) * 3 + 1];
-						buffer[j*tWidth * 3 + i * 3 + 2] = buffer[j*tWidth * 3 + (i + 1) * 3 + 2];
-						CountHole--;
-					}
-				}
-			}
-		}
-	}
-}
-
-void BoundaryNoiseRemoval::RemainingHoleFilling_1DMode(ImageData<ImageType> pSrc)
-{
-	int i, j, tWidth, tHeight, CountHole;
-	bool isValidLeft, isValidRight, isValid_Y, isValid_U, isValid_V;
-	ImageType* buffer;
-	tWidth = pSrc.getWidth();
-	tHeight = pSrc.getHeight();
-	buffer = pSrc.getBuffer1D();
-
-	for (j = 0; j < tHeight; j++) {
-		for (i = 0; i < tWidth; i++) {
-			buffer[j*tWidth * 3 + i * 3 + 0] ? isValid_Y = true : isValid_Y = false;
-			buffer[j*tWidth * 3 + i * 3 + 1] ? isValid_U = true : isValid_U = false;
-			buffer[j*tWidth * 3 + i * 3 + 2] ? isValid_V = true : isValid_V = false;
-			if (!isValid_Y || !isValid_U || !isValid_V) {
-				buffer[j*tWidth * 3 + i * 3 + 0] = 0;
-				buffer[j*tWidth * 3 + i * 3 + 1] = 0;
-				buffer[j*tWidth * 3 + i * 3 + 2] = 0;
-			}
-		}
-	}
-
-	CountHole = 0;
-	for (j = 0; j < tHeight; j++) {
-		for (i = 0; i < tWidth; i++) {
-			if (buffer[j*tWidth + i] == 0) {
-				CountHole++;
-			}
-		}
-	}
-
-	while (CountHole) {
-		for (j = 0; j < tHeight; j++) {
-			for (i = 0; i < tWidth; i++) {
-				if (i == 0 && buffer[tWidth*tHeight * 0 + j * tWidth + i] == 0) {
-					isValidLeft = false;
-					buffer[tWidth*tHeight * 0 + j * tWidth + i + 1] ? isValidRight = true : isValidRight = false;
-
-					if (!isValidLeft && isValidRight) {
-						buffer[tWidth*tHeight * 0 + j * tWidth + i] = buffer[tWidth*tHeight * 0 + j * tWidth + i + 1];
-						buffer[tWidth*tHeight * 1 + j * tWidth + i] = buffer[tWidth*tHeight * 1 + j * tWidth + i + 1];
-						buffer[tWidth*tHeight * 2 + j * tWidth + i] = buffer[tWidth*tHeight * 2 + j * tWidth + i + 1];
-						CountHole--;
-					}
-				}
-				else if (i == tWidth - 1 && buffer[tWidth*tHeight * 0 + j * tWidth + i] == 0) {
-					buffer[tWidth*tHeight * 0 + j * tWidth + i - 1] ? isValidLeft = true : isValidLeft = false;
-					isValidRight = false;
-
-					if (isValidLeft && !isValidRight) {
-						buffer[tWidth*tHeight * 0 + j * tWidth + i] = buffer[tWidth*tHeight * 0 + j * tWidth + i - 1];
-						buffer[tWidth*tHeight * 1 + j * tWidth + i] = buffer[tWidth*tHeight * 1 + j * tWidth + i - 1];
-						buffer[tWidth*tHeight * 2 + j * tWidth + i] = buffer[tWidth*tHeight * 2 + j * tWidth + i - 1];
-						CountHole--;
-					}
-				}
-				else if (buffer[tWidth*tHeight * 0 + j * tWidth + i] == 0) {
-					buffer[tWidth*tHeight * 0 + j * tWidth + i - 1] ? isValidLeft = true : isValidLeft = false;
-					buffer[tWidth*tHeight * 0 + j * tWidth + i + 1] ? isValidRight = true : isValidRight = false;
-
-					if (isValidLeft && isValidRight) {
-						buffer[tWidth*tHeight * 0 + j * tWidth + i] = guard((buffer[tWidth*tHeight * 0 + j * tWidth + i - 1] + buffer[tWidth*tHeight * 0 + j * tWidth + i + 1]) / 2 + 0.5, 0, MaxTypeValue<ImageType>() - 1);
-						buffer[tWidth*tHeight * 1 + j * tWidth + i] = guard((buffer[tWidth*tHeight * 1 + j * tWidth + i - 1] + buffer[tWidth*tHeight * 1 + j * tWidth + i + 1]) / 2 + 0.5, 0, MaxTypeValue<ImageType>() - 1);
-						buffer[tWidth*tHeight * 2 + j * tWidth + i] = guard((buffer[tWidth*tHeight * 2 + j * tWidth + i - 1] + buffer[tWidth*tHeight * 2 + j * tWidth + i + 1]) / 2 + 0.5, 0, MaxTypeValue<ImageType>() - 1);
-						CountHole--;
-					}
-					else if (isValidLeft && !isValidRight) {
-						buffer[tWidth*tHeight * 0 + j * tWidth + i] = buffer[tWidth*tHeight * 0 + j * tWidth + i - 1];
-						buffer[tWidth*tHeight * 1 + j * tWidth + i] = buffer[tWidth*tHeight * 1 + j * tWidth + i - 1];
-						buffer[tWidth*tHeight * 2 + j * tWidth + i] = buffer[tWidth*tHeight * 2 + j * tWidth + i - 1];
-						CountHole--;
-					}
-					else if (!isValidLeft && isValidRight) {
-						buffer[tWidth*tHeight * 0 + j * tWidth + i] = buffer[tWidth*tHeight * 0 + j * tWidth + i + 1];
-						buffer[tWidth*tHeight * 1 + j * tWidth + i] = buffer[tWidth*tHeight * 1 + j * tWidth + i + 1];
-						buffer[tWidth*tHeight * 2 + j * tWidth + i] = buffer[tWidth*tHeight * 2 + j * tWidth + i + 1];
-						CountHole--;
-					}
-				}
-			}
-		}
-	}
-}
-
-void BoundaryNoiseRemoval::Blending(ImageData<ImageType> pLeft, ImageData<ImageType> pRight, ImageData<ImageType> pSyn, bool SynthesisMode)
-{
-	int i, j;
-	double WeightForLeft, WeightForRight;
-	WeightForLeft = WeightForRight = 0.0;
-
-	// Calculating Weighting Factors
-	if (SynthesisMode) {  // 1D Mode
-		if (LTranslation[LEFTVIEW] <= LTranslation[RGHTVIEW]) {
-			WeightForLeft = fabs(1.0 - (fabs(LTranslation[LEFTVIEW]) / (fabs(LTranslation[LEFTVIEW]) + fabs(LTranslation[RGHTVIEW]))));
-			WeightForRight = fabs(1.0 - (fabs(LTranslation[RGHTVIEW]) / (fabs(LTranslation[LEFTVIEW]) + fabs(LTranslation[RGHTVIEW]))));
-		}
-		else {
-			WeightForLeft = fabs(1.0 - (fabs(LTranslation[RGHTVIEW]) / (fabs(LTranslation[LEFTVIEW]) + fabs(LTranslation[RGHTVIEW]))));
-			WeightForRight = fabs(1.0 - (fabs(LTranslation[LEFTVIEW]) / (fabs(LTranslation[LEFTVIEW]) + fabs(LTranslation[RGHTVIEW]))));
-		}
-	}
-	else {                // General Mode
-		if (cfg.getViewBlending()) {
-			if (LeftBaseLineDistance <= RightBaseLineDistance) {
-				WeightForLeft = 1.0;
-				WeightForRight = 0.0;
-			}
-			else {
-				WeightForLeft = 0.0;
-				WeightForRight = 1.0;
-			}
-		}
-		else {
-			if (LeftBaseLineDistance <= RightBaseLineDistance) {
-				WeightForLeft = fabs(1.0 - (fabs(LeftBaseLineDistance) / (fabs(LeftBaseLineDistance) + fabs(RightBaseLineDistance))));
-				WeightForRight = fabs(1.0 - (fabs(RightBaseLineDistance) / (fabs(LeftBaseLineDistance) + fabs(RightBaseLineDistance))));
-			}
-			else {
-				WeightForLeft = fabs(1.0 - (fabs(RightBaseLineDistance) / (fabs(LeftBaseLineDistance) + fabs(RightBaseLineDistance))));
-				WeightForRight = fabs(1.0 - (fabs(LeftBaseLineDistance) / (fabs(LeftBaseLineDistance) + fabs(RightBaseLineDistance))));
-			}
-		}
-	}
-
-	ImageData<ImageType> temp1, temp2;
-	IplImage *TempImage;
-	ImageResample<ImageType> Resampling;
-	ImageType* LeftBuffer, *RightBuffer, *SrcBuffer, *DstBuffer;
-
-	if (SynthesisMode) {   // 1D Mode
-		int tWidth, tHeight;
-		ImageType *Src, *Dst;
-		tWidth = m_width * m_precision;
-		tHeight = m_height;
-		temp1.resize(tHeight, tWidth, 444);
-		temp2.resize(m_height, m_width, 444);
-
-		// Blending
-		LeftBuffer = pLeft.getBuffer1D();
-		RightBuffer = pRight.getBuffer1D();
-		Dst = temp1.getBuffer1D();
-		for (i = 0; i < tWidth*tHeight * 3; i++) {
-			Dst[i] = (ImageType)guard((WeightForLeft* LeftBuffer[i] + WeightForRight * RightBuffer[i] + 0.5), 0, MaxTypeValue<ImageType>() - 1);
-		}
-
-		// DownSampling
-		SrcBuffer = temp1.getBuffer1D();
-		Dst = temp2.getBuffer1D();
-
-		if (m_precision == 1) {
-			memcpy(Dst, SrcBuffer, tWidth*tHeight * 3);
-		}
-		else {   // Half-pel, Quarter-pel
-			Resampling.DownsampleView(&Dst[m_width*m_height * 0], &SrcBuffer[tWidth*tHeight * 0], tWidth, m_height, m_precision);  // Y
-			Resampling.DownsampleView(&Dst[m_width*m_height * 1], &SrcBuffer[tWidth*tHeight * 1], tWidth, m_height, m_precision);  // U
-			Resampling.DownsampleView(&Dst[m_width*m_height * 2], &SrcBuffer[tWidth*tHeight * 2], tWidth, m_height, m_precision);  // V
-		}
-
-		SrcBuffer = temp2.getBuffer1D();
-		Dst = pSyn.getBuffer1D();
-		memcpy(Dst, SrcBuffer, m_width*m_height);
-		Dst = &Dst[m_width*m_height];
-		SrcBuffer = &SrcBuffer[m_width*m_height];
-		for (j = 0; j < m_height / 2; j++) {
-			for (i = 0; i < m_width / 2; i++) {
-				Dst[j*m_width / 2 + i] = SrcBuffer[(j * 2)*m_width + (i * 2)];
-			}
-		}
-		Dst = &Dst[m_width*m_height / 4];
-		SrcBuffer = &SrcBuffer[m_width*m_height];
-		for (j = 0; j < m_height / 2; j++) {
-			for (i = 0; i < m_width / 2; i++) {
-				Dst[j*m_width / 2 + i] = SrcBuffer[(j * 2)*m_width + (i * 2)];
-			}
-		}
-	}
-	else {  // General Mode
-		temp1.resize(m_height, m_width, 444);
-		DstBuffer = temp1.getBuffer1D();
-		LeftBuffer = pLeft.getBuffer1D();
-		RightBuffer = pRight.getBuffer1D();
-
-		for (i = 0; i < m_width*m_height * 3; i++) {
-			DstBuffer[i] = (ImageType)guard((double)WeightForLeft* (double)LeftBuffer[i] + (double)WeightForRight*(double)RightBuffer[i], 0, MaxTypeValue<ImageType>() - 1);
-		}
-		TempImage = cvCreateImage(cvSize(m_width, m_height), 8, 3);
-		if (cfg.getColorSpace()) {   // BGR
-			memcpy(TempImage->imageData, temp1.getBuffer1D(), m_width*m_height * 3);
-			pSyn.setDataFromImgIplBGR(TempImage);
-		}
-		else {              // YUV
-			memcpy(TempImage->imageData, temp1.getBuffer1D(), m_width*m_height * 3);
-			pSyn.setDataFromImgIplYUV(TempImage);
-		}
-	}
 }
 
 void BoundaryNoiseRemoval::calcDepthThreshold1DMode(bool ViewID)
@@ -470,10 +187,9 @@ void BoundaryNoiseRemoval::calcDepthThreshold1DMode(bool ViewID)
 		posStart = posEnd;
 		GapWidth = fabs(posEnd - posStart);
 	}
-	DEPTH_TH = (int)(SumOfGap / GapCount + 0.5);
+	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
 }
 
-//#ifdef POZNAN_GENERAL_HOMOGRAPHY
 void BoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat* matH_V2R)
 {
 	int Low, SumOfGap, index, GapCount, Start_D, End_D;
@@ -484,13 +200,13 @@ void BoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat* matH_V2R)
 	SumOfGap = 0;
 	posStart = posEnd = 0.0;
 	GapWidth = 0.0;
-	//#ifdef POZNAN_GENERAL_HOMOGRAPHY
+
 	CvMat* m = cvCreateMat(4, 1, CV_64F);
 	CvMat* mv = cvCreateMat(4, 1, CV_64F);
 	cvmSet(mv, 0, 0, 0);
 	cvmSet(mv, 1, 0, 0);
 	cvmSet(mv, 2, 0, 1);
-	cvmSet(mv, 2, 0, 1);
+	cvmSet(mv, 2, 0, 1); //!> ?
 	cvmMul(matH_V2R, mv, m);
 
 	posStart = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
@@ -517,46 +233,10 @@ void BoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat* matH_V2R)
 		posStart = posEnd;
 		GapWidth = fabs(posEnd - posStart);
 	}
-	DEPTH_TH = (int)(SumOfGap / GapCount + 0.5);
+	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
 }
 
-void BoundaryNoiseRemoval::HoleFillingWithExpandedHole(ImageData<ImageType> pSrc, ImageData<ImageType> pTar, IplImage* m_imgExpandedHole, bool SynthesisMode)
-{
-	int i, j, tWidth, tHeight;
-	BYTE* Src_buffer, *Tar_buffer;
-
-	Src_buffer = pSrc.getBuffer1D();
-	Tar_buffer = pTar.getBuffer1D();
-
-	if (SynthesisMode) {     // 1D Mode
-		tWidth = m_width * m_precision;
-		tHeight = m_height;
-		for (j = 0; j < tHeight; j++) {     // Y
-			for (i = 0; i < tWidth; i++) {
-				if ((uchar)m_imgExpandedHole->imageData[j*tWidth + i] == MAX_HOLE - 1 && (uchar)m_imgCommonHole->imageData[j*tWidth + i] == 0) {
-					Tar_buffer[tWidth*tHeight * 0 + j * tWidth + i] = Src_buffer[tWidth*tHeight * 0 + j * tWidth + i];
-					Tar_buffer[tWidth*tHeight * 1 + j * tWidth + i] = Src_buffer[tWidth*tHeight * 1 + j * tWidth + i];
-					Tar_buffer[tWidth*tHeight * 2 + j * tWidth + i] = Src_buffer[tWidth*tHeight * 2 + j * tWidth + i];
-					m_imgExpandedHole->imageData[j*tWidth + i] = 0;
-				}
-			}
-		}
-	}
-	else {                 // General Mode
-		for (j = 0; j < m_height; j++) {
-			for (i = 0; i < m_width; i++) {
-				if ((uchar)m_imgExpandedHole->imageData[j*m_width + i] == MAX_HOLE - 1) {
-					Tar_buffer[j*m_width * 3 + i * 3 + 0] = Src_buffer[j*m_width * 3 + i * 3 + 0];
-					Tar_buffer[j*m_width * 3 + i * 3 + 1] = Src_buffer[j*m_width * 3 + i * 3 + 1];
-					Tar_buffer[j*m_width * 3 + i * 3 + 2] = Src_buffer[j*m_width * 3 + i * 3 + 2];
-					m_imgExpandedHole->imageData[j*m_width + i] = 0;
-				}
-			}
-		}
-	}
-}
-
-void BoundaryNoiseRemoval::copyImages(ImageData<ImageType> pSyn_CurrView, ImageData<DepthType> pSynDepth_CurrView, ImageData<HoleType> pSynHole_CurrView, ImageData<HoleType> pDepthHole_OthView)
+void BoundaryNoiseRemoval::copyImages(Image<ImageType>* pSyn_CurrView, Image<DepthType>* pSynDepth_CurrView, Image<HoleType>* pSynHole_CurrView, Image<HoleType>* pDepthHole_OthView)
 {
 	int i, j, width, height;
 	ImageType *org_buffer_image;
@@ -576,25 +256,25 @@ void BoundaryNoiseRemoval::copyImages(ImageData<ImageType> pSyn_CurrView, ImageD
 	width = m_imgHoles->width;
 	height = m_imgHoles->height;
 
-	org_buffer_image = pSyn_CurrView.getBuffer1D();
+	org_buffer_image = pSyn_CurrView->getBuffer1D();
 	tar_buffer_image = m_imgSynWithHole->imageData;
 	for (i = 0; i < width*height * 3; i++) {
 		tar_buffer_image[i] = org_buffer_image[i];
 	}
 
-	org_buffer_depth = pSynDepth_CurrView.getBuffer1D();
+	org_buffer_depth = pSynDepth_CurrView->getBuffer1D();
 	tar_buffer_depth = m_imgDepth->imageData;
 	for (i = 0; i < width*height; i++) {
 		tar_buffer_depth[i] = org_buffer_depth[i];
 	}
 
-	org_buffer_hole = pSynHole_CurrView.getBuffer1D();
+	org_buffer_hole = pSynHole_CurrView->getBuffer1D();
 	tar_buffer_hole = m_imgHoles->imageData;
 	for (i = 0; i < width*height; i++) {
 		tar_buffer_hole[i] = org_buffer_hole[i];
 	}
 
-	org_buffer_hole = pDepthHole_OthView.getBuffer1D();
+	org_buffer_hole = pDepthHole_OthView->getBuffer1D();
 	tar_buffer_hole = m_imgHoleOtherView->imageData;
 	for (i = 0; i < width*height; i++) {
 		tar_buffer_hole[i] = org_buffer_hole[i];
@@ -674,7 +354,7 @@ void BoundaryNoiseRemoval::getBackgroundContour(IplImage* Bound, IplImage* Depth
 				Right_D = (uchar)Depth->imageData[j*width + i + 1];
 				posEnd = i;
 
-				abs(Left_D - Right_D) > DEPTH_TH ? bDiff = true : bDiff = false;
+				abs(Left_D - Right_D) > m_depthThreshold ? bDiff = true : bDiff = false;
 
 				if (abs(posStart - posEnd) <= 3) {
 					continue;
@@ -742,7 +422,7 @@ void BoundaryNoiseRemoval::expandedHoleforBNM(IplImage* Depth, IplImage* Hole, I
 						}
 
 						if ((uchar)Hole->imageData[y*width + x] == 0
-							&& abs((uchar)Depth->imageData[y*width + x] - depth_back) < DEPTH_TH
+							&& abs((uchar)Depth->imageData[y*width + x] - depth_back) < m_depthThreshold
 							&& m_imgHoleOtherView->imageData[y*width + x] == 0) {
 							ExpandedHole->imageData[y*width + x] = 255;
 						}
@@ -756,120 +436,22 @@ void BoundaryNoiseRemoval::expandedHoleforBNM(IplImage* Depth, IplImage* Hole, I
 	}
 }
 
-void BoundaryNoiseRemoval::ColorFillingSmallHoleFor1DMode(ImageData<ImageType> pSrc, ImageData<ImageType> pDst)
-{
-	int tWidth, tHeight, i, j;
-	bool isAvailableLeft, isAvailableRight, isAvailableCurrent;
-	ImageType *Src_Y, *Src_U, *Src_V;
-	ImageType *Tar_Y, *Tar_U, *Tar_V;
-
-	tWidth = pSrc.getWidth();
-	tHeight = pSrc.getHeight();
-
-	Src_Y = pSrc.getBuffer1D();
-	Src_U = &Src_Y[tWidth*tHeight];
-	Src_V = &Src_Y[tWidth*tHeight * 2];
-
-	Tar_Y = pDst.getBuffer1D();
-	Tar_U = &Tar_Y[tWidth*tHeight];
-	Tar_V = &Tar_Y[tWidth*tHeight * 2];
-
-	for (j = 0; j < tHeight; j++) {
-		for (i = 1; i < tWidth - 1; i++) {
-			Src_Y[j*tWidth + i] && Src_U[j*tWidth + i] && Src_V[j*tWidth + i] ? isAvailableCurrent = true : isAvailableCurrent = false;
-			Src_Y[j*tWidth + i - 1] && Src_U[j*tWidth + i - 1] && Src_V[j*tWidth + i - 1] ? isAvailableLeft = true : isAvailableLeft = false;
-			Src_Y[j*tWidth + i + 1] && Src_U[j*tWidth + i + 1] && Src_V[j*tWidth + i + 1] ? isAvailableRight = true : isAvailableRight = false;
-			if (isAvailableCurrent) {
-				Tar_Y[j*tWidth + i] = (BYTE)guard((BYTE)Src_Y[j*tWidth + i], 0, MAX_LUMA - 1);
-				Tar_U[j*tWidth + i] = (BYTE)guard((BYTE)Src_U[j*tWidth + i], 0, MAX_LUMA - 1);
-				Tar_V[j*tWidth + i] = (BYTE)guard((BYTE)Src_V[j*tWidth + i], 0, MAX_LUMA - 1);
-			}
-			else if (isAvailableLeft && isAvailableRight && !isAvailableCurrent) {
-				Tar_Y[j*tWidth + i] = (BYTE)guard(((BYTE)Src_Y[j*tWidth + i - 1] + (BYTE)Src_Y[j*tWidth + i + 1] + 0.5) / 2, 0, MAX_LUMA - 1);
-				Tar_U[j*tWidth + i] = (BYTE)guard(((BYTE)Src_U[j*tWidth + i - 1] + (BYTE)Src_U[j*tWidth + i + 1] + 0.5) / 2, 0, MAX_LUMA - 1);
-				Tar_V[j*tWidth + i] = (BYTE)guard(((BYTE)Src_V[j*tWidth + i - 1] + (BYTE)Src_V[j*tWidth + i + 1] + 0.5) / 2, 0, MAX_LUMA - 1);
-			}
-			else {
-				Tar_Y[j*tWidth + i] = 0;
-				Tar_U[j*tWidth + i] = 0;
-				Tar_V[j*tWidth + i] = 0;
-			}
-		}
-	}
-}
-
-void BoundaryNoiseRemoval::ColorHoleCleaning(ImageData<ImageType> pSrc)
-{
-	int i, j, tWidth, tHeight;
-	bool isYAvailable, isUAvailable, isVAvailable;
-	ImageType *Src_Y, *Src_U, *Src_V;
-	tWidth = pSrc.getWidth();
-	tHeight = pSrc.getHeight();
-	Src_Y = pSrc.getBuffer1D();
-	Src_U = Src_Y + tWidth * tHeight;
-	Src_V = Src_U + tWidth * tHeight;
-
-	for (j = 0; j < tHeight; j++) {
-		for (i = 0; i < tWidth; i++) {
-			Src_Y[j*tWidth + i] == 0 ? isYAvailable = false : isYAvailable = true;
-			Src_U[j*tWidth + i] == 0 ? isUAvailable = false : isUAvailable = true;
-			Src_V[j*tWidth + i] == 0 ? isVAvailable = false : isVAvailable = true;
-
-			if (!isYAvailable || !isUAvailable || !isVAvailable) {
-				Src_Y[j*tWidth + i] = 0;
-				Src_U[j*tWidth + i] = 0;
-				Src_V[j*tWidth + i] = 0;
-			}
-		}
-	}
-}
-
-void BoundaryNoiseRemoval::DepthFillingSmallHoleFor1DMode(ImageData<DepthType> pSrc, ImageData<DepthType> pDst)
-{
-	int tWidth, tHeight, i, j;
-	bool isAvailableLeft, isAvailableRight, isAvailableCurrent;
-	DepthType *Src_Y, *Tar_Y;
-
-	tWidth = pSrc.getWidth();
-	tHeight = pSrc.getHeight();
-
-	Src_Y = pSrc.getBuffer1D();
-	Tar_Y = pDst.getBuffer1D();
-
-	for (j = 0; j < tHeight; j++) {
-		for (i = 1; i < tWidth - 1; i++) {
-			Src_Y[j*tWidth + i] ? isAvailableCurrent = true : isAvailableCurrent = false;
-			Src_Y[j*tWidth + i - 1] ? isAvailableLeft = true : isAvailableLeft = false;
-			Src_Y[j*tWidth + i + 1] ? isAvailableRight = true : isAvailableRight = false;
-			if (isAvailableCurrent) {
-				Tar_Y[j*tWidth + i] = (BYTE)guard((BYTE)Src_Y[j*tWidth + i], 0, MAX_DEPTH - 1);
-			}
-			else if (isAvailableLeft && isAvailableRight && !isAvailableCurrent) {
-				Tar_Y[j*tWidth + i] = (BYTE)guard(((BYTE)Src_Y[j*tWidth + i - 1] + (BYTE)Src_Y[j*tWidth + i + 1] + 0.5) / 2, 0, MAX_DEPTH - 1);
-			}
-			else {
-				Tar_Y[j*tWidth + i] = 0;
-			}
-		}
-	}
-}
-
-void BoundaryNoiseRemoval::DepthMatchingWithColor(ImageData<DepthType> pDepth, ImageData<ImageType> pColor, ImageData<HoleType> pDepthMask)
+void BoundaryNoiseRemoval::DepthMatchingWithColor(Image<DepthType>* pDepth, Image<ImageType>* pColor, Image<HoleType>* pDepthMask)
 {
 	int i, j, width, height;
 	bool isAVailableColor, isAVailableDepth, isAVailableDepth_L, isAVailableDepth_R;
-	width = pDepth.getWidth();
-	height = pDepth.getHeight();
+	width = pDepth->getWidth();
+	height = pDepth->getHeight();
 	ImageType *Y, *U, *V;
 	DepthType *D;
 	HoleType *D_MASK;
 	DepthType D_C, D_L, D_R;
 
-	Y = pColor.getBuffer1D();
+	Y = pColor->getBuffer1D();
 	U = &Y[width*height];
 	V = &Y[width*height * 2];
-	D = pDepth.getBuffer1D();
-	D_MASK = pDepthMask.getBuffer1D();
+	D = pDepth->getBuffer1D();
+	D_MASK = pDepthMask->getBuffer1D();
 
 	// Make a hole referring to the color information
 	for (j = 0; j < height; j++) {

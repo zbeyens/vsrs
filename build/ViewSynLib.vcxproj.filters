@@ -31,8 +31,16 @@
     <ClCompile Include="..\src\ViewSynLib\ViewSynthesis3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ViewSynLib\ConvertImage1D.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\ConvertImage3D.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\BlendingCloser.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\Blending.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\TestRegression.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\AlgoFactory.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\InpaintDefault.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\InpaintAdvanced.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\BlendingAll.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\ViewSynthesis.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\BoundaryNoiseRemoval3D.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\BoundaryNoiseRemoval1D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\BoundaryNoiseRemoval.h">
@@ -79,9 +87,18 @@
     <ClInclude Include="..\src\ViewSynLib\ViewSynthesis3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ViewSynLib\ConvertImage.h" />
-    <ClInclude Include="..\src\ViewSynLib\ConvertImage1D.h" />
-    <ClInclude Include="..\src\ViewSynLib\ConvertImage3D.h" />
+    <ClInclude Include="..\src\ViewSynLib\BlendingCloser.h" />
+    <ClInclude Include="..\src\ViewSynLib\Inpaint.h" />
+    <ClInclude Include="..\src\ViewSynLib\Blending.h" />
+    <ClInclude Include="..\src\ViewSynLib\TestRegression.h" />
+    <ClInclude Include="..\src\ViewSynLib\AlgoFactory.h" />
+    <ClInclude Include="..\src\ViewSynLib\InpaintAdvanced.h" />
+    <ClInclude Include="..\src\ViewSynLib\InpaintDefault.h" />
+    <ClInclude Include="..\src\ViewSynLib\BlendingAll.h" />
+    <ClInclude Include="..\src\ViewSynLib\BlendingHoles.h" />
+    <ClInclude Include="..\src\ViewSynLib\ViewSynthesis.h" />
+    <ClInclude Include="..\src\ViewSynLib\BoundaryNoiseRemoval3D.h" />
+    <ClInclude Include="..\src\ViewSynLib\BoundaryNoiseRemoval1D.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

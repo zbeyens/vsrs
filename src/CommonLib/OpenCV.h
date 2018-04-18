@@ -59,15 +59,6 @@ public:
 	}
 
 	
-	//static double CLIP3(double x, int min, int max)
-	//{
-	//	return (x) < (min) ? (min) : ((x) > (max) ? (max) : (x));
-	//}
-
-	//static int CLIP3(int x, int min, int max)
-	//{
-	//	return (x) < (min) ? (min) : ((x) > (max) ? (max) : (x));
-	//}
-
+	
 	
 };

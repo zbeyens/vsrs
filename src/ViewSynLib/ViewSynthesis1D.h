@@ -46,16 +46,13 @@
 #ifndef VISBD_H
 #define VISBD_H
 
-#include "ImageData.h"
+#include "ViewSynthesis.h"
 #include "ImageResample.h"
-#include "ConfigSyn.h"
+#include "BoundaryNoiseRemoval1D.h"
 
-
-class ViewSynthesis1D
+class ViewSynthesis1D : public ViewSynthesis
 {
 private:
-	ConfigSyn & cfg;
-
 	int m_width;              //!> Picture resolution
 	int m_height;
 	int m_width2;             //!> The width when the ref view is upsampled (may be 2*Width or 4*Width, it depends). otherwise, it is the same as Width
@@ -105,6 +102,13 @@ private:
 	unsigned char* OccV[5]; //!> Occlusion layer Upsampled UV. 0 -> Left;   1 -> Right;    2 -> Merged;    3 -> After hole filling; 4 -> Downsampled
 #endif
 
+	Image<ImageType>* m_imgLeftWithHole;		//!> output of the warping for BNR
+	Image<ImageType>* m_imgRightWithHole;
+	Image<DepthType>* m_depthLeftWithHole;
+	Image<DepthType>* m_depthRightWithHole;
+	Image<HoleType>* m_holeLeft;
+	Image<HoleType>* m_holeRight;
+
 private:
 	void PixelMapping(int x, int y, unsigned char d, float z, unsigned char* RefY, unsigned char* RefU, unsigned char* RefV, int ViewId, double dk, int flooring);
 	void ForwardWarp();
@@ -124,6 +128,7 @@ private:
 	void TemporalImprovementMethod(ImageType *ImageCur, ImageType*ImageLast, DepthType *DepthCur, DepthType *DepthLast,
 		int frame, int Width, int Height);
 
+
 public:
 
 	ViewSynthesis1D();
@@ -133,7 +138,7 @@ public:
 
 	int  AllocMem();   //!> Must be called after the resolution is set
 
-	bool  apply(ImageType* RefLeft, ImageType* RefRight, DepthType* RefDepthLeft, DepthType* RefDepthRight, ImageType* Syn);
+	bool  apply(unique_ptr<Image<ImageType>>& imgSyn);
 
 	void SetLTranslationLeft(double sLTranslationLeft) { LTranslation[LEFTVIEW] = sLTranslationLeft; }
 	void SetLTranslationRight(double sLTranslationRight) { LTranslation[RGHTVIEW] = sLTranslationRight; }
@@ -145,6 +150,13 @@ public:
 	void SetZfarR(double sZfarR) { Zfar[RGHTVIEW] = sZfarR; }
 
 	void SetPrecision(int sSubPelOption);
+
+	Image<ImageType>*  GetSynLeftWithHole() { return m_imgLeftWithHole; }
+	Image<ImageType>*  GetSynRightWithHole() { return m_imgRightWithHole; }
+	Image<DepthType>*  GetSynDepthLeftWithHole() { return m_depthLeftWithHole; }
+	Image<DepthType>*  GetSynDepthRightWithHole() { return m_depthRightWithHole; }
+	Image<HoleType>*  GetSynHoleLeft() { return m_holeLeft; }
+	Image<HoleType>*  GetSynHoleRight() { return m_holeRight; }
 
 	int  GetSynMask(unsigned char* SynMask);
 	int  GetSynDepth(unsigned char* SynDepth);

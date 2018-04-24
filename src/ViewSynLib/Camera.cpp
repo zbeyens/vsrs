@@ -6,22 +6,11 @@ Camera::Camera()
 
 void Camera::init(uint indexCam)
 {
-	if (indexCam == 0)
-	{
-		m_zNear = cfg.getLeftNearestDepthValue();
-		m_zFar = cfg.getLeftFarthestDepthValue();
-		m_arrayInRef = cfg.getMat_In_Left();
-		m_arrayRotRef = cfg.getMat_Rot_Left();
-		m_arrayTransRef = cfg.getMat_Trans_Left();
-	}
-	else if (indexCam == 1)
-	{
-		m_zNear = cfg.getRightNearestDepthValue();
-		m_zFar = cfg.getRightFarthestDepthValue();
-		m_arrayInRef = cfg.getMat_In_Right();
-		m_arrayRotRef = cfg.getMat_Rot_Right();
-		m_arrayTransRef = cfg.getMat_Trans_Right();
-	}
+	m_zNear = cfg.getNearestDepthValue(indexCam);
+	m_zFar = cfg.getFarthestDepthValue(indexCam);
+	m_arrayInRef = cfg.getMat_In(indexCam);
+	m_arrayRotRef = cfg.getMat_Rot(indexCam);
+	m_arrayTransRef = cfg.getMat_Trans(indexCam);
 
 	createMats();
 
@@ -35,8 +24,6 @@ void Camera::init(uint indexCam)
 
 double Camera::getZnear() { return m_zNear; }
 double Camera::getZfar() { return m_zFar; }
-double* Camera::getArrayInRef() { return m_arrayInRef; }
-double* Camera::getArrayRotRef() { return m_arrayRotRef; }
 double* Camera::getArrayTransRef() { return m_arrayTransRef; }
 
 CvMat * Camera::getMatInRef() { return m_matIn[0]; }

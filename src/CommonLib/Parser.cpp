@@ -117,24 +117,21 @@ int Parser::readCameraFile()
 
 	if (istream.hasError()) return VSRS_ERROR;
 
-	string cameraId[3];
-	cameraId[0] = cfg.getLeftCameraName();
-	cameraId[1] = cfg.getVirtualCameraName();
-	cameraId[2] = cfg.getRightCameraName();
+	vector<string> cameraId;
+	cameraId.push_back(cfg.getCameraName(0));
+	cameraId.push_back(cfg.getCameraName(1));
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < cfg.getNViews(); i++)
 	{
 		if (parseOneCamera(istream, cameraId[i].c_str(), i) == VSRS_ERROR) return VSRS_ERROR;
 	}
+	if (parseOneCamera(istream, cfg.getVirtualCameraName().c_str(), -1) == VSRS_ERROR) return VSRS_ERROR;
 
 	return VSRS_OK;
 }
 
 int Parser::parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex)
 {
-	ConfigSyn& cfg = ConfigSyn::getInstance();
-	ConfigCam* configCams = cfg.getConfigCams();
-
 	FILE* fp = istream.getFile();
 
 	istream.seek(0);
@@ -185,11 +182,17 @@ int Parser::parseCameraIntrinsics(InputStream istream, int cameraIndex)
 	read += fscanf(fp, "%lf %lf %lf", &intrinsicMatrix[1][0], &intrinsicMatrix[1][1], &intrinsicMatrix[1][2]);
 	read += fscanf(fp, "%lf %lf %lf", &intrinsicMatrix[2][0], &intrinsicMatrix[2][1], &intrinsicMatrix[2][2]);
 
-
 	ConfigSyn& cfg = ConfigSyn::getInstance();
-	ConfigCam* configCams = cfg.getConfigCams();
 
-	configCams[cameraIndex].setIntrinsicMatrix(intrinsicMatrix);
+	if (cameraIndex == -1)
+	{
+		cfg.getVirtualConfigCam()->setIntrinsicMatrix(intrinsicMatrix);
+	}
+	else
+	{
+		vector<ConfigCam*> configCams = cfg.getConfigCams();
+		configCams[cameraIndex]->setIntrinsicMatrix(intrinsicMatrix);
+	}
 
 	return read;
 }
@@ -217,10 +220,18 @@ int Parser::parseCameraExtrinsics(InputStream istream, int cameraIndex)
 	read += fscanf(fp, "%lf %lf %lf %lf", &extrinsicMatrix[2][0], &extrinsicMatrix[2][1], &extrinsicMatrix[2][2], &translationVector[2]);
 
 	ConfigSyn& cfg = ConfigSyn::getInstance();
-	ConfigCam* configCams = cfg.getConfigCams();
 
-	configCams[cameraIndex].setRotationMatrix(extrinsicMatrix);
-	configCams[cameraIndex].setTranslationVector(translationVector);
+	if (cameraIndex == -1)
+	{
+		cfg.getVirtualConfigCam()->setRotationMatrix(extrinsicMatrix);
+		cfg.getVirtualConfigCam()->setTranslationVector(translationVector);
+	}
+	else
+	{
+		vector<ConfigCam*> configCams = cfg.getConfigCams();
+		configCams[cameraIndex]->setRotationMatrix(extrinsicMatrix);
+		configCams[cameraIndex]->setTranslationVector(translationVector);
+	}
 
 	return read;
 }

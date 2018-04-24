@@ -6,7 +6,6 @@
 
 #define VERSION 4.3
 
-
 #define IMAGE_DEPTH				8
 
 #define IMAGE_CHANNELS			3
@@ -40,7 +39,7 @@ typedef unsigned short DepthType;
 #else
 typedef unsigned char DepthType;
 #define MAX_DEPTH 256
-#endif  
+#endif
 
 #define BYTE unsigned char
 #define WORD unsigned short
@@ -55,7 +54,6 @@ template <>               __inline  int   MaxTypeValue <unsigned char>() { retur
 #define cvmMul( src1, src2, dst )       cvMatMulAdd( src1, src2, 0, dst )
 #define cvmCopy( src, dst )             cvCopy( src, dst, 0 )
 #define cvmInvert( src, dst )           cvInv( src, dst )
-
 
 /* 1D definitions */
 //hole filling related
@@ -127,7 +125,7 @@ public:
 
 	void setParams(map<string, string> params);
 
-	uint getNView() { return 2; }
+	uint getNViews() { return m_nViews; }
 
 	uint getDepthType();
 	int getSourceWidth();
@@ -135,76 +133,68 @@ public:
 	uint getNumberOfFrames();
 	uint getStartFrame();
 
-	double getLeftNearestDepthValue();
-	double getLeftFarthestDepthValue();
-	double getRightNearestDepthValue();
-	double getRightFarthestDepthValue();
+	double getNearestDepthValue(int i) { return m_nearestDepthValues[i]; }
+	double getFarthestDepthValue(int i) { return m_farthestDepthValues[i]; }
+	const string getCameraName(int i) { return m_cameraNames[i]; }
+	const string getViewImageName(int i) { return m_viewImageNames[i]; }
+	const string getDepthMapName(int i) { return m_depthMapNames[i]; }
 
 	const string getCameraParameterFile();
 
-	const string getLeftCameraName();
 	const string getVirtualCameraName();
-	const string getRightCameraName();
-
-	const string getLeftViewImageName();
-	const string getRightViewImageName();
-	const string getLeftDepthMapName();
-	const string getRightDepthMapName();
-	//const string getVirtualViewImageName ();}
 
 	const string getOutputVirViewImageName();
 
 	// For 1D mode
-	double getFocalLength();		//!< Get the focal length from the left camera. We assume all the three cameras share the same focal length
-	double getTranslationXLeft();	//!< Tx(Syn) - Tx(Left)
-	double getTranslationXRight();	//!< Tx(Syn) - Tx(Right)
-	double getPrincipalXLeft();		//!< uxSyn - uxLeft;
-	double getPrincipalXRight();	//!< uxSyn - uxRight;
+	double getFocalLength() { return m_camParams[0]->mIntrinsicMatrix[0][0]; }	//!< Get the focal length from the left camera. We assume all the three cameras share the same focal length
+	double getTranslationXLeft() { return m_virtualConfigCam->mTranslationVector[0] - m_camParams[0]->mTranslationVector[0]; }	//!< Tx(Syn) - Tx(Left)
+	double getTranslationXRight() { return m_virtualConfigCam->mTranslationVector[0] - m_camParams[1]->mTranslationVector[0]; }
+	double getPrincipalXLeft() { return m_virtualConfigCam->mIntrinsicMatrix[0][2] - m_camParams[0]->mIntrinsicMatrix[0][2]; }	//!< uxSyn - uxLeft;
+	double getPrincipalXRight() { return m_virtualConfigCam->mIntrinsicMatrix[0][2] - m_camParams[1]->mIntrinsicMatrix[0][2]; }
 
-									//!> For general mode
-	double* getMat_Rot_Left();
-	double* getMat_Rot_Virtual();
-	double* getMat_Rot_Right();
-	double* getMat_In_Left();
-	double* getMat_In_Virtual();
-	double* getMat_In_Right();
-	double* getMat_Trans_Left();
-	double* getMat_Trans_Virtual();
-	double* getMat_Trans_Right();
-
+	//For 3D mode
+	double* getMat_Rot_Virtual() { return m_virtualConfigCam->getRotationMatrix(); }
+	double* getMat_In_Virtual() { return m_virtualConfigCam->getIntrinsicMatrix(); }
+	double* getMat_Trans_Virtual() { return m_virtualConfigCam->getTranslationVector(); }
+	double* getMat_Rot(int i) { return m_camParams[i]->getRotationMatrix(); }
+	double* getMat_In(int i) { return m_camParams[i]->getIntrinsicMatrix(); }
+	double* getMat_Trans(int i) { return m_camParams[i]->getTranslationVector(); }
 
 	// Access algorithm parameter for 1D mode
-	int getSplattingOption();
-	int getBoundaryGrowth();
-	int getMergingOption();
-	int getDepthThreshold();
-	int getHoleCountThreshold();
-	int getTemporalImprovementOption(); //Zhejiang, May,4
-	int getWarpEnhancementOption();
-	int getCleanNoiseOption();
+	int getSplattingOption() { return m_splattingOption; }
+	int getBoundaryGrowth() { return m_boundaryGrowth; }
+	int getMergingOption() { return m_mergingOption; }
+	int getDepthThreshold() { return m_depthThreshold; }
+	int getHoleCountThreshold() { return m_holeCountThreshold; }
+	int getTemporalImprovementOption() { return m_temporalImprovementOption; } //Zhejiang, May,4
+	int getWarpEnhancementOption() { return m_warpEnhancementOption; }
+	int getCleanNoiseOption() { return m_cleanNoiseOption; }
 
-	uint getColorSpace();
+	uint getColorSpace() { return m_colorSpace; }
 
-	uint getPrecision();
-	uint getFilter();
+	uint getPrecision() { return m_precision; }
+	uint getFilter() { return m_filter; }
 
-	uint getIvsrsInpaint();
+	uint getIvsrsInpaint() { return m_IvsrsInpaint; }
 
-	uint getSynthesisMode();
-	uint getBoundaryNoiseRemoval();
-	uint getViewBlending();
+	uint getSynthesisMode() { return m_synthesisMode; }
+	uint getBoundaryNoiseRemoval() { return m_boundaryNoiseRemoval; }
+	uint getViewBlending() { return m_viewBlending; }
 
-	int  getDepthBlendDiff();
+	int  getDepthBlendDiff() { return m_depthBlendDiff; }
+
+	ConfigCam* getConfigCam(int i) { return m_camParams[i]; }
+	vector<ConfigCam*> getConfigCams() { return m_camParams; }
+	ConfigCam* getVirtualConfigCam() { return m_virtualConfigCam; }
 
 	uint getTesting() { return m_testing; }
 	string getTestImageName() { return m_testImageName; }
 
-
-	ConfigCam* getConfigCams();
-
 private:
 	ConfigSyn();
 	~ConfigSyn();
+
+	void initViewsParams();
 
 	uint m_testing;
 	string m_testImageName;
@@ -220,24 +210,19 @@ private:
 	int m_sourceHeight;				//!> Input frame height. Default: 0
 	uint m_numberOfFrames;			//!> Total number of input frame. Default: 0
 	uint m_startFrame;				//!> Starting frame #. Default: 0
-	
-	//? why
-	double m_leftNearestDepthValue;	//!> Nearest depth value of left image from camera or the origin of 3D space. Default: 0
-	double m_leftFarthestDepthValue;	//!> Farthest depth value of left image from camera or the origin of 3D space. Default: 0
-	double m_rightNearestDepthValue;	//!> Nearest depth value of right image from camera or the origin of 3D space. Default: 0
-	double m_rightFarthestDepthValue;	//!> Farthest depth value of right image from camera or the origin of 3D space. Default: 0
-	
-	string m_cameraParameterFile;		//!> Name of text file which includes real and virtual camera parameters
-	string m_leftCameraName;			//!> Name of real left camera
-	string m_rightCameraName;			//!> Name of real right camera
-	string m_virtualCameraName;		//!> Name of virtual camera
-	
-	string m_leftViewImageName;		//!> Name of left input video
-	string m_leftDepthMapName;			//!> Name of left depth map video
-	string m_rightViewImageName;		//!> Name of right input video
-	string m_rightDepthMapName;		//!> Name of right depth map video
-	string m_outputVirViewImageName;	//!> Name of output virtual view video
 
+	uint m_nViews;
+
+	vector<double> m_nearestDepthValues;	//!> Nearest depth values from camera or the origin of 3D space. Default: 0
+	vector<double> m_farthestDepthValues;	//!> Farthest depth value from camera or the origin of 3D space. Default: 0
+
+	string m_cameraParameterFile;		//!> Name of text file which includes real and virtual camera parameters
+	vector<string> m_cameraNames;		//!> Name of real cameras
+	string m_virtualCameraName;			//!> Name of virtual camera
+
+	vector<string> m_viewImageNames;		//!> Name of images video
+	vector<string> m_depthMapNames;			//!> Name of depth maps video
+	string m_outputVirViewImageName;	//!> Name of output virtual view video
 
 	uint m_colorSpace;				//!> 0...YUV, 1...RGB format for intermerdiary computations
 
@@ -248,22 +233,22 @@ private:
 	uint m_synthesisMode;				//!> 0...General, 1...1D parallel
 	uint m_boundaryNoiseRemoval;		//!> 0: No Boundary Noise Removal, 1 : Use Boundary Noise Removal
 	uint m_viewBlending;				//!> 0...Blend left and right images, 1...Not Blend
-	
 
 	int m_depthBlendDiff;				//!> max depth difference to blend left and right pixel using weighted baseline. If bigger, the nearer pixel is chosen.
 
 	// Algorithm parameters for 1-D view synthesis mode
-	
+
 	int m_splattingOption;				//!> 0: Disable splatting; 1: Enable splatting for all pixels; 2: Splatting only along boundaries. Default: 2
 	int m_boundaryGrowth;				//!> Boundary dialation, useful for Splatting option 2.  A parameter to enlarge the boundary area. Default: 40
 	int m_mergingOption;				//!> 0: Z_buffer, 1: camera distance weighting. 2: Z_buffer + hole counting + camera distance weighting. Default: 2
-	int m_depthThreshold;				//!> Only useful for MergingOption 2. Range: 0 ~ 255. Default: 75	
+	int m_depthThreshold;				//!> Only useful for MergingOption 2. Range: 0 ~ 255. Default: 75
 	int m_holeCountThreshold;			//!> Only useful for MergingOption 2. Range: 0 ~ 255. Default: 30
 	int m_temporalImprovementOption;	//!> 0: Disable; 1; Enable. Default: 1    Zhejiang,May,4
 	int m_warpEnhancementOption;		//!> 0: Disable; 1: Enable. Default: 0
 	int m_cleanNoiseOption;			//!> 0: Disable; 1; Enable. Default: 0
-	
+
 	//int m_bitDepth;
 
-	ConfigCam m_camParam[3];		//!> Camera parameters 0: Left, 1: Center, 2: Right
+	vector<ConfigCam*> m_camParams;		//!> Camera parameters of the views
+	ConfigCam* m_virtualConfigCam;		//!> Camera parameters of the virtual camera
 };

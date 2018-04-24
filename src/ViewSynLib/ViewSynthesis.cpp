@@ -26,7 +26,7 @@ bool ViewSynthesis::init()
 
 void ViewSynthesis::initViews()
 {
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		m_views.push_back(new View());
 
@@ -59,7 +59,7 @@ void ViewSynthesis::upsample()
 	AlgoFactory algoFactory;
 	Filter<ImageType>* filter = algoFactory.createFilter<ImageType>();
 
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		Image<ImageType>* imageNotUpsampled = m_views[i]->getImageNotUpsampled();
 		Image<ImageType>* image = m_views[i]->getImage();

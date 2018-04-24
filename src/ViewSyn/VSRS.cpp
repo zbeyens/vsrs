@@ -72,18 +72,18 @@ int main(int argc, char *argv[])
 	if (!viewSynthesis->init()) return 0;
 
 	// Open input and output files
-	vector<InputStream> inImages = {
-		InputStream(cfg.getLeftViewImageName()),
-		InputStream(cfg.getRightViewImageName())
-	};
-	vector<InputStream> inDepths = {
-		InputStream(cfg.getLeftDepthMapName()),
-		InputStream(cfg.getRightDepthMapName())
-	};
+	vector<InputStream> inImages;
+	vector<InputStream> inDepths;
+
+	for (size_t i = 0; i < cfg.getNViews(); i++)
+	{
+		inImages.push_back(InputStream(cfg.getViewImageName(i)));
+		inDepths.push_back(InputStream(cfg.getDepthMapName(i)));
+	}
 
 	OutputStream outSynthesizedImage(cfg.getOutputVirViewImageName());
 
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		inImages[i].openRB();
 		inDepths[i].openRB();
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 		cout << "frame number = " << n;
 		viewSynthesis->setFrameNumber(n - cfg.getStartFrame());
 
-		for (size_t i = 0; i < cfg.getNView(); i++)
+		for (size_t i = 0; i < cfg.getNViews(); i++)
 		{
 			inDepths[i].readOneFrame(viewSynthesis->getView(i)->getDepth()->getFrame(), viewSynthesis->getView(i)->getDepth()->getSize(), n);
 			inImages[i].readOneFrame(imageBuffer->getFrame(), imageBuffer->getSize(), n);
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		inImages[i].close();
 		inDepths[i].close();

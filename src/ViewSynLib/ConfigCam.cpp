@@ -16,19 +16,7 @@ ConfigCam::ConfigCam()
 	}
 }
 
-ConfigCam& ConfigCam::operator = (ConfigCam& src)
-{
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			mIntrinsicMatrix[j][i] = src.mIntrinsicMatrix[j][i];
-			mRotationMatrix[j][i] = src.mRotationMatrix[j][i];
-		}
-		mTranslationVector[i] = src.mTranslationVector[i];
-	}
-
-	return (*this);
+ConfigCam::~ConfigCam() {
 }
 
 double* ConfigCam::getIntrinsicMatrix()

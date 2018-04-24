@@ -16,8 +16,6 @@ public:
 
 	double getZnear();
 	double getZfar();
-	double* getArrayInRef();
-	double* getArrayRotRef();
 	double* getArrayTransRef();
 
 	CvMat* getMatInRef();

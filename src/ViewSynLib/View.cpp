@@ -124,6 +124,7 @@ bool View::computeDepth()
 
 void View::computeDepthFromCam(int i, double distance)
 {
+	
 	m_tableD2Z[i] = cvmGet(cam.getMatExRef(), 2, 2) * distance + cam.getArrayTransRef()[2];
 }
 

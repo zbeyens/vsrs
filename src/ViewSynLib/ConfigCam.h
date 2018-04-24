@@ -24,11 +24,7 @@ public:
 	-3x3 rotation matrix
 	*/
 	ConfigCam();
-	~ConfigCam() {}
-
-	//copy
-	//ConfigCam(const ConfigCam& src) { operator=(src); }
-	ConfigCam& operator = (ConfigCam& src);
+	~ConfigCam();
 
 	// Print all camera parameters
 	void print();

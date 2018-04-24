@@ -15,7 +15,7 @@ ViewSynthesis3D::~ViewSynthesis3D()
 
 void ViewSynthesis3D::xReleaseMemory()
 {
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		Tools::safeDelete(m_views[i]);
 	}
@@ -30,7 +30,7 @@ bool ViewSynthesis3D::init()
 {
 	ViewSynthesis::init();
 
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		if (!m_views[i]->init(i))  return false;
 	}
@@ -45,11 +45,11 @@ bool ViewSynthesis3D::init()
 void ViewSynthesis3D::computeWeights()
 {
 	m_totalBaseline = 0;
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		m_totalBaseline += m_views[i]->getCam().getBaseline();
 	}
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		//m_views[i]->setWeight(m_views[i]->getCam().getBaseline() / m_totalBaseline);
 	}
@@ -93,7 +93,7 @@ bool ViewSynthesis3D::apply(unique_ptr<Image<ImageType>>& pSynYuvBuffer)
 {
 	upsample();
 
-	for (size_t i = 0; i < cfg.getNView(); i++)
+	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		m_views[i]->synthesizeView();
 	}
@@ -121,13 +121,13 @@ bool ViewSynthesis3D::apply(unique_ptr<Image<ImageType>>& pSynYuvBuffer)
 	else if (cfg.getColorSpace() == cfg.COLOR_SPACE_YUV)
 		pSynYuvBuffer->convertMatYUVToYUV(m_blendedImage->getMat());
 
-	cout << "BNR";
 
 	//BoundaryNoiseRemoval* boundaryNoiseRemoval = new BoundaryNoiseRemoval3D();
 	//boundaryNoiseRemoval->SetLeftBaseLineDist(getViewLeft()->getCam().getBaseline());
 	//boundaryNoiseRemoval->SetRightBaseLineDist(getViewRight()->getCam().getBaseline());
 	//boundaryNoiseRemoval->SetLeftH_V2R(getViewLeft()->getMatH_V2R());
 	//boundaryNoiseRemoval->SetRightH_V2R(getViewRight()->getMatH_V2R());
+	//cout << "BNR";
 	//if (!boundaryNoiseRemoval->apply(m_views[0]->getSynImageWithHole(), m_views[1]->getSynImageWithHole(), m_views[0]->getSynDepthWithHole(), m_views[1]->getSynDepthWithHole(), m_views[0]->getSynHoles(), m_views[1]->getSynHoles(), pSynYuvBuffer, false))
 	//	return false;
 

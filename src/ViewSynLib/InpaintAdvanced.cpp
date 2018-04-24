@@ -299,12 +299,11 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 
 	//cvZero(holesMask->getMat());
 
-		cvOr(views[0]->getFillableHoles()->getMat(), views[1]->getFillableHoles()->getMat(), holesMask->getMat()); // filled hole mask
-	//for (size_t i = 0; i < cfg.getNView(); i++)
-	//{
-	//	cvOr(views[i]->getFillableHoles()->getMat(), holesMask->getMat(), holesMask->getMat()); // filled hole mask
-	//}
-	cout << "coucou";
+	cvOr(views[0]->getFillableHoles()->getMat(), views[1]->getFillableHoles()->getMat(), holesMask->getMat()); // filled hole mask
+//for (size_t i = 0; i < cfg.getNView(); i++)
+//{
+//	cvOr(views[i]->getFillableHoles()->getMat(), holesMask->getMat(), holesMask->getMat()); // filled hole mask
+//}
 
 	// NICT Edge filter start
 	// Horizontal edge detect

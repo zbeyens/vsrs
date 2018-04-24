@@ -97,10 +97,10 @@ ViewSynthesis1D::ViewSynthesis1D()
 	SetLTranslationRight(cfg.getTranslationXRight());
 	SetduPrincipalLeft(cfg.getPrincipalXLeft());
 	SetduPrincipalRight(cfg.getPrincipalXRight());
-	SetZnearL(cfg.getLeftNearestDepthValue());
-	SetZfarL(cfg.getLeftFarthestDepthValue());
-	SetZnearR(cfg.getRightNearestDepthValue());
-	SetZfarR(cfg.getRightFarthestDepthValue());
+	SetZnearL(cfg.getNearestDepthValue(0));
+	SetZfarL(cfg.getFarthestDepthValue(0));
+	SetZnearR(cfg.getNearestDepthValue(1));
+	SetZfarR(cfg.getFarthestDepthValue(1));
 	SetPrecision(cfg.getPrecision());
 
 	m_width = cfg.getSourceWidth();

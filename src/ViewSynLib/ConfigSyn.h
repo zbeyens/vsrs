@@ -41,6 +41,8 @@ typedef unsigned char DepthType;
 #define MAX_DEPTH 256
 #endif
 
+#define MAX_SHORT 65536
+
 #define BYTE unsigned char
 #define WORD unsigned short
 
@@ -86,6 +88,10 @@ template <>               __inline  int   MaxTypeValue <unsigned char>() { retur
 #define VSRS3_ORIGINAL 0    // DT: This switch may be removed after London meeting.
 /* end 1D definitions */
 
+#ifndef CLIP3D
+#define CLIP3D(x,min,max) ( (x)<(min)?(min):((x)>(max)?(max):(x)) )
+#endif
+
 class ConfigSyn : public Singleton<ConfigSyn>
 {
 	friend Singleton<ConfigSyn>;
@@ -95,7 +101,7 @@ public:
 	const int MODE_1D = 1;
 	const int DEPTH_FROM_CAMERA = 0;
 	const int DEPTH_FROM_ORIGIN = 1;
-	const int BLEND_ALL = 0;
+	const int BLEND_WEIGHTED = 0;
 	const int BLEND_CLOSER = 1;
 	const int FILTER_LINEAR = 0;
 	const int FILTER_CUBIC = 1;
@@ -103,47 +109,45 @@ public:
 	const int COLOR_SPACE_YUV = 0;
 	const int COLOR_SPACE_RGB = 1;
 	const int INPAINT_DEFAULT = 0;
-	const int INPAINT_ADVANCED = 1;
+	const int INPAINT_DEPTH_BASED = 1;
 	const int BNR_DISABLED = 0;
 	const int BNR_ENABLED = 1;
 
-	/*
-	\brief
-	Check whether the config parameters are valid or not
+	/**
+		\brief
+		Check whether the config parameters are valid or not
 
-	For 1D mode:
-	-display Warning if the world coordinate system is used (results may be incorrect).
-	-display Error if the input format is RGB.
-
-	\return
-	1: Succeed
-	0: Fail
+		\return
+		1: Succeed
+		0: Fail
 	*/
-	uint validation();
+	bool printWarning();
 
-	void printParams(); //!< Print all parameters
+	void printParams(); //!< Print all parameter values
 
+	/**
+		Convert all the string parameters into the appropriate type and store them in this class
+	*/
 	void setParams(map<string, string> params);
 
 	uint getNViews() { return m_nViews; }
 
-	uint getDepthType();
-	int getSourceWidth();
-	int getSourceHeight();
-	uint getNumberOfFrames();
-	uint getStartFrame();
+	uint getDepthType() { return m_depthType; }
+	int getSourceWidth() { return m_sourceWidth; }
+	int getSourceHeight() { return m_sourceHeight; }
+	uint getNumberOfFrames() { return m_numberOfFrames; }
+	uint getStartFrame() { return m_startFrame; }
+
+	const string getCameraParameterFile() { return m_cameraParameterFile; }
+	const string getVirtualCameraName() { return m_virtualCameraName; }
+	const string getOutputVirViewImageName() { return m_outputVirViewImageName; }
+	const string getOutputVirDepthMapName() { return m_outputVirDepthMapName; }
 
 	double getNearestDepthValue(int i) { return m_nearestDepthValues[i]; }
 	double getFarthestDepthValue(int i) { return m_farthestDepthValues[i]; }
 	const string getCameraName(int i) { return m_cameraNames[i]; }
 	const string getViewImageName(int i) { return m_viewImageNames[i]; }
 	const string getDepthMapName(int i) { return m_depthMapNames[i]; }
-
-	const string getCameraParameterFile();
-
-	const string getVirtualCameraName();
-
-	const string getOutputVirViewImageName();
 
 	// For 1D mode
 	double getFocalLength() { return m_camParams[0]->mIntrinsicMatrix[0][0]; }	//!< Get the focal length from the left camera. We assume all the three cameras share the same focal length
@@ -180,8 +184,12 @@ public:
 	uint getSynthesisMode() { return m_synthesisMode; }
 	uint getBoundaryNoiseRemoval() { return m_boundaryNoiseRemoval; }
 	uint getViewBlending() { return m_viewBlending; }
-
 	int  getDepthBlendDiff() { return m_depthBlendDiff; }
+
+	int     getSuperPixel() { return m_superPixel; }	//NICT super pixel
+	int     getDepthDilateSize() { return m_depthDilateSize; }//NICT stgep in
+	int     getDepthFilterSize() { return m_depthFilterSize; }//NICT stgep in
+	int     getDepthDiff() { return m_depthDiff; }		//NICT for edge filter
 
 	ConfigCam* getConfigCam(int i) { return m_camParams[i]; }
 	vector<ConfigCam*> getConfigCams() { return m_camParams; }
@@ -223,6 +231,7 @@ private:
 	vector<string> m_viewImageNames;		//!> Name of images video
 	vector<string> m_depthMapNames;			//!> Name of depth maps video
 	string m_outputVirViewImageName;	//!> Name of output virtual view video
+	string m_outputVirDepthMapName;		//!> Name of output depth map
 
 	uint m_colorSpace;				//!> 0...YUV, 1...RGB format for intermerdiary computations
 
@@ -246,6 +255,11 @@ private:
 	int m_temporalImprovementOption;	//!> 0: Disable; 1; Enable. Default: 1    Zhejiang,May,4
 	int m_warpEnhancementOption;		//!> 0: Disable; 1: Enable. Default: 0
 	int m_cleanNoiseOption;			//!> 0: Disable; 1; Enable. Default: 0
+
+	int m_superPixel;				//!> //NICT super pixel
+	int m_depthDilateSize;
+	int m_depthFilterSize;
+	int m_depthDiff;				//!> NICT for edge filter
 
 	//int m_bitDepth;
 

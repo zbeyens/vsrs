@@ -1,6 +1,6 @@
-#include "InpaintAdvanced.h"
+#include "InpaintDepthBased.h"
 
-void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blendedImage, Image<DepthType>* blendedDepth, Image<ImageType>* holesMask, vector<View*> views)
+void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* inputImage, Image<DepthType>* inputDepth, Image<ImageType>* holesMask, vector<View*> views)
 {
 	int hptv, ptv, var;
 	bool holeflag, inpaintflag, lflag, mflag, rflag, filterflag;
@@ -39,7 +39,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						leftw = w - 1;
 						leftptv = ptv - 1;
 						refptv = leftptv;
-						refdepth = (DepthType)blendedDepth->getMatData(refptv); // set left depth to ref depth
+						refdepth = (DepthType)inputDepth->getMatData(refptv); // set left depth to ref depth
 					}// else, left was set before
 				}
 				else if (holeflag == false) // hole start at middle
@@ -48,7 +48,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					leftw = w - 1;
 					leftptv = ptv - 1;
 					refptv = leftptv;
-					refdepth = (DepthType)blendedDepth->getMatData(refptv); // set left depth to ref depth
+					refdepth = (DepthType)inputDepth->getMatData(refptv); // set left depth to ref depth
 				} // else, middle in hole, do nothing
 			} // hole end
 			else // Mask[2] = 0 not hole
@@ -59,10 +59,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					inpaintflag = true;
 					rightw = w;
 					rightptv = ptv;
-					if (refdepth > (DepthType)blendedDepth->getMatData(rightptv)) // set right depth to ref depth
+					if (refdepth > (DepthType)inputDepth->getMatData(rightptv)) // set right depth to ref depth
 					{
 						refptv = rightptv;
-						refdepth = (DepthType)blendedDepth->getMatData(refptv);
+						refdepth = (DepthType)inputDepth->getMatData(refptv);
 					}
 				} // else, middle in not hole, do nothing
 			} // not hole end
@@ -89,10 +89,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (mflag == false && holesMask->getMatData(mptv) == 0) // not hole
 						{
 							mflag = true;
-							if (refdepth > (DepthType) blendedDepth->getMatData(mptv))
+							if (refdepth > (DepthType) inputDepth->getMatData(mptv))
 							{
 								refptv = mptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -102,10 +102,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (llflag == false && holesMask->getMatData(llptv) == 0) // not hole
 						{
 							llflag = true;
-							if (refdepth > (DepthType)blendedDepth->getMatData(llptv))
+							if (refdepth > (DepthType)inputDepth->getMatData(llptv))
 							{
 								refptv = llptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nopthing
 
@@ -115,10 +115,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (lflag == false && holesMask->getMatData(lptv) == 0) // not hole
 						{
 							lflag = true;
-							if (refdepth > (DepthType)blendedDepth->getMatData(lptv))
+							if (refdepth > (DepthType)inputDepth->getMatData(lptv))
 							{
 								refptv = lptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nopthing
 
@@ -128,10 +128,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (lmflag == false && holesMask->getMatData(lmptv) == 0) // not hole
 						{
 							lmflag = true;
-							if (refdepth > (DepthType)blendedDepth->getMatData(lmptv))
+							if (refdepth > (DepthType)inputDepth->getMatData(lmptv))
 							{
 								refptv = lmptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nopthing
 
@@ -141,10 +141,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (mrflag == false && holesMask->getMatData(mrptv) == 0) // not hole
 						{
 							mrflag = true;
-							if (refdepth > (DepthType)blendedDepth->getMatData(mrptv))
+							if (refdepth > (DepthType)inputDepth->getMatData(mrptv))
 							{
 								refptv = mrptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -155,10 +155,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (rflag == false && holesMask->getMatData(rptv) == 0) // not hole
 						{
 							rflag = true;
-							if (refdepth > (DepthType)blendedDepth->getMatData(rptv))
+							if (refdepth > (DepthType)inputDepth->getMatData(rptv))
 							{
 								refptv = rptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -168,10 +168,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 						if (rrflag == false && holesMask->getMatData(rrptv) == 0) // not hole
 						{
 							rrflag = true;
-							if (refdepth > (DepthType)blendedDepth->getMatData(rrptv))
+							if (refdepth > (DepthType)inputDepth->getMatData(rrptv))
 							{
 								refptv = rrptv;
-								refdepth = (DepthType)blendedDepth->getMatData(refptv);
+								refdepth = (DepthType)inputDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -190,10 +190,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (mflag == false && holesMask->getMatData(mptv) == 0) // not hole
 					{
 						mflag = true;
-						if (refdepth > (DepthType) blendedDepth->getMatData(mptv))
+						if (refdepth > (DepthType) inputDepth->getMatData(mptv))
 						{
 							refptv = mptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -204,10 +204,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (llflag == false && holesMask->getMatData(llptv) == 0) // not hole
 					{
 						llflag = true;
-						if (refdepth > (DepthType)blendedDepth->getMatData(llptv))
+						if (refdepth > (DepthType)inputDepth->getMatData(llptv))
 						{
 							refptv = llptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -217,10 +217,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (lflag == false && holesMask->getMatData(lptv) == 0) // not hole
 					{
 						lflag = true;
-						if (refdepth > (DepthType)blendedDepth->getMatData(lptv))
+						if (refdepth > (DepthType)inputDepth->getMatData(lptv))
 						{
 							refptv = lptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -230,10 +230,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (lmflag == false && holesMask->getMatData(lmptv) == 0) // not hole
 					{
 						lmflag = true;
-						if (refdepth > (DepthType)blendedDepth->getMatData(lmptv))
+						if (refdepth > (DepthType)inputDepth->getMatData(lmptv))
 						{
 							refptv = lmptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -243,10 +243,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (mrflag == false && holesMask->getMatData(mrptv) == 0) // not hole
 					{
 						mrflag = true;
-						if (refdepth > (DepthType)blendedDepth->getMatData(mrptv))
+						if (refdepth > (DepthType)inputDepth->getMatData(mrptv))
 						{
 							refptv = mrptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -256,10 +256,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (rflag == false && holesMask->getMatData(rptv) == 0) // not hole
 					{
 						rflag = true;
-						if (refdepth > (DepthType)blendedDepth->getMatData(rptv))
+						if (refdepth > (DepthType)inputDepth->getMatData(rptv))
 						{
 							refptv = rptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -269,10 +269,10 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 					if (rrflag == false && holesMask->getMatData(rrptv) == 0) // not hole
 					{
 						rrflag = true;
-						if (refdepth > (DepthType)blendedDepth->getMatData(rrptv))
+						if (refdepth > (DepthType)inputDepth->getMatData(rrptv))
 						{
 							refptv = rrptv;
-							refdepth = (DepthType)blendedDepth->getMatData(refptv);
+							refdepth = (DepthType)inputDepth->getMatData(refptv);
 						}
 					}
 
@@ -285,9 +285,9 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 				for (varptv = leftptv + 1; varptv < rightptv; varptv++)
 				{
 					var = varptv * 3;
-					blendedImage->setMatData(var, blendedImage->getMatData(ref));
-					blendedImage->setMatData(var + 1, blendedImage->getMatData(ref + 1));
-					blendedImage->setMatData(var + 2, blendedImage->getMatData(ref + 2));
+					inputImage->setMatData(var, inputImage->getMatData(ref));
+					inputImage->setMatData(var + 1, inputImage->getMatData(ref + 1));
+					inputImage->setMatData(var + 2, inputImage->getMatData(ref + 2));
 				}
 			} // else no inpaintflag, do nothing
 		} // for w
@@ -295,7 +295,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 
 	  // NICT  cvInpaint(imgBlended.getImageIpl(), imgMask[0].getImageIpl(), imgInterpolatedView, 5, CV_INPAINT_NS); // inpaint
 	cvErode(holesMask->getMat(), holesMask->getMat()); // use pre-inpainted pixels for smoothing
-	cvInpaint(blendedImage->getMat(), holesMask->getMat(), synImage->getMat(), 3, CV_INPAINT_TELEA); // NICT use small kernel // smooth pre-inpainted area
+	cvInpaint(inputImage->getMat(), holesMask->getMat(), outputImage->getMat(), 3, CV_INPAINT_TELEA); // NICT use small kernel // smooth pre-inpainted area
 
 	//cvZero(holesMask->getMat());
 
@@ -321,7 +321,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 			if (holeflag == false && holesMask->getMatData(ptv) != 0) // filled hole edge
 			{
 				holeflag = true;
-				if (abs((DepthType)blendedDepth->getMatData(ptv - 2) - (DepthType)blendedDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inputDepth->getMatData(ptv - 2) - (DepthType)inputDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
 				{
 					filterflag = true;
 				}
@@ -335,7 +335,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 				holeflag = false;
 				// NICT start
 				//			if(abs((unsigned char)imgBlendedDepth->getImageIpl()->imageData[ptv-2] - (unsigned char)imgBlendedDepth->getImageIpl()->imageData[ptv+1]) < cfg.getDepthBlendDiff())
-				if (abs((DepthType)blendedDepth->getMatData(ptv - 2) - (DepthType)blendedDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inputDepth->getMatData(ptv - 2) - (DepthType)inputDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
 					// NICT end
 					filterflag = true;
 				else filterflag = false;
@@ -348,17 +348,17 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 				var = ptv * 3;
 				varm6 = var - 6, varm5 = var - 5, varm4 = var - 4, varm3 = var - 3, varm2 = var - 2, varm1 = var - 1, var1 = var + 1, var2 = var + 2, var3 = var + 3, var4 = var + 4, var5 = var + 5;
 
-				synImage->setMatData(var, ((unsigned char)synImage->getMatData(varm6) + (unsigned char)synImage->getMatData(var3)) >> 1);
-				synImage->setMatData(var1, ((unsigned char)synImage->getMatData(varm5) + (unsigned char)synImage->getMatData(var4)) >> 1);
-				synImage->setMatData(var2, ((unsigned char)synImage->getMatData(varm4) + (unsigned char)synImage->getMatData(var5)) >> 1);
+				outputImage->setMatData(var, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var3)) >> 1);
+				outputImage->setMatData(var1, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var4)) >> 1);
+				outputImage->setMatData(var2, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var5)) >> 1);
 
-				synImage->setMatData(varm3, ((unsigned char)synImage->getMatData(varm6) + (unsigned char)synImage->getMatData(var)) >> 1);
-				synImage->setMatData(varm2, ((unsigned char)synImage->getMatData(varm5) + (unsigned char)synImage->getMatData(var1)) >> 1);
-				synImage->setMatData(varm1, ((unsigned char)synImage->getMatData(varm4) + (unsigned char)synImage->getMatData(var2)) >> 1);
+				outputImage->setMatData(varm3, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var)) >> 1);
+				outputImage->setMatData(varm2, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var1)) >> 1);
+				outputImage->setMatData(varm1, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var2)) >> 1);
 
-				synImage->setMatData(var3, ((unsigned char)synImage->getMatData(var) + (unsigned char)synImage->getMatData(var3)) >> 1);
-				synImage->setMatData(var4, ((unsigned char)synImage->getMatData(var1) + (unsigned char)synImage->getMatData(var4)) >> 1);
-				synImage->setMatData(var5, ((unsigned char)synImage->getMatData(var2) + (unsigned char)synImage->getMatData(var5)) >> 1);
+				outputImage->setMatData(var3, ((unsigned char)outputImage->getMatData(var) + (unsigned char)outputImage->getMatData(var3)) >> 1);
+				outputImage->setMatData(var4, ((unsigned char)outputImage->getMatData(var1) + (unsigned char)outputImage->getMatData(var4)) >> 1);
+				outputImage->setMatData(var5, ((unsigned char)outputImage->getMatData(var2) + (unsigned char)outputImage->getMatData(var5)) >> 1);
 			}
 		}
 	}
@@ -375,7 +375,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 			{
 				holeflag = true;
 
-				if (abs((DepthType)blendedDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)blendedDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inputDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)inputDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
 					filterflag = true;
 				else filterflag = false;
 			}
@@ -383,7 +383,7 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 			{
 				holeflag = false;
 
-				if (abs((DepthType)blendedDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)blendedDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inputDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)inputDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
 					filterflag = true;
 				else filterflag = false;
 			}
@@ -395,17 +395,17 @@ void InpaintAdvanced::apply(Image<ImageType>* synImage, Image<ImageType>* blende
 				var = ptv * 3;
 				varm6 = var - 6 * cfg.getSourceWidth(), varm5 = varm6 + 1, varm4 = varm6 + 2, varm3 = var - 3 * cfg.getSourceWidth(), varm2 = varm3 + 1, varm1 = varm3 + 2, var1 = var + 1, var2 = var + 2, var3 = var + 3 * cfg.getSourceWidth(), var4 = var3 + 1, var5 = var3 + 2;
 
-				synImage->setMatData(var, ((unsigned char)synImage->getMatData(varm6) + (unsigned char)synImage->getMatData(var3)) >> 1);
-				synImage->setMatData(var1, ((unsigned char)synImage->getMatData(varm5) + (unsigned char)synImage->getMatData(var4)) >> 1);
-				synImage->setMatData(var2, ((unsigned char)synImage->getMatData(varm4) + (unsigned char)synImage->getMatData(var5)) >> 1);
+				outputImage->setMatData(var, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var3)) >> 1);
+				outputImage->setMatData(var1, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var4)) >> 1);
+				outputImage->setMatData(var2, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var5)) >> 1);
 
-				synImage->setMatData(varm3, ((unsigned char)synImage->getMatData(varm6) + (unsigned char)synImage->getMatData(var)) >> 1);
-				synImage->setMatData(varm2, ((unsigned char)synImage->getMatData(varm5) + (unsigned char)synImage->getMatData(var1)) >> 1);
-				synImage->setMatData(varm1, ((unsigned char)synImage->getMatData(varm4) + (unsigned char)synImage->getMatData(var2)) >> 1);
+				outputImage->setMatData(varm3, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var)) >> 1);
+				outputImage->setMatData(varm2, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var1)) >> 1);
+				outputImage->setMatData(varm1, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var2)) >> 1);
 
-				synImage->setMatData(var3, ((unsigned char)synImage->getMatData(var) + (unsigned char)synImage->getMatData(var3)) >> 1);
-				synImage->setMatData(var4, ((unsigned char)synImage->getMatData(var1) + (unsigned char)synImage->getMatData(var4)) >> 1);
-				synImage->setMatData(var5, ((unsigned char)synImage->getMatData(var2) + (unsigned char)synImage->getMatData(var5)) >> 1);
+				outputImage->setMatData(var3, ((unsigned char)outputImage->getMatData(var) + (unsigned char)outputImage->getMatData(var3)) >> 1);
+				outputImage->setMatData(var4, ((unsigned char)outputImage->getMatData(var1) + (unsigned char)outputImage->getMatData(var4)) >> 1);
+				outputImage->setMatData(var5, ((unsigned char)outputImage->getMatData(var2) + (unsigned char)outputImage->getMatData(var5)) >> 1);
 			}
 		}
 	}

@@ -9,6 +9,7 @@ ConfigSyn::ConfigSyn()
 	, m_cameraParameterFile("cam_param.txt")
 	, m_virtualCameraName("param_dog41")
 	, m_outputVirViewImageName("dog_virtual039.yuv")
+	, m_outputVirDepthMapName("depth_dog_virtual039.yuv")
 	, m_nViews(2)
 	, m_colorSpace(0)
 	, m_precision(2)
@@ -71,10 +72,12 @@ void ConfigSyn::setParams(map<string, string> params)
 
 		for (size_t i = 0; i < m_nViews; i++)
 		{
-			if (tag == i + "_NearestDepthValue") m_nearestDepthValues[i] = atof(value.c_str());
-			else if (tag == i + "_FarthestDepthValue") m_farthestDepthValues[i] = atof(value.c_str());
-			else if (tag == i + "_CameraName") m_cameraNames[i] = atof(value.c_str());
-			else if (tag == i + "_DepthMapName") m_depthMapNames[i] = atof(value.c_str());
+			if (tag == to_string(i) + "_NearestDepthValue")	m_nearestDepthValues[i] = atof(value.c_str());
+			else if (tag == to_string(i) + "_FarthestDepthValue") m_farthestDepthValues[i] = atof(value.c_str());
+			else if (tag == to_string(i) + "_CameraName") m_cameraNames[i] = value;
+			else if (tag == to_string(i) + "_ViewImageName") m_viewImageNames[i] = value;
+
+			else if (tag == to_string(i) + "_DepthMapName") m_depthMapNames[i] = value;
 		}
 
 		if (tag == "DepthType") m_depthType = atoi(value.c_str());
@@ -99,6 +102,7 @@ void ConfigSyn::setParams(map<string, string> params)
 		else if (tag == "RightDepthMapName") m_depthMapNames[1] = value;
 		//else if (tag == "ReferenceVirtualViewImageName") m_cVirtualViewImageName = value;
 		else if (tag == "OutputVirtualViewImageName") m_outputVirViewImageName = value;
+		else if (tag == "OutputVirtualDepthMapName") m_outputVirDepthMapName = value;
 
 		else if (tag == "ColorSpace") m_colorSpace = atoi(value.c_str());
 		else if (tag == "Precision") m_precision = atoi(value.c_str());
@@ -125,6 +129,8 @@ void ConfigSyn::setParams(map<string, string> params)
 
 void ConfigSyn::printParams()
 {
+	cout << "Number of Views : " << m_nViews << endl;
+
 	cout << "DepthType : " << m_depthType << endl;
 	cout << "SourceWidth : " << m_sourceWidth << endl;
 	cout << "SourceHeight : " << m_sourceHeight << endl;
@@ -136,12 +142,14 @@ void ConfigSyn::printParams()
 		cout << i << "_NearestDepthValue : " << m_nearestDepthValues[i] << endl;
 		cout << i << "_FarthestDepthValue : " << m_farthestDepthValues[i] << endl;
 		cout << i << "_CameraName : " << m_cameraNames[i] << endl;
+		cout << i << "_ViewImageName : " << m_viewImageNames[i] << endl;
 		cout << i << "_DepthMapName : " << m_depthMapNames[i] << endl;
 	}
 
 	cout << "CameraParameterFile : " << m_cameraParameterFile << endl;
 	cout << "VirtualCameraName : " << m_virtualCameraName << endl;
 	cout << "OutputVirtualViewImageName : " << m_outputVirViewImageName << endl;
+	cout << "OutputVirtualDepthMapName : " << m_outputVirDepthMapName << endl;
 
 	cout << "ColorSpace : " << m_colorSpace << endl;
 	cout << "Precision : " << m_precision << endl;
@@ -165,14 +173,8 @@ void ConfigSyn::printParams()
 	//cout << "BitDepth : " << m_bitDepth << endl;
 }
 
-uint ConfigSyn::validation()
+bool ConfigSyn::printWarning()
 {
-	if (m_precision != 1 && m_precision != 2 && m_precision != 4)
-	{
-		fprintf(stderr, "Illegal Precision setting\n");
-		return VSRS_ERROR;
-	}
-
 	if (m_synthesisMode == 1) // 1D mode
 	{
 		if (m_depthType == 1)
@@ -184,7 +186,6 @@ uint ConfigSyn::validation()
 		{
 			cout << "Error: The input format must be in YUV 420 with 1D synthesis mode, for the time being." << endl;
 			cout << "       Check ColorSpace." << endl;
-			return VSRS_ERROR;
 		}
 
 		if (m_boundaryNoiseRemoval && m_splattingOption != 1) {
@@ -197,22 +198,6 @@ uint ConfigSyn::validation()
 		}
 	}
 
-	// More checks for general mode:
-	if (m_synthesisMode == 0) // general mode
-	{
-	}
-
-	return VSRS_OK;
+	return true;
 }
 
-uint ConfigSyn::getDepthType() { return m_depthType; }
-int ConfigSyn::getSourceWidth() { return m_sourceWidth; }
-int ConfigSyn::getSourceHeight() { return m_sourceHeight; }
-uint ConfigSyn::getNumberOfFrames() { return m_numberOfFrames; }
-uint ConfigSyn::getStartFrame() { return m_startFrame; }
-
-const string ConfigSyn::getCameraParameterFile() { return m_cameraParameterFile; }
-
-const string ConfigSyn::getVirtualCameraName() { return m_virtualCameraName; }
-
-const string ConfigSyn::getOutputVirViewImageName() { return m_outputVirViewImageName; }

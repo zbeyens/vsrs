@@ -7,9 +7,15 @@ class Clock
 public:
 	Clock();
 
-	void init();
-	void getEndTime();
-	void getTotalTime();
+	/**
+		Start the clock
+	*/
+	void setStartTime();
+	/**
+		Print the time from the start of the clock 
+	*/
+	void setEndTime();
+	void setTotalTime();
 
 private:
 	clock_t start, finish, first;
@@ -20,21 +26,21 @@ Clock::Clock()
 	first = start = clock();
 }
 
-inline void Clock::init()
+inline void Clock::setStartTime()
 {
 	finish = clock();
 	cout << "Initialization: " << (double)(finish - start) / CLOCKS_PER_SEC << " sec" << endl;
 	start = finish;
 }
 
-inline void Clock::getEndTime()
+inline void Clock::setEndTime()
 {
 	finish = clock();
 	cout << "->End (" << (double)(finish - start) / CLOCKS_PER_SEC << " sec)" << endl;
 	start = finish;
 }
 
-inline void Clock::getTotalTime()
+inline void Clock::setTotalTime()
 {
 	finish = clock();
 	cout << "Total: " << ((double)(finish - first)) / ((double)CLOCKS_PER_SEC) << " sec" << endl;

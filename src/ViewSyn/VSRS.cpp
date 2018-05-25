@@ -38,9 +38,8 @@
 #include "Parser.h"
 #include "InputStream.h"
 #include "OutputStream.h"
-#include "AlgoFactory.h"
-#include "ViewSynthesis3D.h"
-#include "ViewSynthesis1D.h"
+#include "PipelineFactory.h"
+#include "ViewSynthesis.h"
 #include "TestRegression.h"
 
 int main(int argc, char *argv[])
@@ -55,12 +54,9 @@ int main(int argc, char *argv[])
 
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 
-	// Init synthesis
-	ViewSynthesis* viewSynthesis;
-	if (cfg.getSynthesisMode() == cfg.MODE_3D)
-		viewSynthesis = new ViewSynthesis3D();
-	else if (cfg.getSynthesisMode() == cfg.MODE_1D)
-		viewSynthesis = new ViewSynthesis1D();
+	// Init synthesis pipeline
+	PipelineFactory pipelineFactory;
+	ViewSynthesis* viewSynthesis = pipelineFactory.createPipeline();
 
 	unique_ptr<Image<ImageType>> imageBuffer(new Image<ImageType>(cfg.getSourceHeight(), cfg.getSourceWidth(), BUFFER_CHROMA_FORMAT)); // store images to upsample one by one
 
@@ -81,16 +77,18 @@ int main(int argc, char *argv[])
 		inDepths.push_back(InputStream(cfg.getDepthMapName(i)));
 	}
 
-	OutputStream outSynthesizedImage(cfg.getOutputVirViewImageName());
+	OutputStream outImage(cfg.getOutputVirViewImageName());
+	OutputStream outDepth(cfg.getOutputVirDepthMapName());
 
 	for (size_t i = 0; i < cfg.getNViews(); i++)
 	{
 		inImages[i].openRB();
 		inDepths[i].openRB();
 	}
-	outSynthesizedImage.openWB();
+	outImage.openWB();
+	outDepth.openWB();
 
-	clock.init();
+	clock.setStartTime();
 
 	uint n;
 	for (n = cfg.getStartFrame(); n < cfg.getStartFrame() + cfg.getNumberOfFrames(); n++)
@@ -102,17 +100,19 @@ int main(int argc, char *argv[])
 		{
 			inDepths[i].readOneFrame(viewSynthesis->getView(i)->getDepth()->getFrame(), viewSynthesis->getView(i)->getDepth()->getSize(), n);
 			inImages[i].readOneFrame(imageBuffer->getFrame(), imageBuffer->getSize(), n);
-			viewSynthesis->setImage(i, imageBuffer);
+			viewSynthesis->setInputImage(i, imageBuffer);
 
 			cout << ".";
 		}
 
 		if (!viewSynthesis->apply(imageBuffer)) break;
+
 		cout << ".";
 
-		outSynthesizedImage.writeOneFrame(imageBuffer->getFrame(), imageBuffer->getSize());
+		outImage.writeOneFrame(imageBuffer->getFrame(), imageBuffer->getSize());
+		//outDepth.writeOneFrame(viewSynthesis->getSynDepth()->getFrame(), viewSynthesis->getSynDepth()->getSize());
 
-		clock.getEndTime();
+		clock.setEndTime();
 
 		if (cfg.getTesting())
 		{
@@ -126,9 +126,9 @@ int main(int argc, char *argv[])
 		inImages[i].close();
 		inDepths[i].close();
 	}
-	outSynthesizedImage.close();
+	outImage.close();
 
-	clock.getTotalTime();
+	clock.setTotalTime();
 
 	return 0;
 }

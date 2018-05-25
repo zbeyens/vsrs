@@ -39,8 +39,11 @@
 BoundaryNoiseRemoval::BoundaryNoiseRemoval()
 	: cfg(ConfigSyn::getInstance())
 {
-	m_width = cfg.getSourceWidth();
 	m_height = cfg.getSourceHeight();
+	m_height2 = m_height * cfg.getPrecision();
+	m_width = cfg.getSourceWidth();
+	m_width2 = m_width * cfg.getPrecision();
+
 	m_depthThreshold = 5;
 
 	m_weightLeft = m_weightRight = 0.0;
@@ -90,18 +93,45 @@ void BoundaryNoiseRemoval::xInit()
 	if (m_imgHoleOtherView == NULL) { m_imgHoleOtherView = cvCreateImage(cvSize(m_width*m_precision, m_height), 8, 1); }
 }
 
-bool BoundaryNoiseRemoval::apply(Image<ImageType>* pRefLeft, Image<ImageType>* pRefRight, Image<DepthType>* pRefDepthLeft, Image<DepthType>* pRefDepthRight,
-	Image<HoleType>* pRefHoleLeft, Image<HoleType>* pRefHoleRight, unique_ptr<Image<ImageType>>& pSynYuvBuffer, bool SynthesisMode)
+bool BoundaryNoiseRemoval::apply(unique_ptr<Image<ImageType>>& outImg)
 {
+	SetLeftBaseLineDist(m_views[0]->getCam().getBaseline());
+	SetRightBaseLineDist(m_views[1]->getCam().getBaseline());
+	SetLeftH_V2R(m_views[0]->getMatH_V2R());
+	SetRightH_V2R(m_views[1]->getMatH_V2R());
+
+	upsampleViews();
+
+	AlgoFactory algoFactory;
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		Warp* depthSynthesis = algoFactory.createWarpDepth();
+		Warp* viewSynthesisReverse = algoFactory.createWarpViewReverse();
+
+		depthSynthesis->apply(m_views[i]);
+		viewSynthesisReverse->apply(m_views[i]);
+
+		m_views[i]->convertMatToBuffer1D();
+	}
+
+	Image<ImageType>* synLeft = m_views[0]->getSynImage();
+	Image<ImageType>* synRight = m_views[1]->getSynImage();
+	Image<DepthType>* depthLeft = m_views[0]->getSynDepth();
+	Image<DepthType>* depthRight = m_views[1]->getSynDepth();
+	Image<HoleType>* holeLeft = m_views[0]->getSynHoles();
+	Image<HoleType>* holeRight = m_views[1]->getSynHoles();
+
+
 	int i;
 	HoleType *LeftHole, *RightHole;
 
 	xInit();
-	LeftHole = pRefHoleLeft->getBuffer1D();
-	RightHole = pRefHoleRight->getBuffer1D();
+	LeftHole = holeLeft->getBuffer1D();
+	RightHole = holeRight->getBuffer1D();
 	cvZero(m_imgCommonHole);
 
-	for (i = 0; i < pRefHoleLeft->getWidth() * pRefHoleLeft->getHeight(); i++) {
+	for (i = 0; i < holeLeft->getWidth() * holeLeft->getHeight(); i++) {
 		if (LeftHole[i] == (MaxTypeValue<HoleType>() - 1) && RightHole[i] == (MaxTypeValue<HoleType>() - 1)) {
 			m_imgCommonHole->imageData[i] = (MaxTypeValue<HoleType>() - 1);
 		}
@@ -109,131 +139,32 @@ bool BoundaryNoiseRemoval::apply(Image<ImageType>* pRefLeft, Image<ImageType>* p
 
 	calcWeight();
 
-
-	// Left
-	if (SynthesisMode == cfg.MODE_1D) {
-		DepthMatchingWithColor(pRefDepthLeft, pRefLeft, pRefHoleLeft);
-
-		calcDepthThreshold1DMode(0);  // 1D Mode
-		copyImages(pRefLeft, pRefDepthLeft, pRefHoleLeft, pRefHoleRight);
-		getBoundaryContour(m_imgHoles, m_imgBound);
-		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
-		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
-		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
-		HoleFillingWithExpandedHole(pRefRight, pRefLeft, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling(pRefLeft);
-
-		DepthMatchingWithColor(pRefDepthRight, pRefRight, pRefHoleRight);
-		calcDepthThreshold1DMode(1);  // 1D Mode
-		copyImages(pRefRight, pRefDepthRight, pRefHoleRight, pRefHoleLeft);
-		getBoundaryContour(m_imgHoles, m_imgBound);
-		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
-		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
-		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
-		HoleFillingWithExpandedHole(pRefLeft, pRefRight, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling(pRefRight);
-	}
-	else {
-		calcDepthThresholdGeneralMode(matLeftH_V2R);  // General Mode
-		copyImages(pRefLeft, pRefDepthLeft, pRefHoleLeft, pRefHoleRight);
-		getBoundaryContour(m_imgHoles, m_imgBound);
-		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
-		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
-		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
-		HoleFillingWithExpandedHole(pRefRight, pRefLeft, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling(pRefLeft);
-
-		calcDepthThresholdGeneralMode(matLeftH_V2R);  // General Mode
-		copyImages(pRefRight, pRefDepthRight, pRefHoleRight, pRefHoleLeft);
-		getBoundaryContour(m_imgHoles, m_imgBound);
-		getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
-		expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
-		cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
-		HoleFillingWithExpandedHole(pRefLeft, pRefRight, m_imgExpandedHole, SynthesisMode);
-		RemainingHoleFilling(pRefRight);
+	if (cfg.getSynthesisMode() == cfg.MODE_1D) {
+		DepthMatchingWithColor(depthLeft, synLeft, holeLeft);
+		DepthMatchingWithColor(depthRight, synRight, holeRight);
 	}
 
-	Blending(pRefLeft, pRefRight, pSynYuvBuffer, SynthesisMode);
+	calcDepthThreshold(0);  // 1D Mode
+	calcDepthThreshold(1);  // 1D Mode
+	copyImages(synLeft, depthLeft, holeLeft, holeRight);
+	getBoundaryContour(m_imgHoles, m_imgBound);
+	getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
+	expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
+	cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
+	HoleFillingWithExpandedHole(synRight, synLeft, m_imgExpandedHole);
+	RemainingHoleFilling(synLeft);
+
+	copyImages(synRight, depthRight, holeRight, holeLeft);
+	getBoundaryContour(m_imgHoles, m_imgBound);
+	getBackgroundContour(m_imgBound, m_imgDepth, m_imgHoles, m_imgBackBound);
+	expandedHoleforBNM(m_imgDepth, m_imgHoles, m_imgBackBound, m_imgTemp);
+	cvOr(m_imgHoles, m_imgTemp, m_imgExpandedHole);
+	HoleFillingWithExpandedHole(synLeft, synRight, m_imgExpandedHole);
+	RemainingHoleFilling(synRight);
+
+	Blending(synLeft, synRight, outImg);
 
 	return true;
-}
-
-void BoundaryNoiseRemoval::calcDepthThreshold1DMode(bool ViewID)
-{
-	int Low, SumOfGap, index, GapCount, Start_D, End_D, z;
-	double posStart, posEnd, GapWidth, dk;
-
-	index = 0;
-	Low = 0;
-	GapCount = 0;
-	SumOfGap = 0;
-	posStart = posEnd = 0.0;
-	GapWidth = 0.0;
-	Start_D = End_D = 0;
-
-	for (index = 1; index < MAX_DEPTH; index++) {
-		while (GapWidth < 3) {
-			if (++index > (MAX_DEPTH - 1)) {
-				break;
-			}
-			z = 1.0 / ((index / (MaxTypeValue<DepthType>() - 1)) * (1 / Znear[ViewID] - 1 / Zfar[ViewID]) + (1 / Zfar[ViewID]));
-			posEnd = (cfg.getFocalLength() * LTranslation[ViewID] / z) - duPrincipal[ViewID];
-			GapWidth = fabs(posEnd - posStart);
-			End_D = index;
-		}
-		SumOfGap += abs(End_D - Start_D);
-		GapCount++;
-		Start_D = End_D;
-		posStart = posEnd;
-		GapWidth = fabs(posEnd - posStart);
-	}
-	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
-}
-
-void BoundaryNoiseRemoval::calcDepthThresholdGeneralMode(CvMat* matH_V2R)
-{
-	int Low, SumOfGap, index, GapCount, Start_D, End_D;
-	float posStart, posEnd, GapWidth;
-	index = 0;
-	Low = 0;
-	GapCount = 0;
-	SumOfGap = 0;
-	posStart = posEnd = 0.0;
-	GapWidth = 0.0;
-
-	CvMat* m = cvCreateMat(4, 1, CV_64F);
-	CvMat* mv = cvCreateMat(4, 1, CV_64F);
-	cvmSet(mv, 0, 0, 0);
-	cvmSet(mv, 1, 0, 0);
-	cvmSet(mv, 2, 0, 1);
-	cvmSet(mv, 2, 0, 1); //!> ?
-	cvmMul(matH_V2R, mv, m);
-
-	posStart = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
-	posEnd = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
-	GapWidth = fabs(posEnd - posStart);
-	Start_D = End_D = 0;
-
-	for (index = 1; index < MAX_DEPTH; index++) {
-		while (GapWidth < 3) {
-			if (++index > (MAX_DEPTH - 1)) {
-				break;
-			}
-			//#ifdef POZNAN_GENERAL_HOMOGRAPHY
-			cvmSet(mv, 3, 0, 1.0 / index);//TableD2Z
-			cvmMul(matH_V2R, mv, m);
-
-			posEnd = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
-			GapWidth = fabs(posEnd - posStart);
-			End_D = index;
-		}
-		SumOfGap += abs(End_D - Start_D);
-		GapCount++;
-		Start_D = End_D;
-		posStart = posEnd;
-		GapWidth = fabs(posEnd - posStart);
-	}
-	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
 }
 
 void BoundaryNoiseRemoval::copyImages(Image<ImageType>* pSyn_CurrView, Image<DepthType>* pSynDepth_CurrView, Image<HoleType>* pSynHole_CurrView, Image<HoleType>* pDepthHole_OthView)

@@ -5,15 +5,14 @@
 class WarpIpelViewReverse : public Warp
 {
 public:
-	WarpIpelViewReverse(View* view)
-		: Warp(view)
-	{
-	}
+	WarpIpelViewReverse();
 
 	~WarpIpelViewReverse()
 	{
 	}
 
-	bool apply(ImageType ***src);
+	bool apply(View* view);
+
+	Image<HoleType>* m_imgBound;
 
 };

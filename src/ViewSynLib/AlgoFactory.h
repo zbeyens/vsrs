@@ -10,76 +10,89 @@
 #include "FilterHorizontalCubicQuarter2D.h"
 #include "FilterHorizontalLinearHalf2D.h"
 #include "FilterHorizontalLinearQuarter2D.h"
-#include "InpaintAdvanced.h"
+#include "FilterHorizontalCubicOct2D.h"
+#include "FilterVerticalLinearHalf2D.h"
+#include "FilterVerticalLinearQuarter2D.h"
+#include "FilterVerticalCubicHalf2D.h"
+#include "FilterVerticalCubicQuarter2D.h"
+#include "FilterVerticalCubicOct2D.h"
+#include "FilterVerticalAVCHalf2D.h"
+#include "FilterVerticalAVCQuarter2D.h"
+#include "InpaintDepthBased.h"
 #include "InpaintDefault.h"
-#include "BlendingAll.h"
+#include "BlendingWeighted.h"
 #include "BlendingCloser.h"
+#include "WarpIpelDepth.h"
+#include "WarpDepth.h"
+#include "WarpViewReverse.h"
+#include "WarpIpelViewReverse.h"
+#include "Blending2V.h"
 
 class AlgoFactory
 {
 public:
-	AlgoFactory()
-	{
-	}
+	AlgoFactory();
 
-	~AlgoFactory()
-	{
-	}
-
-	static Inpaint* createInpaint()
-	{
-		ConfigSyn & cfg = ConfigSyn::getInstance();
-
-		if (cfg.getIvsrsInpaint() == cfg.INPAINT_DEFAULT)
-			return new InpaintDefault();
-		else if (cfg.getIvsrsInpaint() == cfg.INPAINT_ADVANCED)
-			return new InpaintAdvanced();
-	}
-
-	static BlendingHoles* createBlendingHoles()
-	{
-		ConfigSyn & cfg = ConfigSyn::getInstance();
-
-		if (cfg.getViewBlending() == cfg.BLEND_CLOSER)
-			return new BlendingCloser();
-		else if (cfg.getViewBlending() == cfg.BLEND_ALL)
-			return new BlendingAll();
-	}
+	~AlgoFactory() {}
 
 	template<typename PixelType>
-	Filter<PixelType>* createFilter()
-	{
-		ConfigSyn & cfg = ConfigSyn::getInstance();
+	Filter<PixelType>* createFilter(bool horizontal);
 
-		int precision;
-		if (cfg.getSynthesisMode() == cfg.MODE_3D) // General mode
-			precision = cfg.getPrecision();
-		else if (cfg.getSynthesisMode() == cfg.MODE_1D) // 1D mode: No upsampling is done before going into Visbd
-			precision = 1;
+	Warp* createWarpDepth();
 
-		switch (precision)
-		{
-			//todo precision 1 not working!
-		case 1: // INTEGER PEL
-			return new FilterDummy2D<PixelType>();
-		case 2: // HALF PEL
-			if (cfg.getFilter() == cfg.FILTER_LINEAR)
-				return new FilterHorizontalLinearHalf2D<PixelType>();
-			else if (cfg.getFilter() == cfg.FILTER_CUBIC)
-				return new FilterHorizontalCubicHalf2D<PixelType>();
-			else if (cfg.getFilter() == cfg.FILTER_AVC)
-				return new FilterHorizontalAVCHalf2D<PixelType>();
-		case 4: // QUARTER PEL
-			if (cfg.getFilter() == cfg.FILTER_LINEAR)
-				return new FilterHorizontalLinearQuarter2D<PixelType>();
-			else if (cfg.getFilter() == cfg.FILTER_CUBIC)
-				return new FilterHorizontalCubicQuarter2D<PixelType>();
-			else if (cfg.getFilter() == cfg.FILTER_AVC)
-				return new FilterHorizontalAVCQuarter2D<PixelType>();
-		default:
-			break;
-		}
-	}
+	Warp* createWarpViewReverse();
+
+	BlendingHoles* createBlendingHoles();
+
+	Blending* createBlending();
+
+	Inpaint* createInpaint();
 
 private:
+	ConfigSyn & cfg;
 };
+
+template<typename PixelType>
+Filter<PixelType>* AlgoFactory::createFilter(bool horizontal)
+{
+	switch (cfg.getPrecision())
+	{
+	case 1: // INTEGER PEL
+		return new FilterDummy2D<PixelType>();
+	case 2: // HALF PEL
+		if (cfg.getFilter() == cfg.FILTER_LINEAR)
+			if (horizontal) return new FilterHorizontalLinearHalf2D<PixelType>();
+			else return new FilterVerticalLinearHalf2D<PixelType>();
+		else if (cfg.getFilter() == cfg.FILTER_CUBIC)
+			if (horizontal) return new FilterHorizontalCubicHalf2D<PixelType>();
+			else return new FilterVerticalCubicHalf2D<PixelType>();
+		else if (cfg.getFilter() == cfg.FILTER_AVC)
+			if (horizontal) return new FilterHorizontalAVCHalf2D<PixelType>();
+			else return new FilterVerticalAVCHalf2D<PixelType>();
+	case 4: // QUARTER PEL
+		if (cfg.getFilter() == cfg.FILTER_LINEAR)
+			if (horizontal) return new FilterHorizontalLinearQuarter2D<PixelType>();
+			else return new FilterVerticalLinearQuarter2D<PixelType>();
+		else if (cfg.getFilter() == cfg.FILTER_CUBIC)
+			if (horizontal) return new FilterHorizontalCubicQuarter2D<PixelType>();
+			else return new FilterVerticalCubicQuarter2D<PixelType>();
+		else if (cfg.getFilter() == cfg.FILTER_AVC)
+			if (horizontal) return new FilterHorizontalAVCQuarter2D<PixelType>();
+			else return new FilterVerticalAVCQuarter2D<PixelType>();
+	case 8: // OCTO PEL
+		if (cfg.getFilter() == cfg.FILTER_LINEAR) {
+			cout << "Octo-pel with linear filter is not yet supported" << endl;
+			return false;
+		}
+		else if (cfg.getFilter() == cfg.FILTER_CUBIC)
+			if (horizontal) return new FilterHorizontalCubicOct2D<PixelType>();
+			else return new FilterVerticalCubicOct2D<PixelType>();
+		else if (cfg.getFilter() == cfg.FILTER_AVC) {
+			cout << "Octo-pel with AVC filter is not yet supported" << endl;
+			return false;
+		}
+	default:
+		return false;
+		break;
+	}
+}

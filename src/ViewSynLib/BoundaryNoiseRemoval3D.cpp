@@ -21,7 +21,7 @@ void BoundaryNoiseRemoval3D::calcWeight()
 			m_weightRight = 1.0;
 		}
 	}
-	else if (cfg.getViewBlending() == cfg.BLEND_ALL) {
+	else if (cfg.getViewBlending() == cfg.BLEND_WEIGHTED) {
 		if (m_LeftBaseLineDistance <= m_RightBaseLineDistance) {
 			m_weightLeft = fabs(1.0 - (fabs(m_LeftBaseLineDistance) / (fabs(m_LeftBaseLineDistance) + fabs(m_RightBaseLineDistance))));
 			m_weightRight = fabs(1.0 - (fabs(m_RightBaseLineDistance) / (fabs(m_LeftBaseLineDistance) + fabs(m_RightBaseLineDistance))));
@@ -33,14 +33,64 @@ void BoundaryNoiseRemoval3D::calcWeight()
 	}
 }
 
-void BoundaryNoiseRemoval3D::Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& pSyn, bool SynthesisMode)
+void BoundaryNoiseRemoval3D::calcDepthThreshold(bool ViewID)
+{
+	CvMat* matH_V2R;
+	if (ViewID == 0) matH_V2R = matLeftH_V2R;
+	else if (ViewID == 1) matH_V2R = matRightH_V2R;
+
+	int Low, SumOfGap, index, GapCount, Start_D, End_D;
+	float posStart, posEnd, GapWidth;
+	index = 0;
+	Low = 0;
+	GapCount = 0;
+	SumOfGap = 0;
+	posStart = posEnd = 0.0;
+	GapWidth = 0.0;
+
+	CvMat* m = cvCreateMat(4, 1, CV_64F);
+	CvMat* mv = cvCreateMat(4, 1, CV_64F);
+	cvmSet(mv, 0, 0, 0);
+	cvmSet(mv, 1, 0, 0);
+	cvmSet(mv, 2, 0, 1);
+	cvmSet(mv, 2, 0, 1); //!> ?
+	cvmMul(matH_V2R, mv, m);
+
+	posStart = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
+	posEnd = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
+	GapWidth = fabs(posEnd - posStart);
+	Start_D = End_D = 0;
+
+	for (index = 1; index < MAX_DEPTH; index++) {
+		while (GapWidth < 3) {
+			if (++index > (MAX_DEPTH - 1)) {
+				break;
+			}
+			//#ifdef POZNAN_GENERAL_HOMOGRAPHY
+			cvmSet(mv, 3, 0, 1.0 / index);//TableD2Z
+			cvmMul(matH_V2R, mv, m);
+
+			posEnd = m->data.db[0] * m_precision / m->data.db[2] + 0.5;
+			GapWidth = fabs(posEnd - posStart);
+			End_D = index;
+		}
+		SumOfGap += abs(End_D - Start_D);
+		GapCount++;
+		Start_D = End_D;
+		posStart = posEnd;
+		GapWidth = fabs(posEnd - posStart);
+	}
+	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
+}
+
+void BoundaryNoiseRemoval3D::Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg)
 {
 	Image<ImageType> temp1, temp2;
 	IplImage *TempImage;
 	ImageResample<ImageType> Resampling;
 	ImageType* LeftBuffer, *RightBuffer, *SrcBuffer, *DstBuffer;
 
-	temp1.resizeYUV(m_height, m_width, 444);
+	temp1.initYUV(m_height, m_width, 444);
 	DstBuffer = temp1.getBuffer1D();
 	LeftBuffer = pLeft->getBuffer1D();
 	RightBuffer = pRight->getBuffer1D();
@@ -51,11 +101,11 @@ void BoundaryNoiseRemoval3D::Blending(Image<ImageType>* pLeft, Image<ImageType>*
 	TempImage = cvCreateImage(cvSize(m_width, m_height), 8, 3);
 	if (cfg.getColorSpace() == cfg.COLOR_SPACE_RGB) {   // BGR
 		memcpy(TempImage->imageData, temp1.getBuffer1D(), m_width*m_height * 3);
-		pSyn->convertMatBGRToYUV(TempImage);
+		outImg->convertMatBGRToYUV(TempImage);
 	}
 	else if (cfg.getColorSpace() == cfg.COLOR_SPACE_YUV) {              // YUV
 		memcpy(TempImage->imageData, temp1.getBuffer1D(), m_width*m_height * 3);
-		pSyn->convertMatYUVToYUV(TempImage);
+		outImg->convertMatYUVToYUV(TempImage);
 	}
 }
 
@@ -144,7 +194,7 @@ void BoundaryNoiseRemoval3D::RemainingHoleFilling(Image<ImageType>* pSrc)
 	}
 }
 
-void BoundaryNoiseRemoval3D::HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage * m_imgExpandedHole, bool SynthesisMode)
+void BoundaryNoiseRemoval3D::HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage * m_imgExpandedHole)
 {
 	int i, j, tWidth, tHeight;
 	BYTE* Src_buffer, *Tar_buffer;

@@ -5,7 +5,6 @@
 #include "BlendingHoles.h"
 #include "Blending.h"
 #include "Inpaint.h"
-#include "BoundaryNoiseRemoval3D.h"
 
 /**
 * View Synthesis using general mode
@@ -19,30 +18,32 @@ public:
 	void    xReleaseMemory();
 
 	/**
-	  Init Left and Right View
+		Init views, compute their weights and init result images
 	*/
 	bool init();
 
-	bool  apply(unique_ptr<Image<ImageType>>& pSynYuvBuffer);
-
-	View* getViewLeft() { return m_views[0]; }
-	View* getViewRight() { return m_views[1]; }
+	/**
+		General pipeline.
+		TODO
+	*/
+	bool  apply(unique_ptr<Image<ImageType>>& outImg);
 
 private:
 
-	void computeWeights(); //!> Compute weight left and right from baseline left and right
-	void initResultImages();	//!> Create all the images for synthesis
-
-	void initMasks(); //!> pixels holes (or unstable pixels) which will be replaced by pixels synthesized from right view
+	/**
+		Compute weights from the baseline of each view
+	*/
+	void computeWeights();
+	/**
+		Create all the images for synthesis
+	*/
+	void initResultImages();
 
 	ConfigSyn& cfg;
 
-	double m_totalBaseline;
-
-	Image<ImageType>* m_blendedImage;          //!> Blended image
-	Image<DepthType>* m_blendedDepth;     //!> Blended depth
-	Image<ImageType>* m_synImage; //!> The final image buffer to be output (blended image with inpainting)
 	Image<ImageType>* m_holesMask;	//!> holes not fillable by any view -> to inpaint
+	Image<ImageType>* m_blendedImage;          //!> image after blending
+	Image<ImageType>* m_synImage;     //!> synthesized image after blending
 };
 
 #endif

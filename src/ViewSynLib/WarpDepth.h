@@ -5,8 +5,7 @@
 class WarpDepth : public Warp
 {
 public:
-	WarpDepth(View* view)
-		: Warp(view)
+	WarpDepth()
 	{
 	}
 
@@ -16,7 +15,10 @@ public:
 	
 	bool init();
 
-	bool apply(DepthType **pDepthMap);
+	/**
+		TO UPDATE BY NICT
+	*/
+	bool apply(View* view);
 
 private:
 	Image<ImageType> m_imgTemp[2]; //express holes after smoothing

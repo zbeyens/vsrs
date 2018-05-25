@@ -5,8 +5,7 @@
 class WarpViewReverse : public Warp
 {
 public:
-	WarpViewReverse(View* view)
-		: Warp(view)
+	WarpViewReverse()
 	{
 	}
 
@@ -14,9 +13,12 @@ public:
 
 	bool init();
 
-	bool apply(ImageType ***src);
+	// TO UPDATE BY NICT
+	bool apply(View* view);
 
 private:
 	IplConvKernel * m_convKernel;
+
+	Image<HoleType>* m_imgBound;
 
 };

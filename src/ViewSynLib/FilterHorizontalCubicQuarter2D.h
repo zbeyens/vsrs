@@ -29,10 +29,10 @@ inline void FilterHorizontalCubicQuarter2D<PixelType>::apply(PixelType ** in, Pi
 
 	for (i = -padding_size; i < max_width; i++)
 	{
-		ipel[0] = ImageTools::TURN3(i - 1, 0, width_minus1);
-		ipel[1] = ImageTools::TURN3(i, 0, width_minus1);
-		ipel[2] = ImageTools::TURN3(i + 1, 0, width_minus1);
-		ipel[3] = ImageTools::TURN3(i + 2, 0, width_minus1);
+		ipel[0] = ImageTools::CLIP3(i - 1, 0, width_minus1);
+		ipel[1] = ImageTools::CLIP3(i, 0, width_minus1);
+		ipel[2] = ImageTools::CLIP3(i + 1, 0, width_minus1);
+		ipel[3] = ImageTools::CLIP3(i + 2, 0, width_minus1);
 
 		opel[0] = (i + padding_size) << 2;
 		opel[1] = opel[0] + 1;

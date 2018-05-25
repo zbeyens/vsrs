@@ -19,11 +19,8 @@ public:
 		\see readSynFile
 		\see readFromCommandLine
 		\see readCameraFile
-		\return
-			VSRS_OK
-			VSRS_ERROR
 	*/
-	int parse();
+	bool parse();
 
 	void setFilename(string filename);
 	void setCommands(int argc, char** argv);
@@ -32,40 +29,32 @@ private:
 	Parser() {}
 	~Parser() {}
 
-	string mFilename;				//!< Filename to parse
-	vector<char*> mCommands;		//!< All the command lines
+	string m_filename;				//!< Filename to parse
+	vector<char*> m_commands;		//!< All the command lines
 
-	map<string, string> mParams;	//!< All the parsed config lines : <tag, value>
+	map<string, string> m_params;	//!< All the parsed config lines : <tag, value>
 
 	/** Parse the config file
 
 		Read the config file line by line with an InputStream
 		For each valid line read, stores its tag and value in params map
-		\see readLine
-		\return
-			VSRS_OK
-			VSRS_ERROR
 	*/
-	int readSynFile();
+	bool parseConfigFile();
 
 	/** Parse one line of the config file
 
 		Read chars till EOL or EOF
 		Stores tag and its value
 		Ignore comments
-
-		\return
-			VSRS_OK
-			VSRS_ERROR
 	*/
-	void readLine(InputStream istream, string* tagValue);
+	void parseLine(InputStream istream, string* tagValue);
 
 	/** Parse commands
 
 		For each valid command, stores its tag and value in params map
 		\see readCommandLine
 	*/
-	void readFromCommandLine();
+	void parseCommandLine();
 
 	/** Parse one command
 
@@ -78,30 +67,23 @@ private:
 
 		Parse all camera
 		\see parseOneCamera
-		\return
-			VSRS_OK
-			VSRS_ERROR
 	*/
-	int readCameraFile();
+	bool parseCameraFile();
 
 	/**	Parse one camera
+
+		Find the camera id to parse the intrinsic and extrinsic parameters that are separated by two "0.0".
 
 		\see parseCameraId
 		\see parseCameraIntrinsics
 		\see parseSeparator
 		\see parseCameraExtrinsics
-		\return
-			VSRS_OK
-			VSRS_ERROR
 	*/
-	int parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex);
+	bool parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex);
 
 	/** Scan the camera id
 
-		Scan the id of one of the 3 camera parameters (given in the config file)
-		\return
-			VSRS_OK
-			VSRS_ERROR
+		Scan the id of one of the camera parameters (given in the config file)
 	*/
 	int parseCameraId(InputStream istream, char* parsedCameraId);
 
@@ -109,7 +91,7 @@ private:
 		\return
 			number of char read
 	*/
-	int parseCameraIntrinsics(InputStream istream, int cameraIndex);
+	int parseCameraIntrinsics(InputStream istream, ConfigCam* configCam);
 
 	/** Parse separator int-ext
 		\return
@@ -121,5 +103,5 @@ private:
 		\return
 			number of char read
 	*/
-	int parseCameraExtrinsics(InputStream istream, int cameraIndex);
+	int parseCameraExtrinsics(InputStream istream, ConfigCam* configCam);
 };

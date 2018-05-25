@@ -1,8 +1,10 @@
 #include "BlendingCloser.h"
 
 
-void BlendingCloser::apply(vector<View*> views)
+void BlendingCloser::apply(vector<View*> views, Image<ImageType>* holesMask)
 {
+	initHolesMasks(views, holesMask);
+
 	Image<ImageType>* pRefLeft = views[0]->getSynImage();
 	Image<ImageType>* pRefRight = views[1]->getSynImage();
 	Image<DepthType>* pRefDepthLeft = views[0]->getSynDepth();

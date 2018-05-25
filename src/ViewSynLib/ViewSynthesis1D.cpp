@@ -51,8 +51,6 @@
 
 ViewSynthesis1D::ViewSynthesis1D()
 {
-	m_imagesWidth = m_width;
-
 	int i;
 
 	for (i = 0; i < 2; i++)
@@ -104,6 +102,7 @@ ViewSynthesis1D::ViewSynthesis1D()
 	SetPrecision(cfg.getPrecision());
 
 	m_width = cfg.getSourceWidth();
+	m_width2 = cfg.getSourceWidth() * cfg.getPrecision();
 	m_height = cfg.getSourceHeight();
 
 	m_imgLeftWithHole = new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT);
@@ -1677,9 +1676,9 @@ int  ViewSynthesis1D::GetSynDepth(unsigned char* SynDepth)
  *    true: success
  *    false: fail
  */
-bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& imgSyn)
+bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& outImg)
 {
-	upsample();
+	upsampleViews();
 
 	SetFrameNumber(getFrameNumber()); //Zhejiang
 
@@ -1688,7 +1687,7 @@ bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& imgSyn)
 	DepthType* RefDepthLeft = m_views[0]->getDepth()->getBuffer1D();
 	DepthType* RefDepthRight = m_views[1]->getDepth()->getBuffer1D();
 
-	ImageType* Syn = imgSyn->getBuffer1D();
+	ImageType* Syn = outImg->getBuffer1D();
 
 	ImageType* pRefLeft;
 	ImageType* pRefRight;
@@ -1765,22 +1764,26 @@ bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& imgSyn)
 	ImageType* tar_L, *tar_R;
 
 	// Left Synthesized Image
-	tar_L = m_imgLeftWithHole->getBuffer1D();
+	tar_L = m_views[0]->getImage()->getBuffer1D();
+	//tar_L = m_imgLeftWithHole->getBuffer1D();
 	memcpy(&tar_L[m_height*m_width * 0], GetSynColorLeftY(), m_height*m_width);
 	memcpy(&tar_L[m_height*m_width * 1], GetSynColorLeftU(), m_height*m_width);
 	memcpy(&tar_L[m_height*m_width * 2], GetSynColorLeftV(), m_height*m_width);
 
 	// Right Synthesized Image
-	tar_R = m_imgRightWithHole->getBuffer1D();
+	tar_R = m_views[1]->getImage()->getBuffer1D();
+	//tar_R = m_imgRightWithHole->getBuffer1D();
 	memcpy(&tar_R[m_height*m_width * 0], GetSynColorRightY(), m_height*m_width);
 	memcpy(&tar_R[m_height*m_width * 1], GetSynColorRightU(), m_height*m_width);
 	memcpy(&tar_R[m_height*m_width * 2], GetSynColorRightV(), m_height*m_width);
 
 	// Left Synthesized Depth Image
-	memcpy(m_depthLeftWithHole->getBuffer1D(), GetSynDepthLeft(), m_height*m_width);
+	memcpy(m_views[0]->getDepth()->getBuffer1D(), GetSynDepthLeft(), m_height*m_width);
+	//memcpy(m_depthLeftWithHole->getBuffer1D(), GetSynDepthLeft(), m_height*m_width);
 
 	// Right Synthesized Depth Image
-	memcpy(m_depthRightWithHole->getBuffer1D(), GetSynDepthRight(), m_height*m_width);
+	memcpy(m_views[1]->getDepth()->getBuffer1D(), GetSynDepthRight(), m_height*m_width);
+	//memcpy(m_depthRightWithHole->getBuffer1D(), GetSynDepthRight(), m_height*m_width);
 
 	if (cfg.getBoundaryNoiseRemoval() == cfg.BNR_ENABLED) {
 		BoundaryNoiseRemoval* boundaryNoiseRemoval = new BoundaryNoiseRemoval1D();
@@ -1788,8 +1791,11 @@ bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& imgSyn)
 		boundaryNoiseRemoval->SetLTranslationLeft(GetLTranslation());
 		boundaryNoiseRemoval->SetZfar(GetZfar());
 		boundaryNoiseRemoval->SetZnear(GetZnear());
+		//GetSynLeftWithHole(), GetSynRightWithHole(), GetSynDepthLeftWithHole(), GetSynDepthRightWithHole(), GetSynHoleLeft(), GetSynHoleRight()
 
-		if (!boundaryNoiseRemoval->apply(GetSynLeftWithHole(), GetSynRightWithHole(), GetSynDepthLeftWithHole(), GetSynDepthRightWithHole(), GetSynHoleLeft(), GetSynHoleRight(), imgSyn, true/*1D Mode*/))
+		boundaryNoiseRemoval->setViews(m_views);
+
+		if (!boundaryNoiseRemoval->apply(outImg))
 			return false;
 	}
 

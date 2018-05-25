@@ -1,48 +1,49 @@
 #include "Parser.h"
 
-int Parser::parse()
+bool Parser::parse()
 {
-	if (readSynFile() == VSRS_ERROR) return VSRS_ERROR;
-	readFromCommandLine();
+	if (parseConfigFile() == false) return false;
+	parseCommandLine();
 
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 
-	cfg.setParams(mParams);
+	cfg.setParams(m_params);
+
 #if 1
 	cfg.printParams();
 #endif
 
-	if (readCameraFile() == VSRS_ERROR) return VSRS_ERROR;
+	if (parseCameraFile() == false) return false;
 
-	if (cfg.validation() == VSRS_ERROR) return VSRS_ERROR;
+	if (cfg.printWarning() == false) return false;
 
-	return VSRS_OK;
+	return true;
 }
 
-int Parser::readSynFile()
+bool Parser::parseConfigFile()
 {
 	//tag - value - empty
 
-	InputStream istream(mFilename.c_str());
+	InputStream istream(m_filename.c_str());
 	istream.openR();
 
-	if (istream.hasError()) return VSRS_ERROR;
+	if (istream.hasError()) return false;
 
 	while (!istream.isEndOfFile())
 	{
 		string tagValue[2];
-		readLine(istream, tagValue);
+		parseLine(istream, tagValue);
 
 		if (tagValue[0].empty() || tagValue[1].empty()) continue;
 
-		mParams[tagValue[0]] = tagValue[1];
+		m_params[tagValue[0]] = tagValue[1];
 	}
 
 	istream.close();
-	return VSRS_OK;
+	return true;
 }
 
-void Parser::readLine(InputStream istream, string* tagValue)
+void Parser::parseLine(InputStream istream, string* tagValue)
 {
 	int tagValueIndex = 0;
 	bool bComment = false;
@@ -74,11 +75,11 @@ void Parser::readLine(InputStream istream, string* tagValue)
 	}
 }
 
-void Parser::readFromCommandLine()
+void Parser::parseCommandLine()
 {
-	for (int i = 0; i < mCommands.size(); i++)
+	for (int i = 0; i < m_commands.size(); i++)
 	{
-		char* command = mCommands[i];
+		char* command = m_commands[i];
 
 		string tagValue[2];
 		readCommandLine(command, tagValue);
@@ -88,7 +89,7 @@ void Parser::readFromCommandLine()
 			continue;
 		}
 
-		mParams[tagValue[0]] = tagValue[1];
+		m_params[tagValue[0]] = tagValue[1];
 	}
 }
 
@@ -107,7 +108,7 @@ void Parser::readCommandLine(char *buf, string* tagValue)
 	}
 }
 
-int Parser::readCameraFile()
+bool Parser::parseCameraFile()
 {
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 	string cameraParameterFile = cfg.getCameraParameterFile();
@@ -115,23 +116,34 @@ int Parser::readCameraFile()
 	InputStream istream(cameraParameterFile);
 	istream.openR();
 
-	if (istream.hasError()) return VSRS_ERROR;
+	if (istream.hasError()) return false;
 
 	vector<string> cameraId;
-	cameraId.push_back(cfg.getCameraName(0));
-	cameraId.push_back(cfg.getCameraName(1));
 
 	for (int i = 0; i < cfg.getNViews(); i++)
 	{
-		if (parseOneCamera(istream, cameraId[i].c_str(), i) == VSRS_ERROR) return VSRS_ERROR;
+		cameraId.push_back(cfg.getCameraName(i));
+		if (parseOneCamera(istream, cameraId[i].c_str(), i) == false) return false;
 	}
-	if (parseOneCamera(istream, cfg.getVirtualCameraName().c_str(), -1) == VSRS_ERROR) return VSRS_ERROR;
+	if (parseOneCamera(istream, cfg.getVirtualCameraName().c_str(), -1) == false) return false;
 
-	return VSRS_OK;
+	return true;
 }
 
-int Parser::parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex)
+bool Parser::parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex)
 {
+	ConfigSyn& cfg = ConfigSyn::getInstance();
+
+	ConfigCam* configCam;
+	if (cameraIndex == -1)
+	{
+		configCam = cfg.getVirtualConfigCam();
+	}
+	else
+	{
+		configCam = cfg.getConfigCams()[cameraIndex];
+	}
+
 	FILE* fp = istream.getFile();
 
 	istream.seek(0);
@@ -144,11 +156,11 @@ int Parser::parseOneCamera(InputStream istream, const char* cameraId, int camera
 		{
 			int read = 0;
 
-			read += parseCameraIntrinsics(istream, cameraIndex);
+			read += parseCameraIntrinsics(istream, configCam);
 			read += parseSeparator(istream);
-			read += parseCameraExtrinsics(istream, cameraIndex);
+			read += parseCameraExtrinsics(istream, configCam);
 
-			if (read != 23) return VSRS_ERROR;
+			if (read != 23) return false;
 
 			found = 1;
 			break;
@@ -160,10 +172,10 @@ int Parser::parseOneCamera(InputStream istream, const char* cameraId, int camera
 	if (found == 0)
 	{
 		cout << "Camera " << cameraId << "is not found in the camera parameter file." << endl;
-		return VSRS_ERROR;
+		return false;
 	}
 
-	return VSRS_OK;
+	return true;
 }
 
 int Parser::parseCameraId(InputStream istream, char * parsedCameraId)
@@ -171,28 +183,19 @@ int Parser::parseCameraId(InputStream istream, char * parsedCameraId)
 	return fscanf(istream.getFile(), "%254s", parsedCameraId);
 }
 
-int Parser::parseCameraIntrinsics(InputStream istream, int cameraIndex)
+int Parser::parseCameraIntrinsics(InputStream istream, ConfigCam* configCam)
 {
 	FILE* fp = istream.getFile();
 
 	double intrinsicMatrix[3][3];
 
 	int read = 0;
-	read += fscanf(fp, "%lf %lf %lf", &intrinsicMatrix[0][0], &intrinsicMatrix[0][1], &intrinsicMatrix[0][2]);
-	read += fscanf(fp, "%lf %lf %lf", &intrinsicMatrix[1][0], &intrinsicMatrix[1][1], &intrinsicMatrix[1][2]);
-	read += fscanf(fp, "%lf %lf %lf", &intrinsicMatrix[2][0], &intrinsicMatrix[2][1], &intrinsicMatrix[2][2]);
-
-	ConfigSyn& cfg = ConfigSyn::getInstance();
-
-	if (cameraIndex == -1)
+	for (size_t i = 0; i < 3; i++)
 	{
-		cfg.getVirtualConfigCam()->setIntrinsicMatrix(intrinsicMatrix);
+		read += fscanf(fp, "%lf %lf %lf", &intrinsicMatrix[i][0], &intrinsicMatrix[i][1], &intrinsicMatrix[i][2]);
 	}
-	else
-	{
-		vector<ConfigCam*> configCams = cfg.getConfigCams();
-		configCams[cameraIndex]->setIntrinsicMatrix(intrinsicMatrix);
-	}
+
+	configCam->setIntrinsicMatrix(intrinsicMatrix);
 
 	return read;
 }
@@ -207,7 +210,7 @@ int Parser::parseSeparator(InputStream istream)
 	return read;
 }
 
-int Parser::parseCameraExtrinsics(InputStream istream, int cameraIndex)
+int Parser::parseCameraExtrinsics(InputStream istream, ConfigCam* configCam)
 {
 	FILE* fp = istream.getFile();
 
@@ -215,23 +218,13 @@ int Parser::parseCameraExtrinsics(InputStream istream, int cameraIndex)
 	double translationVector[3];
 
 	int read = 0;
-	read += fscanf(fp, "%lf %lf %lf %lf", &extrinsicMatrix[0][0], &extrinsicMatrix[0][1], &extrinsicMatrix[0][2], &translationVector[0]);
-	read += fscanf(fp, "%lf %lf %lf %lf", &extrinsicMatrix[1][0], &extrinsicMatrix[1][1], &extrinsicMatrix[1][2], &translationVector[1]);
-	read += fscanf(fp, "%lf %lf %lf %lf", &extrinsicMatrix[2][0], &extrinsicMatrix[2][1], &extrinsicMatrix[2][2], &translationVector[2]);
-
-	ConfigSyn& cfg = ConfigSyn::getInstance();
-
-	if (cameraIndex == -1)
+	for (size_t i = 0; i < 3; i++)
 	{
-		cfg.getVirtualConfigCam()->setRotationMatrix(extrinsicMatrix);
-		cfg.getVirtualConfigCam()->setTranslationVector(translationVector);
+		read += fscanf(fp, "%lf %lf %lf %lf", &extrinsicMatrix[i][0], &extrinsicMatrix[i][1], &extrinsicMatrix[i][2], &translationVector[i]);
 	}
-	else
-	{
-		vector<ConfigCam*> configCams = cfg.getConfigCams();
-		configCams[cameraIndex]->setRotationMatrix(extrinsicMatrix);
-		configCams[cameraIndex]->setTranslationVector(translationVector);
-	}
+
+	configCam->setRotationMatrix(extrinsicMatrix);
+	configCam->setTranslationVector(translationVector);
 
 	return read;
 }
@@ -239,13 +232,13 @@ int Parser::parseCameraExtrinsics(InputStream istream, int cameraIndex)
 //Accessors
 void Parser::setFilename(string filename)
 {
-	mFilename = filename;
+	m_filename = filename;
 }
 
 void Parser::setCommands(int argc, char ** argv)
 {
 	for (int i = 2; i < argc; i++)
 	{
-		mCommands.push_back(argv[i]);
+		m_commands.push_back(argv[i]);
 	}
 }

@@ -10,13 +10,28 @@ public:
 	InputStream(string filename) : FileStream(filename) {}
 	~InputStream() {}
 
-	//! Read the file (read-only)
+	/**
+		Open the file (read-only)
+	*/
 	void openR();
+	/**
+		Open the file (binary read-only)
+	*/
 	void openRB();
 
-	//! Return a read char of the file
+	/**
+		Read a char of the file
+		@return	the read char
+	*/
 	char readChar();
 
+	/**
+		Read one frame of an image or video and stores it into the buffer
+
+		@param buffer	where to store the read characters
+		@param size		the size of the frame
+		@param frameno	the number of the frame to read
+	*/
 	template <class PixelType>
 	void readOneFrame(PixelType* buffer, int size, int frameno);
 };

@@ -30,34 +30,29 @@
 *      Yo-Sung Ho, hoyo@gist.ac.kr
 */
 
-#ifndef BOUNDARYNOISEREMOVAL_H
-#define BOUNDARYNOISEREMOVAL_H
-
-#pragma warning(disable:4996)
-#pragma warning(disable:4244)
-#pragma warning(disable:4819)
+#pragma once
 
 #include "SystemIncludes.h"
+#include "ViewSynthesis.h"
 #include "Image.h"
 #include "ImageResample.h"
 #include "ConfigSyn.h"
+#include "View.h"
 
 #define max2(a,b)        (((a)-(b)>0)?(a):(b))
 #define min2(a,b)        (((a)-(b)>0)?(b):(a))
 #define guard(value, min, max)   ( max2((min), min2((max), (value)) ) )
 #define BOUNDARY_WINDOW_SIZE 7
 
-class BoundaryNoiseRemoval
+class BoundaryNoiseRemoval : public ViewSynthesis
 {
 protected:
 	
-	virtual void calcWeight() = 0;	// Calculating Weighting Factors
-	virtual void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& pSyn, bool SynthesisMode) = 0;
+	virtual void calcWeight() = 0;	//!> Calculating Weighting Factors
+	virtual void calcDepthThreshold(bool ViewID) = 0; //!> compute the depthThreshold that is the mean of gap width
+	virtual void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg) = 0;
 	virtual void RemainingHoleFilling(Image<ImageType>* pSrc) = 0;
-	virtual void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole, bool SynthesisMode) = 0;
-
-	void calcDepthThreshold1DMode(bool ViewID);
-	void calcDepthThresholdGeneralMode(CvMat* matH_V2R); //!> compute the depthThreshold that is the mean of gap width
+	virtual void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole) = 0;
 
 	void copyImages(Image<ImageType>* pSyn_CurrView, Image<DepthType>* pSynDepth_CurrView, Image<HoleType>* pSynHole_CurrView, Image<HoleType>* pDepthHole_OthView);
 	void getBoundaryContour(IplImage* bound, IplImage* contour);
@@ -68,8 +63,6 @@ protected:
 
 	ConfigSyn & cfg;
 
-	int m_width;
-	int m_height;
 	int m_precision;	//!> 1 if general mode, cfg.precision if 1D mode
 
 	double m_weightLeft;
@@ -99,11 +92,16 @@ protected:
 	double *Znear;			//!> The real depth value of the nearest  pixel. 0: Left view.  1: Right view
 	double *Zfar;			//!> The real depth value of the farthest pixel. 0: Left view.  1: Right view
 
+	int m_height;		//!> Source height
+	int m_height2;		//!>
+	int m_width;		//!> Source width
+	int m_width2;		//!> The width when the ref view is upsampled (may be 2*Width or 4*Width, it depends). otherwise, it is the same as Width
+
 public:
 	BoundaryNoiseRemoval();
 	~BoundaryNoiseRemoval();
 
-	bool    apply(Image<ImageType>* pRefLeft, Image<ImageType>* pRefRight, Image<DepthType>* pRefDepthLeft, Image<DepthType>* pRefDepthRight, Image<HoleType>* pRefHoleLeft, Image<HoleType>* pRefHoleRight, unique_ptr<Image<ImageType>>& pSynYuvBuffer, bool SynthesisMode);
+	bool    apply(unique_ptr<Image<ImageType>>& outImg);
 	void    xInit();
 
 	void SetLeftH_V2R(CvMat *sH_V2R) { matLeftH_V2R = sH_V2R; }
@@ -116,6 +114,6 @@ public:
 
 	void SetLeftBaseLineDist(double sDist) { m_LeftBaseLineDistance = sDist; }
 	void SetRightBaseLineDist(double sDist) { m_RightBaseLineDistance = sDist; }
-};
+	void setViews(vector<View*> views) { m_views = views; }
 
-#endif
+};

@@ -5,7 +5,9 @@
 class Tools
 {
 public:
-	//! Free T if not null
+	/**
+		Free T if not null
+	*/
 	template<typename T>
 	static void safeFree(T p)
 	{
@@ -15,8 +17,10 @@ public:
 			p = NULL;
 		}
 	}
-	
-	//! Delete T if not null
+
+	/**
+		Delete T if not null
+	*/
 	template<typename T>
 	static void safeDelete(T p)
 	{
@@ -27,7 +31,9 @@ public:
 		}
 	}
 
-	//! Delete T if not null
+	/**
+		Delete T if not null
+	*/
 	template<typename T>
 	static void safeDeleteP(T p)
 	{
@@ -38,17 +44,21 @@ public:
 		}
 	}
 
-	//! Release IplImage
+	/**
+		Release IplImage
+	*/
 	static void safeReleaseImage(IplImage* image)
 	{
-		if ((image) != NULL) 
+		if ((image) != NULL)
 		{
 			cvReleaseImage(&(image));
 			(image) = NULL;
 		}
 	}
 
-	//! Release CvMat
+	/**
+		Release CvMat
+	*/
 	static void safeReleaseMat(CvMat* mat)
 	{
 		if ((mat) != NULL)
@@ -57,17 +67,4 @@ public:
 			(mat) = NULL;
 		}
 	}
-
-	
-	//static double CLIP3(double x, int min, int max)
-	//{
-	//	return (x) < (min) ? (min) : ((x) > (max) ? (max) : (x));
-	//}
-
-	//static int CLIP3(int x, int min, int max)
-	//{
-	//	return (x) < (min) ? (min) : ((x) > (max) ? (max) : (x));
-	//}
-
-	
 };

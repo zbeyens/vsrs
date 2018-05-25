@@ -39,6 +39,6 @@ void FileStream::checkFileOpenError()
 	if (f == NULL)
 	{
 		error = true;
-		cout << "Failed to open " << m_filename << " file" << endl;
+		cout << "Failed to open the image " << m_filename << " file" << endl;
 	}
 }

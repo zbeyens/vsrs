@@ -138,7 +138,7 @@ public:
 
 	int  AllocMem();   //!> Must be called after the resolution is set
 
-	bool  apply(unique_ptr<Image<ImageType>>& imgSyn);
+	bool  apply(unique_ptr<Image<ImageType>>& outImg);
 
 	void SetLTranslationLeft(double sLTranslationLeft) { LTranslation[LEFTVIEW] = sLTranslationLeft; }
 	void SetLTranslationRight(double sLTranslationRight) { LTranslation[RGHTVIEW] = sLTranslationRight; }

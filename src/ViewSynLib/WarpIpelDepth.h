@@ -5,8 +5,7 @@
 class WarpIpelDepth : public Warp
 {
 public:
-	WarpIpelDepth(View* view)
-		: Warp(view)
+	WarpIpelDepth()
 	{
 	}
 
@@ -14,7 +13,7 @@ public:
 	{
 	}
 
-	bool apply(DepthType **pDepthMap);
+	bool apply(View* view);
 
 private:
 	void    cvexMedian(IplImage* dst);

@@ -1,38 +1,27 @@
 #include "View.h"
 
-#include "WarpIpelDepth.h"
-#include "WarpDepth.h"
-#include "WarpViewReverse.h"
-#include "WarpIpelViewReverse.h"
-
 View::View()
 {
 	m_matH_R2V = m_matH_V2R = NULL;
 
+	int sw = cfg.getSourceWidth();
+	int sh = cfg.getSourceHeight();
+
 	m_imageNotUpsampled = new Image<ImageType>();
+	m_imageHorUpsampled = new Image<ImageType>();
 	m_image = new Image<ImageType>();
 	m_depth = new Image<DepthType>();
 
-	int width = cfg.getSourceWidth();
-	int height = cfg.getSourceHeight();
-
-	m_synImageWithHole = new Image<ImageType>(height, width, IMAGE_CHROMA_FORMAT);
-	m_synDepthWithHole = new Image<DepthType>(height, width, DEPTHMAP_CHROMA_FORMAT);
-	m_synHoles = new Image<HoleType>(height, width, HOLE_CHROMA_FORMAT);
-	m_synImageWithHole->initMat(width, height, 3);
-	m_synDepthWithHole->initMat(width, height, 1);
-	m_synHoles->initMat(width, height, 1);
+	m_synHoles = new Image<HoleType>(sh, sw, HOLE_CHROMA_FORMAT);
+	m_synHoles->initMat(sw, sh, 1);
 
 	m_fillableHoles = new Image<HoleType>();
-	m_fillableHoles->initMat(width, height, MASK_CHANNELS);
+	m_fillableHoles->initMat(sw, sh, MASK_CHANNELS);
 }
 
 View::~View()
 {
 	xReleaseMemory();
-
-	Tools::safeDelete(m_depthSynthesis);
-	Tools::safeDelete(m_viewSynthesisReverse);
 }
 
 void View::xReleaseMemory()
@@ -45,31 +34,35 @@ bool View::init(uint indexSyn)
 {
 	m_indexView = indexSyn;
 
-	xReleaseMemory();
-
-	if (!initIntermImages()) return false;
+	if (!initImages()) return false;
 
 	init_3Dwarp();
 
 	return true;
 }
 
-bool View::initIntermImages()
+bool View::initImages()
 {
 	int sw = cfg.getSourceWidth();
 	int sh = cfg.getSourceHeight();
 
+	m_imageNotUpsampled->initYUV(sh, sw, IMAGE_CHROMA_FORMAT);
+	m_imageHorUpsampled->initYUV(sh, sw * cfg.getPrecision(), IMAGE_CHROMA_FORMAT);
+
+	m_image->initYUV(sh, sw * cfg.getPrecision(), IMAGE_CHROMA_FORMAT); // width should be sw if no upsampling (1D?)
+	m_depth->initYUV(sh, sw, DEPTHMAP_CHROMA_FORMAT);
+
 	//create images
-	m_synImage = new Image<ImageType>();
-	m_synDepth = new Image<DepthType>();
+	m_synImage = new Image<ImageType>(sh, sw, IMAGE_CHROMA_FORMAT);
+	m_synDepth = new Image<DepthType>(sh, sw, DEPTHMAP_CHROMA_FORMAT);
 	m_synFills = new Image<ImageType>();
+	m_imgMask[0] = new Image<HoleType>();
+	m_imgMask[1] = new Image<HoleType>();
 	m_synImage->initMat(sw, sh, IMAGE_CHANNELS);
 	m_synDepth->initMat(sw, sh, DEPTH_CHANNELS);
 	m_synFills->initMat(sw, sh, 1);
-	//m_synHoles->initMat(sw, sh, 1);
-	m_imgBound.initMat(sw, sh, 1);
-	m_imgMask[0].initMat(sw, sh, MASK_CHANNELS);
-	m_imgMask[1].initMat(sw, sh, MASK_CHANNELS);
+	m_imgMask[0]->initMat(sw, sh, MASK_CHANNELS);
+	m_imgMask[1]->initMat(sw, sh, MASK_CHANNELS);
 
 	if (!m_synImage->initYUVFromMat(m_synFills->getMat()->widthStep)) return false;
 	if (!m_synDepth->initYFromMat()) return false;
@@ -88,21 +81,6 @@ bool View::init_3Dwarp()
 	computeDepth();
 
 	m_homography.apply(m_matH_R2V, m_matH_V2R, cam.getMatInRef(), cam.getMatExRef(), cam.getMatProjVir());
-
-	if (cfg.getPrecision() == 1)
-	{
-		//m_depthSynthesis = new WarpIpelDepth(this); //does not work for 16 BitDepth
-		m_depthSynthesis = new WarpDepth(this);
-		m_viewSynthesisReverse = new WarpIpelViewReverse(this);
-	}
-	else
-	{
-		m_depthSynthesis = new WarpDepth(this);
-		m_viewSynthesisReverse = new WarpViewReverse(this);
-	}
-
-	m_depthSynthesis->init();
-	m_viewSynthesisReverse->init();
 
 	return true;
 }
@@ -124,7 +102,6 @@ bool View::computeDepth()
 
 void View::computeDepthFromCam(int i, double distance)
 {
-	
 	m_tableD2Z[i] = cvmGet(cam.getMatExRef(), 2, 2) * distance + cam.getArrayTransRef()[2];
 }
 
@@ -133,17 +110,10 @@ void View::computeDepthFromSpace(int i, double distance)
 	m_tableD2Z[i] = distance;
 }
 
-bool View::synthesizeView()
+bool View::convertMatToBuffer1D()
 {
-	ImageType*** pImage = m_image->getData();
-	DepthType** pDepthMap = m_depth->Y;
-
-	m_depthSynthesis->apply(pDepthMap);
-	m_viewSynthesisReverse->apply(pImage);
-
-	// copy warping results for BNR
-	m_synImageWithHole->convertMatToBuffer1D(m_synImage, 3);
-	m_synDepthWithHole->convertMatToBuffer1D(m_synDepth, 1);
+	m_synImage->convertMatToBuffer1D(m_synImage, 3);
+	m_synDepth->convertMatToBuffer1D(m_synDepth, 1);
 	m_synHoles->convertMatToBuffer1D(m_synHoles, 1);
 
 	return true;

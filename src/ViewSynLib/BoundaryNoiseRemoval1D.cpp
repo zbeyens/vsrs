@@ -21,7 +21,39 @@ void BoundaryNoiseRemoval1D::calcWeight()
 	}
 }
 
-void BoundaryNoiseRemoval1D::Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& pSyn, bool SynthesisMode)
+void BoundaryNoiseRemoval1D::calcDepthThreshold(bool ViewID)
+{
+	int Low, SumOfGap, index, GapCount, Start_D, End_D, z;
+	double posStart, posEnd, GapWidth, dk;
+
+	index = 0;
+	Low = 0;
+	GapCount = 0;
+	SumOfGap = 0;
+	posStart = posEnd = 0.0;
+	GapWidth = 0.0;
+	Start_D = End_D = 0;
+
+	for (index = 1; index < MAX_DEPTH; index++) {
+		while (GapWidth < 3) {
+			if (++index >(MAX_DEPTH - 1)) {
+				break;
+			}
+			z = 1.0 / ((index / (MaxTypeValue<DepthType>() - 1)) * (1 / Znear[ViewID] - 1 / Zfar[ViewID]) + (1 / Zfar[ViewID]));
+			posEnd = (cfg.getFocalLength() * LTranslation[ViewID] / z) - duPrincipal[ViewID];
+			GapWidth = fabs(posEnd - posStart);
+			End_D = index;
+		}
+		SumOfGap += abs(End_D - Start_D);
+		GapCount++;
+		Start_D = End_D;
+		posStart = posEnd;
+		GapWidth = fabs(posEnd - posStart);
+	}
+	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
+}
+
+void BoundaryNoiseRemoval1D::Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg)
 {
 	Image<ImageType> temp1, temp2;
 	IplImage *TempImage;
@@ -32,8 +64,8 @@ void BoundaryNoiseRemoval1D::Blending(Image<ImageType>* pLeft, Image<ImageType>*
 	ImageType *Src, *Dst;
 	tWidth = m_width * m_precision;
 	tHeight = m_height;
-	temp1.resizeYUV(tHeight, tWidth, 444);
-	temp2.resizeYUV(m_height, m_width, 444);
+	temp1.initYUV(tHeight, tWidth, 444);
+	temp2.initYUV(m_height, m_width, 444);
 
 	// Blending
 	LeftBuffer = pLeft->getBuffer1D();
@@ -57,7 +89,7 @@ void BoundaryNoiseRemoval1D::Blending(Image<ImageType>* pLeft, Image<ImageType>*
 	}
 
 	SrcBuffer = temp2.getBuffer1D();
-	Dst = pSyn->getBuffer1D();
+	Dst = outImg->getBuffer1D();
 	memcpy(Dst, SrcBuffer, m_width*m_height);
 	Dst = &Dst[m_width*m_height];
 	SrcBuffer = &SrcBuffer[m_width*m_height];
@@ -159,7 +191,7 @@ void BoundaryNoiseRemoval1D::RemainingHoleFilling(Image<ImageType>* pSrc)
 	}
 }
 
-void BoundaryNoiseRemoval1D::HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage * m_imgExpandedHole, bool SynthesisMode)
+void BoundaryNoiseRemoval1D::HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage * m_imgExpandedHole)
 {
 	int i, j, tWidth, tHeight;
 	BYTE* Src_buffer, *Tar_buffer;

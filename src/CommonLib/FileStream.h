@@ -8,13 +8,19 @@ public:
 	FileStream(string filename);
 	~FileStream() {}
 
-	//! Close the file
+	/**
+		Close the file
+	*/
 	void close();
 
-	//! Seek to the given offset in the file
+	/**
+		Seek to the given offset in the file
+	*/
 	void seek(int offset);
 
-	//! Return whether the file is EOF
+	/**
+		Return whether the file is EOF
+	*/
 	int isEndOfFile();
 
 	FILE* getFile();

@@ -8,11 +8,10 @@ public:
 	BoundaryNoiseRemoval1D();
 	~BoundaryNoiseRemoval1D();
 
-
 private:
 	void calcWeight();
-	void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& pSyn, bool SynthesisMode);
+	void calcDepthThreshold(bool ViewID);
+	void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg);
 	void RemainingHoleFilling(Image<ImageType>* pSrc);
-	void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole, bool SynthesisMode);
-
+	void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole);
 };

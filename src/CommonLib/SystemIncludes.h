@@ -28,11 +28,6 @@
 #include <time.h>
 
 
-
-// These types define error codes for vsrs functions
-#define VSRS_OK		1
-#define VSRS_ERROR	-1
-
 #define EOL '\n'
 #define EOS '\0'
 #define TAB '\t'

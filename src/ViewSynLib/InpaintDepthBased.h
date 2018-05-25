@@ -2,16 +2,19 @@
 
 #include "Inpaint.h"
 
-class InpaintDefault : public Inpaint
+class InpaintDepthBased : public Inpaint
 {
 public:
-	InpaintDefault()
+	InpaintDepthBased()
 	{
 	}
 
-	~InpaintDefault()
+	~InpaintDepthBased()
 	{
 	}
 
+	// TO UPDATE BY NICT
 	void apply(Image<ImageType>* outputImage, Image<ImageType>* inputImage, Image<DepthType>* inputDepth, Image<ImageType>* holesMask, vector<View*> views);
+
 };
+

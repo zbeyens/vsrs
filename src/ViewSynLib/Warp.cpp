@@ -1,9 +1,5 @@
 #include "Warp.h"
 
-bool Warp::init()
-{
-	return true;
-}
 
 void Warp::erodebound(IplImage * bound, int flag)
 {

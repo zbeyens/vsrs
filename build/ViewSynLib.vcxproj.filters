@@ -32,15 +32,17 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ViewSynLib\BlendingCloser.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\Blending.cpp" />
     <ClCompile Include="..\src\ViewSynLib\TestRegression.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\AlgoFactory.cpp" />
     <ClCompile Include="..\src\ViewSynLib\InpaintDefault.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\InpaintAdvanced.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\BlendingAll.cpp" />
     <ClCompile Include="..\src\ViewSynLib\ViewSynthesis.cpp" />
     <ClCompile Include="..\src\ViewSynLib\BoundaryNoiseRemoval3D.cpp" />
     <ClCompile Include="..\src\ViewSynLib\BoundaryNoiseRemoval1D.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\BlendingWeighted.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\InpaintDepthBased.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\Blending2V.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\BlendingHoles.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\AlgoFactory.cpp" />
+    <ClCompile Include="..\src\ViewSynLib\PipelineFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\BoundaryNoiseRemoval.h">
@@ -92,13 +94,23 @@
     <ClInclude Include="..\src\ViewSynLib\Blending.h" />
     <ClInclude Include="..\src\ViewSynLib\TestRegression.h" />
     <ClInclude Include="..\src\ViewSynLib\AlgoFactory.h" />
-    <ClInclude Include="..\src\ViewSynLib\InpaintAdvanced.h" />
     <ClInclude Include="..\src\ViewSynLib\InpaintDefault.h" />
-    <ClInclude Include="..\src\ViewSynLib\BlendingAll.h" />
     <ClInclude Include="..\src\ViewSynLib\BlendingHoles.h" />
     <ClInclude Include="..\src\ViewSynLib\ViewSynthesis.h" />
     <ClInclude Include="..\src\ViewSynLib\BoundaryNoiseRemoval3D.h" />
     <ClInclude Include="..\src\ViewSynLib\BoundaryNoiseRemoval1D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalLinearHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalLinearQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalAVCHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalAVCQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalCubicHalf2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalCubicQuarter2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterVerticalCubicOct2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\FilterHorizontalCubicOct2D.h" />
+    <ClInclude Include="..\src\ViewSynLib\BlendingWeighted.h" />
+    <ClInclude Include="..\src\ViewSynLib\InpaintDepthBased.h" />
+    <ClInclude Include="..\src\ViewSynLib\Blending2V.h" />
+    <ClInclude Include="..\src\ViewSynLib\PipelineFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

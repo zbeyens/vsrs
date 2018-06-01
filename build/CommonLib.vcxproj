@@ -218,18 +218,13 @@
     <ClCompile Include="..\src\CommonLib\OutputStream.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Parser.cpp" />
     <ClInclude Include="..\src\CommonLib\Clock.h" />
-    <ClInclude Include="..\src\CommonLib\OpenCV.h" />
     <ClInclude Include="..\src\CommonLib\FileStream.h" />
     <ClInclude Include="..\src\CommonLib\InputStream.h" />
-    <ClInclude Include="..\src\CommonLib\CV.h" />
     <ClInclude Include="..\src\CommonLib\OutputStream.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Parser.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Singleton.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SingletonTemplate.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SystemIncludes.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Tools.h" />
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\catch.hpp" />
-    <ClInclude Include="..\src\CommonLib\Image.h" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

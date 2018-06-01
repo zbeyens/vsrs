@@ -2,6 +2,9 @@
 
 #include "ConfigSyn.h"
 
+/*!
+	Homography algorithm
+*/
 class Homography
 {
 public:

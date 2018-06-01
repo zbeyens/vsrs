@@ -14,11 +14,11 @@ public:
 	bool init();
 
 	// TO UPDATE BY NICT
-	bool apply(View* view);
+	bool apply(shared_ptr<View> view);
 
 private:
 	IplConvKernel * m_convKernel;
 
-	Image<HoleType>* m_imgBound;
+	unique_ptr<Image<HoleType>> m_imgBound;
 
 };

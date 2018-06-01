@@ -13,7 +13,7 @@ public:
 	{
 	}
 
-	bool apply(View* view);
+	bool apply(shared_ptr<View> view);
 
 private:
 	void    cvexMedian(IplImage* dst);

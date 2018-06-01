@@ -1,6 +1,6 @@
 #include "BlendingHoles.h"
 
-void BlendingHoles::initHolesMasks(vector<View*> views, Image<ImageType>* holesMask)
+void BlendingHoles::initHolesMasks(vector<shared_ptr<View>> views, shared_ptr<Image<ImageType>> holesMask)
 {
 	if (cfg.getIvsrsInpaint() == cfg.INPAINT_DEPTH_BASED)
 	{

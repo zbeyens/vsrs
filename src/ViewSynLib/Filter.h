@@ -2,6 +2,9 @@
 
 #include "ConfigSyn.h"
 
+/*!
+	Filter algorithm for upsampling
+*/
 template <class PixelType>
 class Filter
 {

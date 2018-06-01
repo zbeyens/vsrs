@@ -21,16 +21,10 @@
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Singleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SingletonTemplate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\SystemIncludes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\Tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\CommonLib\catch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\CommonLib\Clock.h">
@@ -43,15 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\CommonLib\InputStream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\CommonLib\Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\CommonLib\OpenCV.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\CommonLib\CV.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

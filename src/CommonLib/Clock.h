@@ -7,11 +7,11 @@ class Clock
 public:
 	Clock();
 
-	/**
+	/*!
 		Start the clock
 	*/
 	void setStartTime();
-	/**
+	/*!
 		Print the time from the start of the clock 
 	*/
 	void setEndTime();

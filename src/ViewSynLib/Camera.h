@@ -3,13 +3,16 @@
 #include "SystemIncludes.h"
 #include "ConfigSyn.h"
 
+/*!
+	Camera settings for a view
+*/
 class Camera
 {
 public:
 	Camera();
-	~Camera() {};
+	~Camera();
 
-	/**
+	/*!
 		Get camera values from the config and init
 	*/
 	void init(uint indexCam);
@@ -29,7 +32,7 @@ public:
 	double getBaseline();
 
 private:
-	/**
+	/*!
 		Fill ex, in and proj 1D matrices
 	*/
 	bool    init_camera_param();
@@ -37,20 +40,20 @@ private:
 	
 	void createMats();	//!> Create all matrices
 
-	/**
+	/*!
 		Compute whether the camera is on the left of the virtual camera (from x-axis).
 		All cameras must be placed on the x-axis and their direction be the z-axis (either positive or negative)
 		Need to be modify (currently only the special case is supported)
 	*/
 	void calcSide();
 	
-	/**
+	/*!
 		Compute baseline distance.
 		It is the eucl dist between Ref and Vir (using translation column)
 	*/
 	void calcBaselineDistance();
 
-	/**
+	/*!
 		Copy src->dest 3x3 matrices
 		transl col = MatEx row * MatEx transl col
 	*/

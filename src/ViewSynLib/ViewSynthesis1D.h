@@ -102,12 +102,12 @@ private:
 	unsigned char* OccV[5]; //!> Occlusion layer Upsampled UV. 0 -> Left;   1 -> Right;    2 -> Merged;    3 -> After hole filling; 4 -> Downsampled
 #endif
 
-	Image<ImageType>* m_imgLeftWithHole;		//!> output of the warping for BNR
-	Image<ImageType>* m_imgRightWithHole;
-	Image<DepthType>* m_depthLeftWithHole;
-	Image<DepthType>* m_depthRightWithHole;
-	Image<HoleType>* m_holeLeft;
-	Image<HoleType>* m_holeRight;
+	shared_ptr<Image<ImageType>> m_imgLeftWithHole;		//!> output of the warping for BNR
+	shared_ptr<Image<ImageType>> m_imgRightWithHole;
+	shared_ptr<Image<DepthType>> m_depthLeftWithHole;
+	shared_ptr<Image<DepthType>> m_depthRightWithHole;
+	shared_ptr<Image<HoleType>> m_holeLeft;
+	shared_ptr<Image<HoleType>> m_holeRight;
 
 private:
 	void PixelMapping(int x, int y, unsigned char d, float z, unsigned char* RefY, unsigned char* RefU, unsigned char* RefV, int ViewId, double dk, int flooring);
@@ -138,7 +138,7 @@ public:
 
 	int  AllocMem();   //!> Must be called after the resolution is set
 
-	bool  apply(unique_ptr<Image<ImageType>>& outImg);
+	bool  apply(shared_ptr<Image<ImageType>> outImg);
 
 	void SetLTranslationLeft(double sLTranslationLeft) { LTranslation[LEFTVIEW] = sLTranslationLeft; }
 	void SetLTranslationRight(double sLTranslationRight) { LTranslation[RGHTVIEW] = sLTranslationRight; }
@@ -151,12 +151,12 @@ public:
 
 	void SetPrecision(int sSubPelOption);
 
-	Image<ImageType>*  GetSynLeftWithHole() { return m_imgLeftWithHole; }
-	Image<ImageType>*  GetSynRightWithHole() { return m_imgRightWithHole; }
-	Image<DepthType>*  GetSynDepthLeftWithHole() { return m_depthLeftWithHole; }
-	Image<DepthType>*  GetSynDepthRightWithHole() { return m_depthRightWithHole; }
-	Image<HoleType>*  GetSynHoleLeft() { return m_holeLeft; }
-	Image<HoleType>*  GetSynHoleRight() { return m_holeRight; }
+	shared_ptr<Image<ImageType>>  GetSynLeftWithHole() { return m_imgLeftWithHole; }
+	shared_ptr<Image<ImageType>>  GetSynRightWithHole() { return m_imgRightWithHole; }
+	shared_ptr<Image<DepthType>>  GetSynDepthLeftWithHole() { return m_depthLeftWithHole; }
+	shared_ptr<Image<DepthType>>  GetSynDepthRightWithHole() { return m_depthRightWithHole; }
+	shared_ptr<Image<HoleType>>  GetSynHoleLeft() { return m_holeLeft; }
+	shared_ptr<Image<HoleType>>  GetSynHoleRight() { return m_holeRight; }
 
 	int  GetSynMask(unsigned char* SynMask);
 	int  GetSynDepth(unsigned char* SynDepth);

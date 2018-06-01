@@ -1,6 +1,6 @@
 #include "InpaintDepthBased.h"
 
-void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* inputImage, Image<DepthType>* inputDepth, Image<ImageType>* holesMask, vector<View*> views)
+void InpaintDepthBased::apply(shared_ptr<Image<ImageType>> outImage, shared_ptr<Image<ImageType>> inImage, shared_ptr<Image<DepthType>> inDepth, shared_ptr<Image<ImageType>> holesMask, vector<shared_ptr<View>> views)
 {
 	int hptv, ptv, var;
 	bool holeflag, inpaintflag, lflag, mflag, rflag, filterflag;
@@ -39,7 +39,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						leftw = w - 1;
 						leftptv = ptv - 1;
 						refptv = leftptv;
-						refdepth = (DepthType)inputDepth->getMatData(refptv); // set left depth to ref depth
+						refdepth = (DepthType)inDepth->getMatData(refptv); // set left depth to ref depth
 					}// else, left was set before
 				}
 				else if (holeflag == false) // hole start at middle
@@ -48,7 +48,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					leftw = w - 1;
 					leftptv = ptv - 1;
 					refptv = leftptv;
-					refdepth = (DepthType)inputDepth->getMatData(refptv); // set left depth to ref depth
+					refdepth = (DepthType)inDepth->getMatData(refptv); // set left depth to ref depth
 				} // else, middle in hole, do nothing
 			} // hole end
 			else // Mask[2] = 0 not hole
@@ -59,10 +59,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					inpaintflag = true;
 					rightw = w;
 					rightptv = ptv;
-					if (refdepth > (DepthType)inputDepth->getMatData(rightptv)) // set right depth to ref depth
+					if (refdepth > (DepthType)inDepth->getMatData(rightptv)) // set right depth to ref depth
 					{
 						refptv = rightptv;
-						refdepth = (DepthType)inputDepth->getMatData(refptv);
+						refdepth = (DepthType)inDepth->getMatData(refptv);
 					}
 				} // else, middle in not hole, do nothing
 			} // not hole end
@@ -89,10 +89,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (mflag == false && holesMask->getMatData(mptv) == 0) // not hole
 						{
 							mflag = true;
-							if (refdepth > (DepthType) inputDepth->getMatData(mptv))
+							if (refdepth > (DepthType) inDepth->getMatData(mptv))
 							{
 								refptv = mptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -102,10 +102,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (llflag == false && holesMask->getMatData(llptv) == 0) // not hole
 						{
 							llflag = true;
-							if (refdepth > (DepthType)inputDepth->getMatData(llptv))
+							if (refdepth > (DepthType)inDepth->getMatData(llptv))
 							{
 								refptv = llptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nopthing
 
@@ -115,10 +115,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (lflag == false && holesMask->getMatData(lptv) == 0) // not hole
 						{
 							lflag = true;
-							if (refdepth > (DepthType)inputDepth->getMatData(lptv))
+							if (refdepth > (DepthType)inDepth->getMatData(lptv))
 							{
 								refptv = lptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nopthing
 
@@ -128,10 +128,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (lmflag == false && holesMask->getMatData(lmptv) == 0) // not hole
 						{
 							lmflag = true;
-							if (refdepth > (DepthType)inputDepth->getMatData(lmptv))
+							if (refdepth > (DepthType)inDepth->getMatData(lmptv))
 							{
 								refptv = lmptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nopthing
 
@@ -141,10 +141,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (mrflag == false && holesMask->getMatData(mrptv) == 0) // not hole
 						{
 							mrflag = true;
-							if (refdepth > (DepthType)inputDepth->getMatData(mrptv))
+							if (refdepth > (DepthType)inDepth->getMatData(mrptv))
 							{
 								refptv = mrptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -155,10 +155,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (rflag == false && holesMask->getMatData(rptv) == 0) // not hole
 						{
 							rflag = true;
-							if (refdepth > (DepthType)inputDepth->getMatData(rptv))
+							if (refdepth > (DepthType)inDepth->getMatData(rptv))
 							{
 								refptv = rptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -168,10 +168,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 						if (rrflag == false && holesMask->getMatData(rrptv) == 0) // not hole
 						{
 							rrflag = true;
-							if (refdepth > (DepthType)inputDepth->getMatData(rrptv))
+							if (refdepth > (DepthType)inDepth->getMatData(rrptv))
 							{
 								refptv = rrptv;
-								refdepth = (DepthType)inputDepth->getMatData(refptv);
+								refdepth = (DepthType)inDepth->getMatData(refptv);
 							}
 						} // else hole, do nothing
 
@@ -190,10 +190,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (mflag == false && holesMask->getMatData(mptv) == 0) // not hole
 					{
 						mflag = true;
-						if (refdepth > (DepthType) inputDepth->getMatData(mptv))
+						if (refdepth > (DepthType) inDepth->getMatData(mptv))
 						{
 							refptv = mptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -204,10 +204,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (llflag == false && holesMask->getMatData(llptv) == 0) // not hole
 					{
 						llflag = true;
-						if (refdepth > (DepthType)inputDepth->getMatData(llptv))
+						if (refdepth > (DepthType)inDepth->getMatData(llptv))
 						{
 							refptv = llptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -217,10 +217,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (lflag == false && holesMask->getMatData(lptv) == 0) // not hole
 					{
 						lflag = true;
-						if (refdepth > (DepthType)inputDepth->getMatData(lptv))
+						if (refdepth > (DepthType)inDepth->getMatData(lptv))
 						{
 							refptv = lptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -230,10 +230,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (lmflag == false && holesMask->getMatData(lmptv) == 0) // not hole
 					{
 						lmflag = true;
-						if (refdepth > (DepthType)inputDepth->getMatData(lmptv))
+						if (refdepth > (DepthType)inDepth->getMatData(lmptv))
 						{
 							refptv = lmptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -243,10 +243,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (mrflag == false && holesMask->getMatData(mrptv) == 0) // not hole
 					{
 						mrflag = true;
-						if (refdepth > (DepthType)inputDepth->getMatData(mrptv))
+						if (refdepth > (DepthType)inDepth->getMatData(mrptv))
 						{
 							refptv = mrptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -256,10 +256,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (rflag == false && holesMask->getMatData(rptv) == 0) // not hole
 					{
 						rflag = true;
-						if (refdepth > (DepthType)inputDepth->getMatData(rptv))
+						if (refdepth > (DepthType)inDepth->getMatData(rptv))
 						{
 							refptv = rptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -269,10 +269,10 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 					if (rrflag == false && holesMask->getMatData(rrptv) == 0) // not hole
 					{
 						rrflag = true;
-						if (refdepth > (DepthType)inputDepth->getMatData(rrptv))
+						if (refdepth > (DepthType)inDepth->getMatData(rrptv))
 						{
 							refptv = rrptv;
-							refdepth = (DepthType)inputDepth->getMatData(refptv);
+							refdepth = (DepthType)inDepth->getMatData(refptv);
 						}
 					}
 
@@ -285,9 +285,9 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 				for (varptv = leftptv + 1; varptv < rightptv; varptv++)
 				{
 					var = varptv * 3;
-					inputImage->setMatData(var, inputImage->getMatData(ref));
-					inputImage->setMatData(var + 1, inputImage->getMatData(ref + 1));
-					inputImage->setMatData(var + 2, inputImage->getMatData(ref + 2));
+					inImage->setMatData(var, inImage->getMatData(ref));
+					inImage->setMatData(var + 1, inImage->getMatData(ref + 1));
+					inImage->setMatData(var + 2, inImage->getMatData(ref + 2));
 				}
 			} // else no inpaintflag, do nothing
 		} // for w
@@ -295,7 +295,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 
 	  // NICT  cvInpaint(imgBlended.getImageIpl(), imgMask[0].getImageIpl(), imgInterpolatedView, 5, CV_INPAINT_NS); // inpaint
 	cvErode(holesMask->getMat(), holesMask->getMat()); // use pre-inpainted pixels for smoothing
-	cvInpaint(inputImage->getMat(), holesMask->getMat(), outputImage->getMat(), 3, CV_INPAINT_TELEA); // NICT use small kernel // smooth pre-inpainted area
+	cvInpaint(inImage->getMat(), holesMask->getMat(), outImage->getMat(), 3, CV_INPAINT_TELEA); // NICT use small kernel // smooth pre-inpainted area
 
 	//cvZero(holesMask->getMat());
 
@@ -321,7 +321,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 			if (holeflag == false && holesMask->getMatData(ptv) != 0) // filled hole edge
 			{
 				holeflag = true;
-				if (abs((DepthType)inputDepth->getMatData(ptv - 2) - (DepthType)inputDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inDepth->getMatData(ptv - 2) - (DepthType)inDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
 				{
 					filterflag = true;
 				}
@@ -335,7 +335,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 				holeflag = false;
 				// NICT start
 				//			if(abs((unsigned char)imgBlendedDepth->getImageIpl()->imageData[ptv-2] - (unsigned char)imgBlendedDepth->getImageIpl()->imageData[ptv+1]) < cfg.getDepthBlendDiff())
-				if (abs((DepthType)inputDepth->getMatData(ptv - 2) - (DepthType)inputDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inDepth->getMatData(ptv - 2) - (DepthType)inDepth->getMatData(ptv + 1)) < cfg.getDepthBlendDiff())
 					// NICT end
 					filterflag = true;
 				else filterflag = false;
@@ -348,17 +348,17 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 				var = ptv * 3;
 				varm6 = var - 6, varm5 = var - 5, varm4 = var - 4, varm3 = var - 3, varm2 = var - 2, varm1 = var - 1, var1 = var + 1, var2 = var + 2, var3 = var + 3, var4 = var + 4, var5 = var + 5;
 
-				outputImage->setMatData(var, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var3)) >> 1);
-				outputImage->setMatData(var1, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var4)) >> 1);
-				outputImage->setMatData(var2, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var5)) >> 1);
+				outImage->setMatData(var, ((unsigned char)outImage->getMatData(varm6) + (unsigned char)outImage->getMatData(var3)) >> 1);
+				outImage->setMatData(var1, ((unsigned char)outImage->getMatData(varm5) + (unsigned char)outImage->getMatData(var4)) >> 1);
+				outImage->setMatData(var2, ((unsigned char)outImage->getMatData(varm4) + (unsigned char)outImage->getMatData(var5)) >> 1);
 
-				outputImage->setMatData(varm3, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var)) >> 1);
-				outputImage->setMatData(varm2, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var1)) >> 1);
-				outputImage->setMatData(varm1, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var2)) >> 1);
+				outImage->setMatData(varm3, ((unsigned char)outImage->getMatData(varm6) + (unsigned char)outImage->getMatData(var)) >> 1);
+				outImage->setMatData(varm2, ((unsigned char)outImage->getMatData(varm5) + (unsigned char)outImage->getMatData(var1)) >> 1);
+				outImage->setMatData(varm1, ((unsigned char)outImage->getMatData(varm4) + (unsigned char)outImage->getMatData(var2)) >> 1);
 
-				outputImage->setMatData(var3, ((unsigned char)outputImage->getMatData(var) + (unsigned char)outputImage->getMatData(var3)) >> 1);
-				outputImage->setMatData(var4, ((unsigned char)outputImage->getMatData(var1) + (unsigned char)outputImage->getMatData(var4)) >> 1);
-				outputImage->setMatData(var5, ((unsigned char)outputImage->getMatData(var2) + (unsigned char)outputImage->getMatData(var5)) >> 1);
+				outImage->setMatData(var3, ((unsigned char)outImage->getMatData(var) + (unsigned char)outImage->getMatData(var3)) >> 1);
+				outImage->setMatData(var4, ((unsigned char)outImage->getMatData(var1) + (unsigned char)outImage->getMatData(var4)) >> 1);
+				outImage->setMatData(var5, ((unsigned char)outImage->getMatData(var2) + (unsigned char)outImage->getMatData(var5)) >> 1);
 			}
 		}
 	}
@@ -375,7 +375,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 			{
 				holeflag = true;
 
-				if (abs((DepthType)inputDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)inputDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)inDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
 					filterflag = true;
 				else filterflag = false;
 			}
@@ -383,7 +383,7 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 			{
 				holeflag = false;
 
-				if (abs((DepthType)inputDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)inputDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
+				if (abs((DepthType)inDepth->getMatData(ptv - 2 * cfg.getSourceWidth()) - (DepthType)inDepth->getMatData(ptv + cfg.getSourceWidth())) < cfg.getDepthBlendDiff())
 					filterflag = true;
 				else filterflag = false;
 			}
@@ -395,17 +395,17 @@ void InpaintDepthBased::apply(Image<ImageType>* outputImage, Image<ImageType>* i
 				var = ptv * 3;
 				varm6 = var - 6 * cfg.getSourceWidth(), varm5 = varm6 + 1, varm4 = varm6 + 2, varm3 = var - 3 * cfg.getSourceWidth(), varm2 = varm3 + 1, varm1 = varm3 + 2, var1 = var + 1, var2 = var + 2, var3 = var + 3 * cfg.getSourceWidth(), var4 = var3 + 1, var5 = var3 + 2;
 
-				outputImage->setMatData(var, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var3)) >> 1);
-				outputImage->setMatData(var1, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var4)) >> 1);
-				outputImage->setMatData(var2, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var5)) >> 1);
+				outImage->setMatData(var, ((unsigned char)outImage->getMatData(varm6) + (unsigned char)outImage->getMatData(var3)) >> 1);
+				outImage->setMatData(var1, ((unsigned char)outImage->getMatData(varm5) + (unsigned char)outImage->getMatData(var4)) >> 1);
+				outImage->setMatData(var2, ((unsigned char)outImage->getMatData(varm4) + (unsigned char)outImage->getMatData(var5)) >> 1);
 
-				outputImage->setMatData(varm3, ((unsigned char)outputImage->getMatData(varm6) + (unsigned char)outputImage->getMatData(var)) >> 1);
-				outputImage->setMatData(varm2, ((unsigned char)outputImage->getMatData(varm5) + (unsigned char)outputImage->getMatData(var1)) >> 1);
-				outputImage->setMatData(varm1, ((unsigned char)outputImage->getMatData(varm4) + (unsigned char)outputImage->getMatData(var2)) >> 1);
+				outImage->setMatData(varm3, ((unsigned char)outImage->getMatData(varm6) + (unsigned char)outImage->getMatData(var)) >> 1);
+				outImage->setMatData(varm2, ((unsigned char)outImage->getMatData(varm5) + (unsigned char)outImage->getMatData(var1)) >> 1);
+				outImage->setMatData(varm1, ((unsigned char)outImage->getMatData(varm4) + (unsigned char)outImage->getMatData(var2)) >> 1);
 
-				outputImage->setMatData(var3, ((unsigned char)outputImage->getMatData(var) + (unsigned char)outputImage->getMatData(var3)) >> 1);
-				outputImage->setMatData(var4, ((unsigned char)outputImage->getMatData(var1) + (unsigned char)outputImage->getMatData(var4)) >> 1);
-				outputImage->setMatData(var5, ((unsigned char)outputImage->getMatData(var2) + (unsigned char)outputImage->getMatData(var5)) >> 1);
+				outImage->setMatData(var3, ((unsigned char)outImage->getMatData(var) + (unsigned char)outImage->getMatData(var3)) >> 1);
+				outImage->setMatData(var4, ((unsigned char)outImage->getMatData(var1) + (unsigned char)outImage->getMatData(var4)) >> 1);
+				outImage->setMatData(var5, ((unsigned char)outImage->getMatData(var2) + (unsigned char)outImage->getMatData(var5)) >> 1);
 			}
 		}
 	}

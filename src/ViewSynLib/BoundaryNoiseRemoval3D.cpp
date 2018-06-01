@@ -11,7 +11,7 @@ BoundaryNoiseRemoval3D::~BoundaryNoiseRemoval3D()
 
 void BoundaryNoiseRemoval3D::calcWeight()
 {
-	if (cfg.getViewBlending() == cfg.BLEND_CLOSER) { // different results !
+	if (cfg.getViewBlending() == cfg.BLENDING_HOLES_CLOSER) { // different results !
 		if (m_LeftBaseLineDistance <= m_RightBaseLineDistance) {
 			m_weightLeft = 1.0;
 			m_weightRight = 0.0;
@@ -21,7 +21,7 @@ void BoundaryNoiseRemoval3D::calcWeight()
 			m_weightRight = 1.0;
 		}
 	}
-	else if (cfg.getViewBlending() == cfg.BLEND_WEIGHTED) {
+	else if (cfg.getViewBlending() == cfg.BLENDING_HOLES_WEIGHTED) {
 		if (m_LeftBaseLineDistance <= m_RightBaseLineDistance) {
 			m_weightLeft = fabs(1.0 - (fabs(m_LeftBaseLineDistance) / (fabs(m_LeftBaseLineDistance) + fabs(m_RightBaseLineDistance))));
 			m_weightRight = fabs(1.0 - (fabs(m_RightBaseLineDistance) / (fabs(m_LeftBaseLineDistance) + fabs(m_RightBaseLineDistance))));
@@ -83,7 +83,7 @@ void BoundaryNoiseRemoval3D::calcDepthThreshold(bool ViewID)
 	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
 }
 
-void BoundaryNoiseRemoval3D::Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg)
+void BoundaryNoiseRemoval3D::Blending(shared_ptr<Image<ImageType>> pLeft, shared_ptr<Image<ImageType>> pRight, shared_ptr<Image<ImageType>> outImg)
 {
 	Image<ImageType> temp1, temp2;
 	IplImage *TempImage;
@@ -109,7 +109,7 @@ void BoundaryNoiseRemoval3D::Blending(Image<ImageType>* pLeft, Image<ImageType>*
 	}
 }
 
-void BoundaryNoiseRemoval3D::RemainingHoleFilling(Image<ImageType>* pSrc)
+void BoundaryNoiseRemoval3D::RemainingHoleFilling(shared_ptr<Image<ImageType>> pSrc)
 {
 	int i, j, tWidth, tHeight, CountHole;
 	bool isValidLeft, isValidRight, isValid_Y, isValid_U, isValid_V, isComHole;
@@ -194,7 +194,7 @@ void BoundaryNoiseRemoval3D::RemainingHoleFilling(Image<ImageType>* pSrc)
 	}
 }
 
-void BoundaryNoiseRemoval3D::HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage * m_imgExpandedHole)
+void BoundaryNoiseRemoval3D::HoleFillingWithExpandedHole(shared_ptr<Image<ImageType>> pSrc, shared_ptr<Image<ImageType>> pTar, IplImage * m_imgExpandedHole)
 {
 	int i, j, tWidth, tHeight;
 	BYTE* Src_buffer, *Tar_buffer;

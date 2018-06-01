@@ -10,22 +10,22 @@ public:
 	InputStream(string filename) : FileStream(filename) {}
 	~InputStream() {}
 
-	/**
+	/*!
 		Open the file (read-only)
 	*/
 	void openR();
-	/**
+	/*!
 		Open the file (binary read-only)
 	*/
 	void openRB();
 
-	/**
+	/*!
 		Read a char of the file
 		@return	the read char
 	*/
 	char readChar();
 
-	/**
+	/*!
 		Read one frame of an image or video and stores it into the buffer
 
 		@param buffer	where to store the read characters

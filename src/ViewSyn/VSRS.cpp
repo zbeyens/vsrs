@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 	if (argc < 2) return 0;
 
 	// Parse config file
-	Parser& parser = Parser::getInstance();
+	Parser parser;
 	parser.setFilename(argv[1]);
 	parser.setCommands(argc, argv);
 	parser.parse();
@@ -56,9 +56,9 @@ int main(int argc, char *argv[])
 
 	// Init synthesis pipeline
 	PipelineFactory pipelineFactory;
-	ViewSynthesis* viewSynthesis = pipelineFactory.createPipeline();
+	unique_ptr<ViewSynthesis> viewSynthesis(pipelineFactory.createPipeline());
 
-	unique_ptr<Image<ImageType>> imageBuffer(new Image<ImageType>(cfg.getSourceHeight(), cfg.getSourceWidth(), BUFFER_CHROMA_FORMAT)); // store images to upsample one by one
+	shared_ptr<Image<ImageType>> imageBuffer(new Image<ImageType>(cfg.getSourceHeight(), cfg.getSourceWidth(), BUFFER_CHROMA_FORMAT)); // store images to upsample one by one
 
 	Clock clock;
 
@@ -110,11 +110,12 @@ int main(int argc, char *argv[])
 		cout << ".";
 
 		outImage.writeOneFrame(imageBuffer->getFrame(), imageBuffer->getSize());
-		//outDepth.writeOneFrame(viewSynthesis->getSynDepth()->getFrame(), viewSynthesis->getSynDepth()->getSize());
+		//outDepth.writeOneFrame(viewSynthesis->getSynDepth()->getFrame(), viewSynthesis->getView(0)->getDepth()->getSize());
+
 
 		clock.setEndTime();
 
-		if (cfg.getTesting())
+		if (cfg.getTesting() == cfg.TESTING_ENABLED)
 		{
 			TestRegression testRegression;
 			testRegression.apply(imageBuffer, n);

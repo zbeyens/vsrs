@@ -1,6 +1,6 @@
 #include "Blending2V.h"
 
-void Blending2V::blendPixel(Image<ImageType>* outImage, Image<DepthType>* outDepth, Image<ImageType>* inImage, Image<DepthType>* inDepth, int ptv)
+void Blending2V::blendPixel(shared_ptr<Image<ImageType>> outImage, shared_ptr<Image<DepthType>> outDepth, shared_ptr<Image<ImageType>> inImage, shared_ptr<Image<DepthType>> inDepth, int ptv)
 {
 	for (size_t j = 0; j < 3; j++)
 	{
@@ -13,12 +13,12 @@ void Blending2V::blendPixel(Image<ImageType>* outImage, Image<DepthType>* outDep
 	}
 }
 
-void Blending2V::apply(vector<View*> views, Image<ImageType>* outImage, Image<DepthType>* outDepth, Image<ImageType>* holesMask)
+void Blending2V::apply(vector<shared_ptr<View>> views, shared_ptr<Image<ImageType>> outImage, shared_ptr<Image<DepthType>> outDepth, shared_ptr<Image<ImageType>> holesMask)
 {
-	Image<DepthType>* synDepthLeft = views[0]->getSynDepth();
-	Image<DepthType>* synDepthRight = views[1]->getSynDepth();
-	Image<ImageType>* synLeft = views[0]->getSynImage();
-	Image<ImageType>* synRight = views[1]->getSynImage();
+	shared_ptr<Image<DepthType>> synDepthLeft = views[0]->getSynDepth();
+	shared_ptr<Image<DepthType>> synDepthRight = views[1]->getSynDepth();
+	shared_ptr<Image<ImageType>> synLeft = views[0]->getSynImage();
+	shared_ptr<Image<ImageType>> synRight = views[1]->getSynImage();
 
 	double weightLeft = views[0]->getWeight();
 	double weightRight = views[1]->getWeight();

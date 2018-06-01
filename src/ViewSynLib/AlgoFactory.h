@@ -28,6 +28,9 @@
 #include "WarpIpelViewReverse.h"
 #include "Blending2V.h"
 
+/*!
+	Factory methods generating algorithms
+*/
 class AlgoFactory
 {
 public:
@@ -80,19 +83,18 @@ Filter<PixelType>* AlgoFactory::createFilter(bool horizontal)
 			if (horizontal) return new FilterHorizontalAVCQuarter2D<PixelType>();
 			else return new FilterVerticalAVCQuarter2D<PixelType>();
 	case 8: // OCTO PEL
-		if (cfg.getFilter() == cfg.FILTER_LINEAR) {
+		if (cfg.getFilter() == cfg.FILTER_LINEAR)
 			cout << "Octo-pel with linear filter is not yet supported" << endl;
-			return false;
-		}
 		else if (cfg.getFilter() == cfg.FILTER_CUBIC)
 			if (horizontal) return new FilterHorizontalCubicOct2D<PixelType>();
 			else return new FilterVerticalCubicOct2D<PixelType>();
-		else if (cfg.getFilter() == cfg.FILTER_AVC) {
+		else if (cfg.getFilter() == cfg.FILTER_AVC)
 			cout << "Octo-pel with AVC filter is not yet supported" << endl;
-			return false;
-		}
 	default:
-		return false;
 		break;
 	}
+
+	if (horizontal) return new FilterHorizontalCubicHalf2D<PixelType>();
+	else return new FilterVerticalCubicHalf2D<PixelType>();
+
 }

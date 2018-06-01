@@ -3,16 +3,13 @@
 #include "SystemIncludes.h"
 
 /*!
-	\brief
-		Store the parameters of one camera
+	Store the parameters of one camera
 
 	All camera parameters are estimated with calibration software, used by DERS and VSRS
 
 	For each camera section:
 	-the first 3 lines give the camera intrinsics (focal length, principal point,...)
 	-the last 3 lines give the camera extrinsics (camera rotation and translation)
-
-	references: CParameterViewInterpolation
 */
 class ConfigCam
 {

@@ -5,12 +5,13 @@
 #include "ConfigSyn.h"
 #include "InputStream.h"
 
-class Parser : public Singleton<Parser>
+class Parser
 {
-	friend Singleton<Parser>;
-
 public:
-	/**	Parse config and camera files
+	Parser() {}
+	~Parser() {}
+
+	/*!	Parse config and camera files
 
 		Parse config file and command line
 		Set ConfigSyn parameters
@@ -26,22 +27,19 @@ public:
 	void setCommands(int argc, char** argv);
 
 private:
-	Parser() {}
-	~Parser() {}
-
 	string m_filename;				//!< Filename to parse
 	vector<char*> m_commands;		//!< All the command lines
 
 	map<string, string> m_params;	//!< All the parsed config lines : <tag, value>
 
-	/** Parse the config file
+	/*! Parse the config file
 
 		Read the config file line by line with an InputStream
 		For each valid line read, stores its tag and value in params map
 	*/
 	bool parseConfigFile();
 
-	/** Parse one line of the config file
+	/*! Parse one line of the config file
 
 		Read chars till EOL or EOF
 		Stores tag and its value
@@ -49,28 +47,28 @@ private:
 	*/
 	void parseLine(InputStream istream, string* tagValue);
 
-	/** Parse commands
+	/*! Parse commands
 
 		For each valid command, stores its tag and value in params map
 		\see readCommandLine
 	*/
 	void parseCommandLine();
 
-	/** Parse one command
+	/*! Parse one command
 
 		Stores one command in the format "tag=value"
 		Ignore comments
 	*/
 	void readCommandLine(char *buf, string* tagValue);
 
-	/** Read the camera parameters from file to memory
+	/*! Read the camera parameters from file to memory
 
 		Parse all camera
 		\see parseOneCamera
 	*/
 	bool parseCameraFile();
 
-	/**	Parse one camera
+	/*!	Parse one camera
 
 		Find the camera id to parse the intrinsic and extrinsic parameters that are separated by two "0.0".
 
@@ -81,27 +79,27 @@ private:
 	*/
 	bool parseOneCamera(InputStream istream, const char* cameraId, int cameraIndex);
 
-	/** Scan the camera id
+	/*! Scan the camera id
 
 		Scan the id of one of the camera parameters (given in the config file)
 	*/
 	int parseCameraId(InputStream istream, char* parsedCameraId);
 
-	/** Parse the camera intrinsics
+	/*! Parse the camera intrinsics
 		\return
 			number of char read
 	*/
-	int parseCameraIntrinsics(InputStream istream, ConfigCam* configCam);
+	int parseCameraIntrinsics(InputStream istream, shared_ptr<ConfigCam> configCam);
 
-	/** Parse separator int-ext
+	/*! Parse separator int-ext
 		\return
 			number of char read
 	*/
 	int parseSeparator(InputStream istream);
 
-	/** Parse the camera extrinsics
+	/*! Parse the camera extrinsics
 		\return
 			number of char read
 	*/
-	int parseCameraExtrinsics(InputStream istream, ConfigCam* configCam);
+	int parseCameraExtrinsics(InputStream istream, shared_ptr<ConfigCam> configCam);
 };

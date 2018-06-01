@@ -13,5 +13,5 @@ public:
 	{
 	}
 
-	void apply(Image<ImageType>* outputImage, Image<ImageType>* inputImage, Image<DepthType>* inputDepth, Image<ImageType>* holesMask, vector<View*> views);
+	void apply(shared_ptr<Image<ImageType>> outImage, shared_ptr<Image<ImageType>> inImage, shared_ptr<Image<DepthType>> inDepth, shared_ptr<Image<ImageType>> holesMask, vector<shared_ptr<View>> views);
 };

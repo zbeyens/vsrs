@@ -5,7 +5,7 @@
 class Tools
 {
 public:
-	/**
+	/*!
 		Free T if not null
 	*/
 	template<typename T>
@@ -18,7 +18,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 		Delete T if not null
 	*/
 	template<typename T>
@@ -31,7 +31,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 		Delete T if not null
 	*/
 	template<typename T>
@@ -44,7 +44,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 		Release IplImage
 	*/
 	static void safeReleaseImage(IplImage* image)
@@ -56,7 +56,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 		Release CvMat
 	*/
 	static void safeReleaseMat(CvMat* mat)

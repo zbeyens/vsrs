@@ -236,7 +236,6 @@
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigCam.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\Application.cpp" />
     <ClCompile Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.cpp" />
     <ClCompile Include="..\src\ViewSynLib\ViewSynthesis3D.cpp" />
     <ClInclude Include="..\src\ViewSynLib\AlgoFactory.h" />
@@ -263,6 +262,7 @@
     <ClInclude Include="..\src\ViewSynLib\FilterVerticalLinearHalf2D.h" />
     <ClInclude Include="..\src\ViewSynLib\FilterVerticalLinearQuarter2D.h" />
     <ClInclude Include="..\src\ViewSynLib\Homography.h" />
+    <ClInclude Include="..\src\ViewSynLib\Image.h" />
     <ClInclude Include="..\src\ViewSynLib\ImageTools.h" />
     <ClInclude Include="..\src\ViewSynLib\Inpaint.h" />
     <ClInclude Include="..\src\ViewSynLib\InpaintDepthBased.h" />
@@ -281,7 +281,6 @@
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ConfigSyn.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\Filter.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\View.h" />
-    <ClInclude Include="..\src\ViewSynLib\Application.h" />
     <ClInclude Include="C:\Users\miyuk\Documents\Visual Studio 2017\Projects\VSRS4\vsrs\src\ViewSynLib\ViewSynthesis1D.h" />
     <ClInclude Include="..\src\ViewSynLib\ViewSynthesis3D.h" />
     <ClInclude Include="..\src\ViewSynLib\ImageResample.h" />

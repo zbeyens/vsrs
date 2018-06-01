@@ -4,6 +4,11 @@ Camera::Camera()
 {
 }
 
+Camera::~Camera()
+{
+	release();
+}
+
 void Camera::init(uint indexCam)
 {
 	m_zNear = cfg.getNearestDepthValue(indexCam);
@@ -19,7 +24,6 @@ void Camera::init(uint indexCam)
 	calcSide();
 	calcBaselineDistance();
 
-	//release();
 }
 
 double Camera::getZnear() { return m_zNear; }

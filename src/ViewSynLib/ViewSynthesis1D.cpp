@@ -105,25 +105,18 @@ ViewSynthesis1D::ViewSynthesis1D()
 	m_width2 = cfg.getSourceWidth() * cfg.getPrecision();
 	m_height = cfg.getSourceHeight();
 
-	m_imgLeftWithHole = new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT);
-	m_imgRightWithHole = new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT);
-	m_depthLeftWithHole = new Image<DepthType>(m_height, m_width2, DEPTHMAP_CHROMA_FORMAT);
-	m_depthRightWithHole = new Image<DepthType>(m_height, m_width2, DEPTHMAP_CHROMA_FORMAT);
-	m_holeLeft = new Image<HoleType>(m_height, m_width2, HOLE_CHROMA_FORMAT);
-	m_holeRight = new Image<HoleType>(m_height, m_width2, HOLE_CHROMA_FORMAT);
+	m_imgLeftWithHole = shared_ptr<Image<ImageType>>(new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT));
+	m_imgRightWithHole = shared_ptr<Image<ImageType>>(new Image<ImageType>(m_height, m_width2, IMAGE_CHROMA_FORMAT));
+	m_depthLeftWithHole = shared_ptr<Image<DepthType>>(new Image<DepthType>(m_height, m_width2, DEPTHMAP_CHROMA_FORMAT));
+	m_depthRightWithHole = shared_ptr<Image<DepthType>>(new Image<DepthType>(m_height, m_width2, DEPTHMAP_CHROMA_FORMAT));
+	m_holeLeft = shared_ptr<Image<HoleType>>(new Image<HoleType>(m_height, m_width2, HOLE_CHROMA_FORMAT));
+	m_holeRight = shared_ptr<Image<HoleType>>(new Image<HoleType>(m_height, m_width2, HOLE_CHROMA_FORMAT));
 
 	AllocMem();
 }
 
 ViewSynthesis1D::~ViewSynthesis1D()
 {
-	Tools::safeDelete(m_imgLeftWithHole);
-	Tools::safeDelete(m_imgRightWithHole);
-	Tools::safeDelete(m_depthLeftWithHole);
-	Tools::safeDelete(m_depthRightWithHole);
-	Tools::safeDelete(m_holeLeft);
-	Tools::safeDelete(m_holeRight);
-
 	int i;
 	for (i = 0; i < 2; i++)
 	{
@@ -1676,7 +1669,7 @@ int  ViewSynthesis1D::GetSynDepth(unsigned char* SynDepth)
  *    true: success
  *    false: fail
  */
-bool ViewSynthesis1D::apply(unique_ptr<Image<ImageType>>& outImg)
+bool ViewSynthesis1D::apply(shared_ptr<Image<ImageType>> outImg)
 {
 	upsampleViews();
 

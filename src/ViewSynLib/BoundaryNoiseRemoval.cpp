@@ -93,10 +93,10 @@ void BoundaryNoiseRemoval::xInit()
 	if (m_imgHoleOtherView == NULL) { m_imgHoleOtherView = cvCreateImage(cvSize(m_width*m_precision, m_height), 8, 1); }
 }
 
-bool BoundaryNoiseRemoval::apply(unique_ptr<Image<ImageType>>& outImg)
+bool BoundaryNoiseRemoval::apply(shared_ptr<Image<ImageType>> outImg)
 {
-	SetLeftBaseLineDist(m_views[0]->getCam().getBaseline());
-	SetRightBaseLineDist(m_views[1]->getCam().getBaseline());
+	SetLeftBaseLineDist(m_views[0]->getCam()->getBaseline());
+	SetRightBaseLineDist(m_views[1]->getCam()->getBaseline());
 	SetLeftH_V2R(m_views[0]->getMatH_V2R());
 	SetRightH_V2R(m_views[1]->getMatH_V2R());
 
@@ -115,12 +115,12 @@ bool BoundaryNoiseRemoval::apply(unique_ptr<Image<ImageType>>& outImg)
 		m_views[i]->convertMatToBuffer1D();
 	}
 
-	Image<ImageType>* synLeft = m_views[0]->getSynImage();
-	Image<ImageType>* synRight = m_views[1]->getSynImage();
-	Image<DepthType>* depthLeft = m_views[0]->getSynDepth();
-	Image<DepthType>* depthRight = m_views[1]->getSynDepth();
-	Image<HoleType>* holeLeft = m_views[0]->getSynHoles();
-	Image<HoleType>* holeRight = m_views[1]->getSynHoles();
+	shared_ptr<Image<ImageType>> synLeft = m_views[0]->getSynImage();
+	shared_ptr<Image<ImageType>> synRight = m_views[1]->getSynImage();
+	shared_ptr<Image<DepthType>> depthLeft = m_views[0]->getSynDepth();
+	shared_ptr<Image<DepthType>> depthRight = m_views[1]->getSynDepth();
+	shared_ptr<Image<HoleType>> holeLeft = m_views[0]->getSynHoles();
+	shared_ptr<Image<HoleType>> holeRight = m_views[1]->getSynHoles();
 
 
 	int i;
@@ -167,7 +167,7 @@ bool BoundaryNoiseRemoval::apply(unique_ptr<Image<ImageType>>& outImg)
 	return true;
 }
 
-void BoundaryNoiseRemoval::copyImages(Image<ImageType>* pSyn_CurrView, Image<DepthType>* pSynDepth_CurrView, Image<HoleType>* pSynHole_CurrView, Image<HoleType>* pDepthHole_OthView)
+void BoundaryNoiseRemoval::copyImages(shared_ptr<Image<ImageType>> pSyn_CurrView, shared_ptr<Image<DepthType>> pSynDepth_CurrView, shared_ptr<Image<HoleType>> pSynHole_CurrView, shared_ptr<Image<HoleType>> pDepthHole_OthView)
 {
 	int i, j, width, height;
 	ImageType *org_buffer_image;
@@ -367,7 +367,7 @@ void BoundaryNoiseRemoval::expandedHoleforBNM(IplImage* Depth, IplImage* Hole, I
 	}
 }
 
-void BoundaryNoiseRemoval::DepthMatchingWithColor(Image<DepthType>* pDepth, Image<ImageType>* pColor, Image<HoleType>* pDepthMask)
+void BoundaryNoiseRemoval::DepthMatchingWithColor(shared_ptr<Image<DepthType>> pDepth, shared_ptr<Image<ImageType>> pColor, shared_ptr<Image<HoleType>> pDepthMask)
 {
 	int i, j, width, height;
 	bool isAVailableColor, isAVailableDepth, isAVailableDepth_L, isAVailableDepth_R;

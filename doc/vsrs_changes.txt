@@ -1,3 +1,16 @@
+VSRS4_2 -> VSRS4_3
+Date            : 01 June, 2018
+Authors         : Ziad Beyens (ULB) ziyad.beyens@gmail.com
+Contribution    : 
+Changes         :
+- Refactoring - cleaning the code 
+- Strategy design pattern for the pipeline and the algorithms
+- Singleton cfg file
+- Warping more than two views (multi-view) 
+- Regression testing
+
+==================================
+
 VSRS4_1 -> VSRS4_2
 Date            : 31 March, 2017
 Authors         : Krzysztof Wegner (Poznan University of Technology) kwegner@multimedia.edu.pl
@@ -36,7 +49,7 @@ Authors         : Yin Zhao (Zhejiang Univ.)
 Contribution    :
 Changes         :
 - Three improvements in 1D mode, and 3 switch parameter are added in cfg file, including:
--- Temproal Improvement Method (Switch parameter: TemporalImprovementOption)
+-- Temporal Improvement Method (Switch parameter: TemporalImprovementOption)
 -- 1D Warp Enhancement         (Switch parameter: WarpEnhancementOption)
 -- Clean Boundary Noise in 1D Warping processing. (Switch parameter: CleanNoiseOption)
 

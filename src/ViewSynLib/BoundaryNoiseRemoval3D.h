@@ -11,7 +11,7 @@ public:
 private:
 	void calcWeight();
 	void calcDepthThreshold(bool ViewID);
-	void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg);
-	void RemainingHoleFilling(Image<ImageType>* pSrc);
-	void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole);
+	void Blending(shared_ptr<Image<ImageType>> pLeft, shared_ptr<Image<ImageType>> pRight, shared_ptr<Image<ImageType>> outImg);
+	void RemainingHoleFilling(shared_ptr<Image<ImageType>> pSrc);
+	void HoleFillingWithExpandedHole(shared_ptr<Image<ImageType>> pSrc, shared_ptr<Image<ImageType>> pTar, IplImage* m_imgExpandedHole);
 };

@@ -24,14 +24,21 @@ Warp* AlgoFactory::createWarpViewReverse()
 
 BlendingHoles* AlgoFactory::createBlendingHoles()
 {
-	if (cfg.getViewBlending() == cfg.BLEND_CLOSER)
+	if (cfg.getViewBlending() == cfg.BLENDING_HOLES_CLOSER)
 		return new BlendingCloser();
-	else if (cfg.getViewBlending() == cfg.BLEND_WEIGHTED)
+	else if (cfg.getViewBlending() == cfg.BLENDING_HOLES_WEIGHTED)
 		return new BlendingWeighted();
+
+	cout << endl << "Warning: the ViewBlending parameter value does not associate to any algorithm. Returning default algorithm.";
+	return new BlendingWeighted();
 }
 
 Blending* AlgoFactory::createBlending()
 {
+	if (cfg.getBlendingMode() == cfg.BLENDING_MODE_2V)
+		return new Blending2V();
+
+	cout << endl << "Warning: the BlendingMode parameter value does not associate to any algorithm. Returning default algorithm.";
 	return new Blending2V();
 }
 
@@ -41,4 +48,7 @@ Inpaint* AlgoFactory::createInpaint()
 		return new InpaintDefault();
 	else if (cfg.getIvsrsInpaint() == cfg.INPAINT_DEPTH_BASED)
 		return new InpaintDepthBased();
+
+	cout << endl << "Warning: the IvsrsInpaint parameter value does not associate to any algorithm. Returning default algorithm.";
+	return new InpaintDefault();
 }

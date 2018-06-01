@@ -9,12 +9,12 @@ public:
 	OutputStream(string filename) : FileStream(filename) {}
 	~OutputStream() {}
 
-	/**
+	/*!
 		Open the file (binary write-only)
 	*/
 	void openWB();
 
-	/**
+	/*!
 		Write one frame from the buffer
 
 		@param buffer	the buffer containing the characters to write

@@ -1,16 +1,16 @@
 #include "BlendingCloser.h"
 
 
-void BlendingCloser::apply(vector<View*> views, Image<ImageType>* holesMask)
+void BlendingCloser::apply(vector<shared_ptr<View>> views, shared_ptr<Image<ImageType>> holesMask)
 {
 	initHolesMasks(views, holesMask);
 
-	Image<ImageType>* pRefLeft = views[0]->getSynImage();
-	Image<ImageType>* pRefRight = views[1]->getSynImage();
-	Image<DepthType>* pRefDepthLeft = views[0]->getSynDepth();
-	Image<DepthType>* pRefDepthRight = views[1]->getSynDepth();
-	Image<HoleType>* pRefFillsLeft = views[0]->getSynFills();
-	Image<HoleType>* pRefFillsRight = views[1]->getSynFills();
+	shared_ptr<Image<ImageType>> pRefLeft = views[0]->getSynImage();
+	shared_ptr<Image<ImageType>> pRefRight = views[1]->getSynImage();
+	shared_ptr<Image<DepthType>> pRefDepthLeft = views[0]->getSynDepth();
+	shared_ptr<Image<DepthType>> pRefDepthRight = views[1]->getSynDepth();
+	shared_ptr<Image<HoleType>> pRefFillsLeft = views[0]->getSynFills();
+	shared_ptr<Image<HoleType>> pRefFillsRight = views[1]->getSynFills();
 
 	if (views[0]->getWeight() >= views[1]->getWeight())  // if closer to Left, fill the left holes and put the left fills on the right
 	{

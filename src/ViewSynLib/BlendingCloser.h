@@ -2,6 +2,9 @@
 
 #include "BlendingHoles.h"
 
+/*!
+	Blending the closer image holes algorithm
+*/
 class BlendingCloser : public BlendingHoles
 {
 public:
@@ -14,7 +17,7 @@ public:
 	}
 
 	// blend images - choose and fill the closer image holes + put its fills on the other image
-	void apply(vector<View*> views, Image<ImageType>* holesMask);
+	void apply(vector<shared_ptr<View>> views, shared_ptr<Image<ImageType>> holesMask);
 
 };
 

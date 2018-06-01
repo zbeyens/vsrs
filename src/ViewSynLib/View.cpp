@@ -7,15 +7,15 @@ View::View()
 	int sw = cfg.getSourceWidth();
 	int sh = cfg.getSourceHeight();
 
-	m_imageNotUpsampled = new Image<ImageType>();
-	m_imageHorUpsampled = new Image<ImageType>();
-	m_image = new Image<ImageType>();
-	m_depth = new Image<DepthType>();
+	m_imageNotUpsampled = shared_ptr<Image<ImageType>>(new Image<ImageType>());
+	m_imageHorUpsampled = shared_ptr<Image<ImageType>>(new Image<ImageType>());
+	m_image = shared_ptr<Image<ImageType>>(new Image<ImageType>());
+	m_depth = shared_ptr<Image<DepthType>>(new Image<DepthType>());
 
-	m_synHoles = new Image<HoleType>(sh, sw, HOLE_CHROMA_FORMAT);
+	m_synHoles = shared_ptr<Image<HoleType>>(new Image<HoleType>(sh, sw, HOLE_CHROMA_FORMAT));
 	m_synHoles->initMat(sw, sh, 1);
 
-	m_fillableHoles = new Image<HoleType>();
+	m_fillableHoles = shared_ptr<Image<HoleType>>(new Image<HoleType>());
 	m_fillableHoles->initMat(sw, sh, MASK_CHANNELS);
 }
 
@@ -53,18 +53,18 @@ bool View::initImages()
 	m_depth->initYUV(sh, sw, DEPTHMAP_CHROMA_FORMAT);
 
 	//create images
-	m_synImage = new Image<ImageType>(sh, sw, IMAGE_CHROMA_FORMAT);
-	m_synDepth = new Image<DepthType>(sh, sw, DEPTHMAP_CHROMA_FORMAT);
-	m_synFills = new Image<ImageType>();
-	m_imgMask[0] = new Image<HoleType>();
-	m_imgMask[1] = new Image<HoleType>();
+	m_synImage = shared_ptr<Image<ImageType>>(new Image<ImageType>(sh, sw, IMAGE_CHROMA_FORMAT));
+	m_synDepth = shared_ptr<Image<DepthType>>(new Image<DepthType>(sh, sw, DEPTHMAP_CHROMA_FORMAT));
+	m_synFills = shared_ptr<Image<ImageType>>(new Image<ImageType>());
+	m_imgMask[0] = shared_ptr<Image<HoleType>>(new Image<HoleType>());
+	m_imgMask[1] = shared_ptr<Image<HoleType>>(new Image<HoleType>());
 	m_synImage->initMat(sw, sh, IMAGE_CHANNELS);
 	m_synDepth->initMat(sw, sh, DEPTH_CHANNELS);
 	m_synFills->initMat(sw, sh, 1);
 	m_imgMask[0]->initMat(sw, sh, MASK_CHANNELS);
 	m_imgMask[1]->initMat(sw, sh, MASK_CHANNELS);
 
-	if (!m_synImage->initYUVFromMat(m_synFills->getMat()->widthStep)) return false;
+	if (!m_synImage->initYUVFromMat()) return false;
 	if (!m_synDepth->initYFromMat()) return false;
 	if (!m_synFills->initYFromMat()) return false;
 
@@ -73,14 +73,15 @@ bool View::initImages()
 
 bool View::init_3Dwarp()
 {
-	cam.init(m_indexView);
+	cam = shared_ptr<Camera>(new Camera());
+	cam->init(m_indexView);
 
-	m_invZNearMinusInvZFar = 1.0 / cam.getZnear() - 1.0 / cam.getZfar();
-	m_invZfar = 1.0 / cam.getZfar();
+	m_invZNearMinusInvZFar = 1.0 / cam->getZnear() - 1.0 / cam->getZfar();
+	m_invZfar = 1.0 / cam->getZfar();
 
 	computeDepth();
 
-	m_homography.apply(m_matH_R2V, m_matH_V2R, cam.getMatInRef(), cam.getMatExRef(), cam.getMatProjVir());
+	m_homography.apply(m_matH_R2V, m_matH_V2R, cam->getMatInRef(), cam->getMatExRef(), cam->getMatProjVir());
 
 	return true;
 }
@@ -102,7 +103,7 @@ bool View::computeDepth()
 
 void View::computeDepthFromCam(int i, double distance)
 {
-	m_tableD2Z[i] = cvmGet(cam.getMatExRef(), 2, 2) * distance + cam.getArrayTransRef()[2];
+	m_tableD2Z[i] = cvmGet(cam->getMatExRef(), 2, 2) * distance + cam->getArrayTransRef()[2];
 }
 
 void View::computeDepthFromSpace(int i, double distance)

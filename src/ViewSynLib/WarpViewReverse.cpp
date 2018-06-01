@@ -11,7 +11,7 @@ WarpViewReverse::~WarpViewReverse()
 
 bool WarpViewReverse::init()
 {
-	m_imgBound = new Image<HoleType>();
+	m_imgBound = unique_ptr<Image<HoleType>>(new Image<HoleType>());
 	m_imgBound->initMat(cfg.getSourceWidth(), cfg.getSourceHeight(), 1);
 
 	int kernel[49] = {
@@ -27,7 +27,7 @@ bool WarpViewReverse::init()
 	return true;
 }
 
-bool WarpViewReverse::apply(View* view)
+bool WarpViewReverse::apply(shared_ptr<View> view)
 {
 	init();
 
@@ -84,7 +84,7 @@ bool WarpViewReverse::apply(View* view)
 	else
 	{
 		cvCopy(view->getSynHoles()->getMat(), m_imgBound->getMat());
-		erodebound(m_imgBound->getMat(), view->getCam().isLeftSide());              // background-side boundary of holes
+		erodebound(m_imgBound->getMat(), view->getCam()->isLeftSide());              // background-side boundary of holes
 		cvDilate(m_imgBound->getMat(), m_imgBound->getMat(), m_convKernel, 1);  // dilate by using circle-shape kernel
 		cvOr(view->getSynHoles()->getMat(), m_imgBound->getMat(), view->getImgMask(0)->getMat());    // pixels which want to be modified by other synthesized images
 	}

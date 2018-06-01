@@ -13,7 +13,7 @@ bool WarpDepth::init()
 	return true;
 }
 
-bool WarpDepth::apply(View* view)
+bool WarpDepth::apply(shared_ptr<View> view)
 {
 	init();
 

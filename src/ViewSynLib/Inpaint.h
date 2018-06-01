@@ -5,6 +5,9 @@
 #include "ConfigSyn.h"
 #include "View.h"
 
+/*!
+	Inpainting the remaining holes
+*/
 class Inpaint
 {
 public:
@@ -16,7 +19,7 @@ public:
 	{
 	}
 
-	virtual void apply(Image<ImageType>* synImage, Image<ImageType>* blendedImage, Image<DepthType>* blendedDepth, Image<ImageType>* holesMask, vector<View*> views) = 0;
+	virtual void apply(shared_ptr<Image<ImageType>> synImage, shared_ptr<Image<ImageType>> blendedImage, shared_ptr<Image<DepthType>> blendedDepth, shared_ptr<Image<ImageType>> holesMask, vector<shared_ptr<View>> views) = 0;
 
 protected:
 	ConfigSyn & cfg = ConfigSyn::getInstance();

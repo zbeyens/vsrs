@@ -1,9 +1,6 @@
 #include "ConfigCam.h"
 
 ConfigCam::ConfigCam()
-//: m_fIntrinsicMatrix(3, vector<double>(3))
-//, m_fExtrinsicMatrix(3, vector<double>(3))
-//, m_fTranslationVector(3)
 {
 	for (int i = 0; i < 3; i++)
 	{

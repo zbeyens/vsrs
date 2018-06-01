@@ -2,6 +2,9 @@
 
 #include "View.h"
 
+/*!
+	Warping algorithm
+*/
 class Warp
 {
 public:
@@ -13,7 +16,7 @@ public:
 	{
 	}
 
-	virtual bool apply(View* view) = 0;
+	virtual bool apply(shared_ptr<View> view) = 0;
 
 protected:
 	/*

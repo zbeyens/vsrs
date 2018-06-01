@@ -53,7 +53,7 @@ void BoundaryNoiseRemoval1D::calcDepthThreshold(bool ViewID)
 	m_depthThreshold = (int)(SumOfGap / GapCount + 0.5);
 }
 
-void BoundaryNoiseRemoval1D::Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg)
+void BoundaryNoiseRemoval1D::Blending(shared_ptr<Image<ImageType>> pLeft, shared_ptr<Image<ImageType>> pRight, shared_ptr<Image<ImageType>> outImg)
 {
 	Image<ImageType> temp1, temp2;
 	IplImage *TempImage;
@@ -107,7 +107,7 @@ void BoundaryNoiseRemoval1D::Blending(Image<ImageType>* pLeft, Image<ImageType>*
 	}
 }
 
-void BoundaryNoiseRemoval1D::RemainingHoleFilling(Image<ImageType>* pSrc)
+void BoundaryNoiseRemoval1D::RemainingHoleFilling(shared_ptr<Image<ImageType>> pSrc)
 {
 	int i, j, tWidth, tHeight, CountHole;
 	bool isValidLeft, isValidRight, isValid_Y, isValid_U, isValid_V;
@@ -191,7 +191,7 @@ void BoundaryNoiseRemoval1D::RemainingHoleFilling(Image<ImageType>* pSrc)
 	}
 }
 
-void BoundaryNoiseRemoval1D::HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage * m_imgExpandedHole)
+void BoundaryNoiseRemoval1D::HoleFillingWithExpandedHole(shared_ptr<Image<ImageType>> pSrc, shared_ptr<Image<ImageType>> pTar, IplImage * m_imgExpandedHole)
 {
 	int i, j, tWidth, tHeight;
 	BYTE* Src_buffer, *Tar_buffer;

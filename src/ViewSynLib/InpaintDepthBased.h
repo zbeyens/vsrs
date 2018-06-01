@@ -14,7 +14,7 @@ public:
 	}
 
 	// TO UPDATE BY NICT
-	void apply(Image<ImageType>* outputImage, Image<ImageType>* inputImage, Image<DepthType>* inputDepth, Image<ImageType>* holesMask, vector<View*> views);
+	void apply(shared_ptr<Image<ImageType>> synImage, shared_ptr<Image<ImageType>> blendedImage, shared_ptr<Image<DepthType>> blendedDepth, shared_ptr<Image<ImageType>> holesMask, vector<shared_ptr<View>> views);
 
 };
 

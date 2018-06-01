@@ -2,6 +2,9 @@
 
 #include "Blending.h"
 
+/*!
+	Blending two views algorithm
+*/
 class Blending2V : public Blending
 {
 public:
@@ -13,10 +16,10 @@ public:
 	{
 	}
 
-	void apply(vector<View*> views, Image<ImageType>* blendedImage, Image<DepthType>* blendedDepth, Image<ImageType>* holesMask);
+	void apply(vector<shared_ptr<View>> views, shared_ptr<Image<ImageType>> blendedImage, shared_ptr<Image<DepthType>> blendedDepth, shared_ptr<Image<ImageType>> holesMask);
 
 private:
-	void blendPixel(Image<ImageType>* blendedImage, Image<DepthType>* blendedDepth, Image<ImageType>* ImageLeft, Image<DepthType>* DepthLeft, int ptv);
+	void blendPixel(shared_ptr<Image<ImageType>> outImage, shared_ptr<Image<DepthType>> outDepth, shared_ptr<Image<ImageType>> inImage, shared_ptr<Image<DepthType>> inDepth, int ptv);
 
 };
 

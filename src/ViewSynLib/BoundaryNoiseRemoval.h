@@ -47,19 +47,20 @@
 class BoundaryNoiseRemoval : public ViewSynthesis
 {
 protected:
-	
+	void    xInit();
+
 	virtual void calcWeight() = 0;	//!> Calculating Weighting Factors
 	virtual void calcDepthThreshold(bool ViewID) = 0; //!> compute the depthThreshold that is the mean of gap width
-	virtual void Blending(Image<ImageType>* pLeft, Image<ImageType>* pRight, unique_ptr<Image<ImageType>>& outImg) = 0;
-	virtual void RemainingHoleFilling(Image<ImageType>* pSrc) = 0;
-	virtual void HoleFillingWithExpandedHole(Image<ImageType>* pSrc, Image<ImageType>* pTar, IplImage* m_imgExpandedHole) = 0;
+	virtual void Blending(shared_ptr<Image<ImageType>> pLeft, shared_ptr<Image<ImageType>> pRight, shared_ptr<Image<ImageType>> outImg) = 0;
+	virtual void RemainingHoleFilling(shared_ptr<Image<ImageType>> pSrc) = 0;
+	virtual void HoleFillingWithExpandedHole(shared_ptr<Image<ImageType>> pSrc, shared_ptr<Image<ImageType>> pTar, IplImage* m_imgExpandedHole) = 0;
 
-	void copyImages(Image<ImageType>* pSyn_CurrView, Image<DepthType>* pSynDepth_CurrView, Image<HoleType>* pSynHole_CurrView, Image<HoleType>* pDepthHole_OthView);
+	void copyImages(shared_ptr<Image<ImageType>> pSyn_CurrView, shared_ptr<Image<DepthType>> pSynDepth_CurrView, shared_ptr<Image<HoleType>> pSynHole_CurrView, shared_ptr<Image<HoleType>> pDepthHole_OthView);
 	void getBoundaryContour(IplImage* bound, IplImage* contour);
 	bool checkFourNeighbours(int i, int j, IplImage* check);
 	void getBackgroundContour(IplImage* Bound, IplImage* Depth, IplImage* check_Depth, IplImage* BackBound);
 	void expandedHoleforBNM(IplImage* Depth, IplImage* Hole, IplImage* BackBound, IplImage* ExpandedHole);
-	void DepthMatchingWithColor(Image<DepthType>* pDepth, Image<ImageType>* pColor, Image<HoleType>* pDepthMask);
+	void DepthMatchingWithColor(shared_ptr<Image<DepthType>> pDepth, shared_ptr<Image<ImageType>> pColor, shared_ptr<Image<HoleType>> pDepthMask);
 
 	ConfigSyn & cfg;
 
@@ -101,8 +102,7 @@ public:
 	BoundaryNoiseRemoval();
 	~BoundaryNoiseRemoval();
 
-	bool    apply(unique_ptr<Image<ImageType>>& outImg);
-	void    xInit();
+	bool    apply(shared_ptr<Image<ImageType>> outImg);
 
 	void SetLeftH_V2R(CvMat *sH_V2R) { matLeftH_V2R = sH_V2R; }
 	void SetRightH_V2R(CvMat *sH_V2R) { matRightH_V2R = sH_V2R; }
@@ -114,6 +114,6 @@ public:
 
 	void SetLeftBaseLineDist(double sDist) { m_LeftBaseLineDistance = sDist; }
 	void SetRightBaseLineDist(double sDist) { m_RightBaseLineDistance = sDist; }
-	void setViews(vector<View*> views) { m_views = views; }
+	void setViews(vector<shared_ptr<View>> views) { m_views = views; }
 
 };

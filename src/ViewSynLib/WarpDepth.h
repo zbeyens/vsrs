@@ -15,10 +15,10 @@ public:
 	
 	bool init();
 
-	/**
+	/*!
 		TO UPDATE BY NICT
 	*/
-	bool apply(View* view);
+	bool apply(shared_ptr<View> view);
 
 private:
 	Image<ImageType> m_imgTemp[2]; //express holes after smoothing

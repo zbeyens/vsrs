@@ -5,6 +5,9 @@
 #include "ConfigSyn.h"
 #include "InputStream.h"
 
+/*!
+	Regression testing consists to check that the changes of the software have not included new mistakes.
+*/
 class TestRegression
 {
 public:
@@ -16,7 +19,10 @@ public:
 	{
 	}
 
-	void apply(unique_ptr<Image<ImageType>>& output, int frameNo);
+	/*!
+		It checks whether an image is the same than before the changes.
+	*/
+	void apply(shared_ptr<Image<ImageType>> output, int frameNo);
 
 private:
 	ConfigSyn & cfg = ConfigSyn::getInstance();

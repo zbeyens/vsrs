@@ -8,17 +8,17 @@ public:
 	FileStream(string filename);
 	~FileStream() {}
 
-	/**
+	/*!
 		Close the file
 	*/
 	void close();
 
-	/**
+	/*!
 		Seek to the given offset in the file
 	*/
 	void seek(int offset);
 
-	/**
+	/*!
 		Return whether the file is EOF
 	*/
 	int isEndOfFile();

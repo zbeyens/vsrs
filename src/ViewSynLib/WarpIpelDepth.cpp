@@ -1,6 +1,6 @@
 #include "WarpIpelDepth.h"
 
-bool WarpIpelDepth::apply(View* view)
+bool WarpIpelDepth::apply(shared_ptr<View> view)
 {
 	DepthType** pDepthMap = view->getDepth()->getY();
 

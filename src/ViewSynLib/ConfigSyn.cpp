@@ -17,6 +17,7 @@ ConfigSyn::ConfigSyn()
 	, m_synthesisMode(0)
 	, m_boundaryNoiseRemoval(0)
 	, m_viewBlending(0)
+	, m_blendingMode(0)
 	, m_depthBlendDiff(5)
 	, m_IvsrsInpaint(1)
 	, m_splattingOption(2)
@@ -29,13 +30,11 @@ ConfigSyn::ConfigSyn()
 	, m_cleanNoiseOption(1)
 	, m_testing(0)
 	, m_testImageName("../../VSRS_DATA/ResultsDebug/virtual_005003750438_0300_test.yuv")
-	//, m_bitDepth(16)
 {
 }
 
 ConfigSyn::~ConfigSyn()
 {
-	//release();
 }
 
 void ConfigSyn::initViewsParams()
@@ -47,9 +46,9 @@ void ConfigSyn::initViewsParams()
 		m_cameraNames.push_back("");
 		m_viewImageNames.push_back("");
 		m_depthMapNames.push_back("");
-		m_camParams.push_back(new ConfigCam());
+		m_camParams.push_back(shared_ptr<ConfigCam>(new ConfigCam()));
 	}
-	m_virtualConfigCam = new ConfigCam();
+	m_virtualConfigCam = shared_ptr<ConfigCam>(new ConfigCam());
 }
 
 void ConfigSyn::setParams(map<string, string> params)
@@ -68,7 +67,6 @@ void ConfigSyn::setParams(map<string, string> params)
 	{
 		string tag = param.first;
 		string value = param.second;
-		//cout << param.first << ':' << param.second << endl;
 
 		for (size_t i = 0; i < m_nViews; i++)
 		{
@@ -86,7 +84,6 @@ void ConfigSyn::setParams(map<string, string> params)
 		else if (tag == "TotalNumberOfFrames") m_numberOfFrames = atoi(value.c_str());
 		else if (tag == "StartFrame") m_startFrame = atoi(value.c_str());
 
-		
 		else if (tag == "LeftNearestDepthValue") m_nearestDepthValues[0] = atof(value.c_str());
 		else if (tag == "LeftFarthestDepthValue") m_farthestDepthValues[0] = atof(value.c_str());
 		else if (tag == "RightNearestDepthValue") m_nearestDepthValues[1] = atof(value.c_str());
@@ -100,7 +97,6 @@ void ConfigSyn::setParams(map<string, string> params)
 		else if (tag == "RightViewImageName") m_viewImageNames[1] = value;
 		else if (tag == "LeftDepthMapName") m_depthMapNames[0] = value;
 		else if (tag == "RightDepthMapName") m_depthMapNames[1] = value;
-		//else if (tag == "ReferenceVirtualViewImageName") m_cVirtualViewImageName = value;
 		else if (tag == "OutputVirtualViewImageName") m_outputVirViewImageName = value;
 		else if (tag == "OutputVirtualDepthMapName") m_outputVirDepthMapName = value;
 
@@ -110,6 +106,7 @@ void ConfigSyn::setParams(map<string, string> params)
 		else if (tag == "SynthesisMode") m_synthesisMode = atoi(value.c_str());
 		else if (tag == "BoundaryNoiseRemoval") m_boundaryNoiseRemoval = atoi(value.c_str());
 		else if (tag == "ViewBlending") m_viewBlending = atoi(value.c_str());
+		else if (tag == "BlendingMode") m_blendingMode = atoi(value.c_str());
 		else if (tag == "DepthBlendDifference") m_depthBlendDiff = atoi(value.c_str());
 		else if (tag == "IvsrsInpaint") m_IvsrsInpaint = atoi(value.c_str());
 		else if (tag == "SplattingOption") m_splattingOption = atoi(value.c_str());
@@ -122,8 +119,6 @@ void ConfigSyn::setParams(map<string, string> params)
 		else if (tag == "CleanNoiseOption") m_cleanNoiseOption = atoi(value.c_str());
 		else if (tag == "Testing") m_testing = atoi(value.c_str());
 		else if (tag == "TestImageName") m_testImageName = value;
-
-		//else if (tag == "BitDepth") m_bitDepth = atoi(value.c_str());
 	}
 }
 
@@ -157,6 +152,7 @@ void ConfigSyn::printParams()
 	cout << "SynthesisMode : " << m_synthesisMode << endl;
 	cout << "BoundaryNoiseRemoval : " << m_boundaryNoiseRemoval << endl;
 	cout << "ViewBlending : " << m_viewBlending << endl;
+	cout << "BlendingMode : " << m_blendingMode << endl;
 	cout << "DepthBlendDifference : " << m_depthBlendDiff << endl;
 	cout << "IvsrsInpaint : " << m_IvsrsInpaint << endl;
 	cout << "SplattingOption : " << m_splattingOption << endl;
@@ -200,4 +196,3 @@ bool ConfigSyn::printWarning()
 
 	return true;
 }
-

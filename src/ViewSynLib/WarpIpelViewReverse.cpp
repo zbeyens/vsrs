@@ -2,11 +2,11 @@
 
 WarpIpelViewReverse::WarpIpelViewReverse()
 {
-	m_imgBound = new Image<HoleType>();
+	m_imgBound = unique_ptr<Image<HoleType>>(new Image<HoleType>());
 	m_imgBound->initMat(cfg.getSourceWidth(), cfg.getSourceHeight(), 1);
 }
 
-bool WarpIpelViewReverse::apply(View* view)
+bool WarpIpelViewReverse::apply(shared_ptr<View> view)
 {
 	ImageType*** src = view->getImage()->getData();
 

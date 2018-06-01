@@ -8,6 +8,9 @@
 #include "BoundaryNoiseRemoval3D.h"
 #include "BoundaryNoiseRemoval1D.h"
 
+/*!
+	Factory methods generating pipeline
+*/
 class PipelineFactory
 {
 public:

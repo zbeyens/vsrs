@@ -13,7 +13,7 @@
 #define DEPTH_CHANNELS			1
 #define MASK_CHANNELS			1
 
-/**
+/*!
 444: full resolution
 422: full vert, 1/2 hor resolution
 420: 1/2 vert, 1/2 hor resolution
@@ -99,21 +99,24 @@ class ConfigSyn : public Singleton<ConfigSyn>
 public:
 	const int MODE_3D = 0;
 	const int MODE_1D = 1;
+	const int BNR_DISABLED = 0;
+	const int BNR_ENABLED = 1;
 	const int DEPTH_FROM_CAMERA = 0;
 	const int DEPTH_FROM_ORIGIN = 1;
-	const int BLEND_WEIGHTED = 0;
-	const int BLEND_CLOSER = 1;
+	const int COLOR_SPACE_YUV = 0;
+	const int COLOR_SPACE_RGB = 1;
 	const int FILTER_LINEAR = 0;
 	const int FILTER_CUBIC = 1;
 	const int FILTER_AVC = 2;
-	const int COLOR_SPACE_YUV = 0;
-	const int COLOR_SPACE_RGB = 1;
+	const int BLENDING_HOLES_WEIGHTED = 0;
+	const int BLENDING_HOLES_CLOSER = 1;
+	const int BLENDING_MODE_2V = 0;
 	const int INPAINT_DEFAULT = 0;
 	const int INPAINT_DEPTH_BASED = 1;
-	const int BNR_DISABLED = 0;
-	const int BNR_ENABLED = 1;
+	const int TESTING_DISABLED = 0;
+	const int TESTING_ENABLED = 1;
 
-	/**
+	/*!
 		\brief
 		Check whether the config parameters are valid or not
 
@@ -125,7 +128,7 @@ public:
 
 	void printParams(); //!< Print all parameter values
 
-	/**
+	/*!
 		Convert all the string parameters into the appropriate type and store them in this class
 	*/
 	void setParams(map<string, string> params);
@@ -184,6 +187,7 @@ public:
 	uint getSynthesisMode() { return m_synthesisMode; }
 	uint getBoundaryNoiseRemoval() { return m_boundaryNoiseRemoval; }
 	uint getViewBlending() { return m_viewBlending; }
+	uint getBlendingMode() { return m_blendingMode; }
 	int  getDepthBlendDiff() { return m_depthBlendDiff; }
 
 	int     getSuperPixel() { return m_superPixel; }	//NICT super pixel
@@ -191,9 +195,9 @@ public:
 	int     getDepthFilterSize() { return m_depthFilterSize; }//NICT stgep in
 	int     getDepthDiff() { return m_depthDiff; }		//NICT for edge filter
 
-	ConfigCam* getConfigCam(int i) { return m_camParams[i]; }
-	vector<ConfigCam*> getConfigCams() { return m_camParams; }
-	ConfigCam* getVirtualConfigCam() { return m_virtualConfigCam; }
+	shared_ptr<ConfigCam> getConfigCam(int i) { return m_camParams[i]; }
+	vector<shared_ptr<ConfigCam>> getConfigCams() { return m_camParams; }
+	shared_ptr<ConfigCam> getVirtualConfigCam() { return m_virtualConfigCam; }
 
 	uint getTesting() { return m_testing; }
 	string getTestImageName() { return m_testImageName; }
@@ -207,13 +211,8 @@ private:
 	uint m_testing;
 	string m_testImageName;
 
-	/*!
-	Specifies the depth type.
-	The input value 0 means the view synthesis mode by using depth from a camera.
-	The input value 1 means the view synthesis mode by using depth from the origin of 3D space.
-	Default: 0
-	*/
-	uint m_depthType;
+
+	uint m_depthType;				//!> Depth type. Default: 0
 	int m_sourceWidth;				//!> Input frame width. Default: 0
 	int m_sourceHeight;				//!> Input frame height. Default: 0
 	uint m_numberOfFrames;			//!> Total number of input frame. Default: 0
@@ -241,7 +240,8 @@ private:
 
 	uint m_synthesisMode;				//!> 0...General, 1...1D parallel
 	uint m_boundaryNoiseRemoval;		//!> 0: No Boundary Noise Removal, 1 : Use Boundary Noise Removal
-	uint m_viewBlending;				//!> 0...Blend left and right images, 1...Not Blend
+	uint m_viewBlending;				//!> 0...Blend left and right images holes, 1...Not Blend
+	uint m_blendingMode;				//!> Blending algorithm
 
 	int m_depthBlendDiff;				//!> max depth difference to blend left and right pixel using weighted baseline. If bigger, the nearer pixel is chosen.
 
@@ -261,8 +261,6 @@ private:
 	int m_depthFilterSize;
 	int m_depthDiff;				//!> NICT for edge filter
 
-	//int m_bitDepth;
-
-	vector<ConfigCam*> m_camParams;		//!> Camera parameters of the views
-	ConfigCam* m_virtualConfigCam;		//!> Camera parameters of the virtual camera
+	vector<shared_ptr<ConfigCam>> m_camParams;		//!> Camera parameters of the views
+	shared_ptr<ConfigCam> m_virtualConfigCam;		//!> Camera parameters of the virtual camera
 };

@@ -1,6 +1,6 @@
 #include "TestRegression.h"
 
-void TestRegression::apply(unique_ptr<Image<ImageType>>& output, int frameNo)
+void TestRegression::apply(shared_ptr<Image<ImageType>> output, int frameNo)
 {
 	InputStream inTestImage(cfg.getTestImageName());
 	inTestImage.openRB();

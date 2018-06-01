@@ -11,8 +11,8 @@ public:
 	{
 	}
 
-	bool apply(View* view);
+	bool apply(shared_ptr<View> view);
 
-	Image<HoleType>* m_imgBound;
+	unique_ptr<Image<HoleType>> m_imgBound;
 
 };

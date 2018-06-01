@@ -25,9 +25,6 @@
     <ClCompile Include="..\src\ViewSynLib\WarpDepth.cpp" />
     <ClCompile Include="..\src\ViewSynLib\WarpIpelDepth.cpp" />
     <ClCompile Include="..\src\ViewSynLib\Homography.cpp" />
-    <ClCompile Include="..\src\ViewSynLib\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ViewSynLib\ViewSynthesis3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -83,9 +80,6 @@
     <ClInclude Include="..\src\ViewSynLib\FilterHorizontalCubicQuarter2D.h" />
     <ClInclude Include="..\src\ViewSynLib\FilterHorizontalAVCHalf2D.h" />
     <ClInclude Include="..\src\ViewSynLib\ImageTools.h" />
-    <ClInclude Include="..\src\ViewSynLib\Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ViewSynLib\ViewSynthesis3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -111,6 +105,7 @@
     <ClInclude Include="..\src\ViewSynLib\InpaintDepthBased.h" />
     <ClInclude Include="..\src\ViewSynLib\Blending2V.h" />
     <ClInclude Include="..\src\ViewSynLib\PipelineFactory.h" />
+    <ClInclude Include="..\src\ViewSynLib\Image.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

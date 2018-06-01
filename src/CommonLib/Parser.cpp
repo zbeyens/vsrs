@@ -134,7 +134,7 @@ bool Parser::parseOneCamera(InputStream istream, const char* cameraId, int camer
 {
 	ConfigSyn& cfg = ConfigSyn::getInstance();
 
-	ConfigCam* configCam;
+	shared_ptr<ConfigCam> configCam;
 	if (cameraIndex == -1)
 	{
 		configCam = cfg.getVirtualConfigCam();
@@ -183,7 +183,7 @@ int Parser::parseCameraId(InputStream istream, char * parsedCameraId)
 	return fscanf(istream.getFile(), "%254s", parsedCameraId);
 }
 
-int Parser::parseCameraIntrinsics(InputStream istream, ConfigCam* configCam)
+int Parser::parseCameraIntrinsics(InputStream istream, shared_ptr<ConfigCam> configCam)
 {
 	FILE* fp = istream.getFile();
 
@@ -210,7 +210,7 @@ int Parser::parseSeparator(InputStream istream)
 	return read;
 }
 
-int Parser::parseCameraExtrinsics(InputStream istream, ConfigCam* configCam)
+int Parser::parseCameraExtrinsics(InputStream istream, shared_ptr<ConfigCam> configCam)
 {
 	FILE* fp = istream.getFile();
 

@@ -1,11 +1,5 @@
 var searchData=
 [
-  ['warp',['Warp',['../class_warp.html',1,'']]],
-  ['warpdepth',['WarpDepth',['../class_warp_depth.html',1,'']]],
-  ['warpipeldepth',['WarpIpelDepth',['../class_warp_ipel_depth.html',1,'']]],
-  ['warpipelviewreverse',['WarpIpelViewReverse',['../class_warp_ipel_view_reverse.html',1,'']]],
-  ['warpviewreverse',['WarpViewReverse',['../class_warp_view_reverse.html',1,'']]],
-  ['weightleft',['WeightLeft',['../class_view_synthesis1_d.html#af09ce84d74fc833e58771624a12c472f',1,'ViewSynthesis1D']]],
-  ['weightright',['WeightRight',['../class_view_synthesis1_d.html#a228a286f05f23c0dfb26d5061a09116d',1,'ViewSynthesis1D']]],
-  ['writeoneframe',['writeOneFrame',['../class_output_stream.html#a8586e0f77cb005303f31c20a5b1e2161',1,'OutputStream']]]
+  ['zfar',['Zfar',['../class_boundary_noise_removal.html#a8c69d055223f310cd1dad3a420810072',1,'BoundaryNoiseRemoval::Zfar()'],['../class_view_synthesis1_d.html#ab6530402bfc334e9f714649b380480cc',1,'ViewSynthesis1D::Zfar()']]],
+  ['znear',['Znear',['../class_boundary_noise_removal.html#abaef6f74b1dc6d0fdaebcfa92ecaf0c9',1,'BoundaryNoiseRemoval::Znear()'],['../class_view_synthesis1_d.html#a9e5a192c9940a63ae9564b20b3de9eb8',1,'ViewSynthesis1D::Znear()']]]
 ];

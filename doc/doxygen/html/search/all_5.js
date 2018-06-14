@@ -1,7 +1,6 @@
 var searchData=
 [
   ['f',['f',['../class_file_stream.html#a9cc426b7dfa869728dfb29eba42c45be',1,'FileStream']]],
-  ['falsetype',['FalseType',['../struct_catch_1_1_detail_1_1_false_type.html',1,'Catch::Detail']]],
   ['filestream',['FileStream',['../class_file_stream.html',1,'']]],
   ['filter',['Filter',['../class_filter.html',1,'']]],
   ['filterdummy2d',['FilterDummy2D',['../class_filter_dummy2_d.html',1,'']]],

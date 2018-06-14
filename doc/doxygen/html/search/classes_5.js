@@ -1,21 +1,12 @@
 var searchData=
 [
-  ['falsetype',['FalseType',['../struct_catch_1_1_detail_1_1_false_type.html',1,'Catch::Detail']]],
-  ['filestream',['FileStream',['../class_file_stream.html',1,'']]],
-  ['filter',['Filter',['../class_filter.html',1,'']]],
-  ['filterdummy2d',['FilterDummy2D',['../class_filter_dummy2_d.html',1,'']]],
-  ['filterhorizontalavchalf2d',['FilterHorizontalAVCHalf2D',['../class_filter_horizontal_a_v_c_half2_d.html',1,'']]],
-  ['filterhorizontalavcquarter2d',['FilterHorizontalAVCQuarter2D',['../class_filter_horizontal_a_v_c_quarter2_d.html',1,'']]],
-  ['filterhorizontalcubichalf2d',['FilterHorizontalCubicHalf2D',['../class_filter_horizontal_cubic_half2_d.html',1,'']]],
-  ['filterhorizontalcubicoct2d',['FilterHorizontalCubicOct2D',['../class_filter_horizontal_cubic_oct2_d.html',1,'']]],
-  ['filterhorizontalcubicquarter2d',['FilterHorizontalCubicQuarter2D',['../class_filter_horizontal_cubic_quarter2_d.html',1,'']]],
-  ['filterhorizontallinearhalf2d',['FilterHorizontalLinearHalf2D',['../class_filter_horizontal_linear_half2_d.html',1,'']]],
-  ['filterhorizontallinearquarter2d',['FilterHorizontalLinearQuarter2D',['../class_filter_horizontal_linear_quarter2_d.html',1,'']]],
-  ['filterverticalavchalf2d',['FilterVerticalAVCHalf2D',['../class_filter_vertical_a_v_c_half2_d.html',1,'']]],
-  ['filterverticalavcquarter2d',['FilterVerticalAVCQuarter2D',['../class_filter_vertical_a_v_c_quarter2_d.html',1,'']]],
-  ['filterverticalcubichalf2d',['FilterVerticalCubicHalf2D',['../class_filter_vertical_cubic_half2_d.html',1,'']]],
-  ['filterverticalcubicoct2d',['FilterVerticalCubicOct2D',['../class_filter_vertical_cubic_oct2_d.html',1,'']]],
-  ['filterverticalcubicquarter2d',['FilterVerticalCubicQuarter2D',['../class_filter_vertical_cubic_quarter2_d.html',1,'']]],
-  ['filterverticallinearhalf2d',['FilterVerticalLinearHalf2D',['../class_filter_vertical_linear_half2_d.html',1,'']]],
-  ['filterverticallinearquarter2d',['FilterVerticalLinearQuarter2D',['../class_filter_vertical_linear_quarter2_d.html',1,'']]]
+  ['image',['Image',['../class_image.html',1,'']]],
+  ['image_3c_20depthtype_20_3e',['Image&lt; DepthType &gt;',['../class_image.html',1,'']]],
+  ['image_3c_20imagetype_20_3e',['Image&lt; ImageType &gt;',['../class_image.html',1,'']]],
+  ['imageresample',['ImageResample',['../class_image_resample.html',1,'']]],
+  ['imagetools',['ImageTools',['../class_image_tools.html',1,'']]],
+  ['inpaint',['Inpaint',['../class_inpaint.html',1,'']]],
+  ['inpaintdefault',['InpaintDefault',['../class_inpaint_default.html',1,'']]],
+  ['inpaintdepthbased',['InpaintDepthBased',['../class_inpaint_depth_based.html',1,'']]],
+  ['inputstream',['InputStream',['../class_input_stream.html',1,'']]]
 ];

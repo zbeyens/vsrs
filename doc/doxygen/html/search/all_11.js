@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['u',['U',['../class_image.html#acdd3734a55c9c8b6daa872652d61df04',1,'Image']]],
-  ['upsampleviews',['upsampleViews',['../class_view_synthesis.html#a6e89514033f1eb4a5acf6e2aa35f6a1f',1,'ViewSynthesis']]]
+  ['v',['V',['../class_image.html#a9e19303c8b82aff6886348049e88ba37',1,'Image']]],
+  ['view',['View',['../class_view.html',1,'']]],
+  ['viewsynthesis',['ViewSynthesis',['../class_view_synthesis.html',1,'']]],
+  ['viewsynthesis1d',['ViewSynthesis1D',['../class_view_synthesis1_d.html',1,'']]],
+  ['viewsynthesis3d',['ViewSynthesis3D',['../class_view_synthesis3_d.html',1,'']]]
 ];

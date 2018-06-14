@@ -1,6 +1,5 @@
 var dir_d079a37a882e13f9f70c7ab2c7d03317 =
 [
-    [ "later", "dir_90fab983114d39107587ff64b1efc744.html", "dir_90fab983114d39107587ff64b1efc744" ],
     [ "AlgoFactory.h", "_algo_factory_8h_source.html", null ],
     [ "Blending.h", "_blending_8h_source.html", null ],
     [ "Blending2V.h", "_blending2_v_8h_source.html", null ],

@@ -1,12 +1,19 @@
 var searchData=
 [
-  ['readchar',['readChar',['../class_input_stream.html#a35b9f1087f0c6a360955755ac15de294',1,'InputStream']]],
-  ['readcommandline',['readCommandLine',['../class_parser.html#a25fb720e99f52a4d8ec75328c213a860',1,'Parser']]],
-  ['readoneframe',['readOneFrame',['../class_input_stream.html#ae6d9ee2f59bafd9a26f443248877a484',1,'InputStream']]],
-  ['refdepth',['RefDepth',['../class_view_synthesis1_d.html#a972535b9573d76a8674f721b988dc973',1,'ViewSynthesis1D']]],
-  ['refview',['RefView',['../class_view_synthesis1_d.html#aff3933ffeeba68e193261b305562890b',1,'ViewSynthesis1D']]],
-  ['registrarfortagaliases',['RegistrarForTagAliases',['../struct_catch_1_1_registrar_for_tag_aliases.html',1,'Catch']]],
-  ['resultbuilder',['ResultBuilder',['../class_catch_1_1_result_builder.html',1,'Catch']]],
-  ['resultdisposition',['ResultDisposition',['../struct_catch_1_1_result_disposition.html',1,'Catch']]],
-  ['resultwas',['ResultWas',['../struct_catch_1_1_result_was.html',1,'Catch']]]
+  ['safedelete',['safeDelete',['../class_tools.html#ab91441d889fa2f40a3d90336d40e3a9f',1,'Tools']]],
+  ['safedeletep',['safeDeleteP',['../class_tools.html#a7d958e1601dc4221caf7f044d153ea13',1,'Tools']]],
+  ['safefree',['safeFree',['../class_tools.html#a91bd46528537438ea51dd03cb96c3acd',1,'Tools']]],
+  ['safereleaseimage',['safeReleaseImage',['../class_tools.html#af0b05ddbf116307718b68991f37b7f6d',1,'Tools']]],
+  ['safereleasemat',['safeReleaseMat',['../class_tools.html#a8522d7720ec5227367fd5a239ae1d12d',1,'Tools']]],
+  ['seek',['seek',['../class_file_stream.html#a831d1bad8cd6aa8c4030306085cb9005',1,'FileStream']]],
+  ['setendtime',['setEndTime',['../class_clock.html#a2cd7abd070a5f00e6f3752e276959c86',1,'Clock']]],
+  ['setframenumber',['setFrameNumber',['../class_view_synthesis.html#a2d71b94cb8521a0861d47c96c53bc364',1,'ViewSynthesis']]],
+  ['setinputimage',['setInputImage',['../class_view_synthesis.html#a9c9ac1dff0055c749034c64169113d67',1,'ViewSynthesis']]],
+  ['setparams',['setParams',['../class_config_syn.html#a5e0a9f9aebf16958ed361df18033f6a9',1,'ConfigSyn']]],
+  ['setstarttime',['setStartTime',['../class_clock.html#a0ddfc88240a9d977e817eedf2ca16aa7',1,'Clock']]],
+  ['singleton',['Singleton',['../class_singleton.html',1,'']]],
+  ['singleton_3c_20configsyn_20_3e',['Singleton&lt; ConfigSyn &gt;',['../class_singleton.html',1,'']]],
+  ['synu',['SynU',['../class_view_synthesis1_d.html#a497c6c02678fc095f8a97ba1a737aeab',1,'ViewSynthesis1D']]],
+  ['synv',['SynV',['../class_view_synthesis1_d.html#a78c5a11a112fb329000d8b6e5cd94fd5',1,'ViewSynthesis1D']]],
+  ['syny',['SynY',['../class_view_synthesis1_d.html#a07c19c02fb16acdebb543f9f6e7d8891',1,'ViewSynthesis1D']]]
 ];
